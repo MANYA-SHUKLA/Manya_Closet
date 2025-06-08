@@ -1,0 +1,559 @@
+/* Main container */
+.loginsignup {
+  min-height: 100vh;
+  background: linear-gradient(to bottom right, #312e81, #581c87, #be185d);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated background elements */
+.background-elements {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.2;
+  animation: pulse 3s ease-in-out infinite;
+}
+
+.bg-orb-1 {
+  top: -10rem;
+  right: -10rem;
+  width: 20rem;
+  height: 20rem;
+  background: linear-gradient(to bottom right, #f472b6, #a855f7);
+}
+
+.bg-orb-2 {
+  bottom: -10rem;
+  left: -10rem;
+  width: 24rem;
+  height: 24rem;
+  background: linear-gradient(to top right, #60a5fa, #6366f1);
+  animation-delay: 1s;
+}
+
+.bg-orb-3 {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 16rem;
+  height: 16rem;
+  background: linear-gradient(to right, #a855f7, #f472b6);
+  opacity: 0.1;
+  animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Floating particles */
+.floating-particles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 0.25rem;
+  height: 0.25rem;
+  background-color: white;
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Main container and card */
+.loginsignup-container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 28rem;
+}
+
+.loginsignup-card {
+  backdrop-filter: blur(40px);
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Header section */
+.loginsignup-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.header-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  background: linear-gradient(to right, #ec4899, #8b5cf6);
+  border-radius: 1rem;
+  margin-bottom: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.header-icon:hover {
+  transform: scale(1.1);
+}
+
+.icon-sparkles {
+  width: 2rem;
+  height: 2rem;
+  color: white;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.header-title {
+  font-size: 1.875rem;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 0.5rem;
+  margin: 0;
+}
+
+.header-subtitle {
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  margin-top: 0.5rem;
+}
+
+/* Form fields */
+.loginsignup-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.input-group {
+  position: relative;
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1.25rem;
+  height: 1.25rem;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.3s ease;
+  z-index: 1;
+}
+
+.input-group:focus-within .input-icon {
+  color: #f472b6;
+}
+
+.form-input {
+  width: 100%;
+  padding: 1rem 1rem 1rem 3rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1rem;
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.form-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.form-input:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.form-input:focus {
+  border-color: #f472b6;
+  box-shadow: 0 0 0 2px rgba(244, 114, 182, 0.5);
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.password-input {
+  padding-right: 3rem;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.5);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  z-index: 1;
+}
+
+.password-toggle:hover {
+  color: #f472b6;
+}
+
+.toggle-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* Submit button */
+.submit-button {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(to right, #ec4899, #8b5cf6);
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+}
+
+.submit-button:hover:not(:disabled) {
+  background: linear-gradient(to right, #db2777, #7c3aed);
+  transform: scale(1.02);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.submit-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.loading-spinner {
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.submit-arrow {
+  width: 1.25rem;
+  height: 1.25rem;
+  transition: transform 0.3s ease;
+}
+
+.submit-button:hover .submit-arrow {
+  transform: translateX(0.25rem);
+}
+
+/* Toggle section */
+.toggle-section {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.toggle-text {
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+
+.toggle-button {
+  margin-left: 0.5rem;
+  color: #f472b6;
+  font-weight: 600;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.toggle-button:hover {
+  color: #f9a8d4;
+  text-decoration: underline;
+}
+
+/* Terms section */
+.terms-section {
+  margin-top: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.terms-checkbox {
+  margin-top: 0.25rem;
+  width: 1rem;
+  height: 1rem;
+  accent-color: #ec4899;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 0.25rem;
+}
+
+.terms-label {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.terms-link {
+  color: #f472b6;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.terms-link:hover {
+  color: #f9a8d4;
+}
+
+/* Social login */
+.social-login {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.social-text {
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 1rem;
+  margin-top: 0;
+}
+
+.social-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.social-button {
+  width: 3rem;
+  height: 3rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.social-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  transform: scale(1.1);
+}
+
+/* Logout section */
+.logout-section {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.logout-button {
+  padding: 0.75rem 2rem;
+  background: linear-gradient(to right, #ef4444, #dc2626);
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.875rem;
+}
+
+.logout-button:hover {
+  background: linear-gradient(to right, #dc2626, #b91c1c);
+  transform: scale(1.05);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Success popup */
+.success-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+}
+
+.success-popup {
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1.5rem;
+  padding: 2rem;
+  max-width: 24rem;
+  width: 100%;
+  margin: 0 1rem;
+  position: relative;
+  animation: bounce 0.5s ease-out;
+}
+
+.success-content {
+  text-align: center;
+}
+
+.success-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  background: linear-gradient(to right, #22c55e, #10b981);
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.check-icon {
+  width: 2rem;
+  height: 2rem;
+  color: white;
+}
+
+.success-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 0.5rem;
+  margin-top: 0;
+}
+
+.success-message {
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 1.5rem;
+  margin-top: 0;
+}
+
+.success-button {
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(to right, #22c55e, #10b981);
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.success-button:hover {
+  background: linear-gradient(to right, #16a34a, #059669);
+  transform: scale(1.02);
+}
+
+.close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: rgba(255, 255, 255, 0.5);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close-button:hover {
+  color: white;
+}
+
+.close-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  33% {
+    transform: translateY(-10px) rotate(120deg);
+  }
+  66% {
+    transform: translateY(5px) rotate(240deg);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -30px, 0);
+  }
+  70% {
+    transform: translate3d(0, -15px, 0);
+  }
+  90% {
+    transform: translate3d(0, -4px, 0);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 640px) {
+  .loginsignup {
+    padding: 0.75rem;
+  }
+  
+  .loginsignup-card {
+    padding: 1.5rem;
+  }
+  
+  .header-title {
+    font-size: 1.5rem;
+  }
+  
+  .success-popup {
+    margin: 0 0.75rem;
+    padding: 1.5rem;
+  }
+}
