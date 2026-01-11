@@ -8,24 +8,41 @@ import { ShopContext } from '../../Context/ShopContext'
 
 const Navbar = () => {
     const [menu, setMenu] = useState("home")
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
     const { getTotalCartItems } = useContext(ShopContext)
+    
+    const handleMenuClick = (menuItem) => {
+        setMenu(menuItem)
+        setMobileMenuOpen(false)
+    }
     
     return (
         <nav className='navbar'>
             <div className="navbar-container">
                 {/* Logo Section */}
-                <div className="nav-logo">
+                <Link to="/" className="nav-logo" onClick={() => handleMenuClick("home")}>
                     <img src={logo} alt="Manya Closet Logo" className="logo-image" />
                     <h1 className="brand-name">Manya Closet</h1>
-                </div>
+                </Link>
+
+                {/* Mobile Menu Button */}
+                <button 
+                    className={`mobile-menu-btn ${mobileMenuOpen ? 'active' : ''}`}
+                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    aria-label="Toggle mobile menu"
+                >
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
 
                 {/* Navigation Menu */}
-                <ul className='nav-menu'>
+                <ul className={`nav-menu ${mobileMenuOpen ? 'mobile-open' : ''}`}>
                     <li className={`nav-item ${menu === "home" ? "active" : ""}`}>
                         <Link 
                             to="/" 
                             className="nav-link"
-                            onClick={() => setMenu("home")}
+                            onClick={() => handleMenuClick("home")}
                         >
                             Home
                         </Link>
@@ -34,7 +51,7 @@ const Navbar = () => {
                         <Link 
                             to="/mens" 
                             className="nav-link"
-                            onClick={() => setMenu("mens")}
+                            onClick={() => handleMenuClick("mens")}
                         >
                             Men
                         </Link>
@@ -43,7 +60,7 @@ const Navbar = () => {
                         <Link 
                             to="/womens" 
                             className="nav-link"
-                            onClick={() => setMenu("womens")}
+                            onClick={() => handleMenuClick("womens")}
                         >
                             Women
                         </Link>
@@ -52,7 +69,7 @@ const Navbar = () => {
                         <Link 
                             to="/kids" 
                             className="nav-link"
-                            onClick={() => setMenu("kids")}
+                            onClick={() => handleMenuClick("kids")}
                         >
                             Kids
                         </Link>
