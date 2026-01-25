@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: manya-closet-backend
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8000
+      # Add your environment variables in Render dashboard:
+      # - MONGODB_URI
+      # - JWT_SECRET
+      # - JWT_EXPIRE
+      # - EMAIL_HOST
+      # - EMAIL_PORT
+      # - EMAIL_USER
+      # - EMAIL_PASSWORD
+      # - ADMIN_EMAIL
+      # - RAZORPAY_KEY_ID
+      # - RAZORPAY_KEY_SECRET
+
