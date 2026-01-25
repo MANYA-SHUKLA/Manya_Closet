@@ -47,8 +47,6 @@ const cartSchema = new mongoose.Schema({
 });
 
 // Indexes
-cartSchema.index({ user: 1 });
-cartSchema.index({ sessionId: 1 });
 cartSchema.index({ 'items.product': 1 });
 // Compound index to ensure either user or sessionId exists
 cartSchema.index({ user: 1, sessionId: 1 }, { sparse: true });

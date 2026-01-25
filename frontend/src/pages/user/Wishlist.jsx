@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { ShopContext } from '../../context/ShopContext';
+import { useAuth } from '/src/context/AuthContext';
+import { ShopContext } from '/src/context/ShopContext';
 import Item from '../../components/Item/Item';
 import './Wishlist.css';
 

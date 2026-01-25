@@ -85,9 +85,7 @@ const productSchema = new mongoose.Schema({
 });
 
 // Indexes
-productSchema.index({ slug: 1 });
 productSchema.index({ category: 1 });
-productSchema.index({ sku: 1 });
 productSchema.index({ price: 1 });
 productSchema.index({ gender: 1 });
 productSchema.index({ isActive: 1 });

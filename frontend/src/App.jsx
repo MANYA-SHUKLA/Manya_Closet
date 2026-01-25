@@ -1,6 +1,6 @@
 import Layout from "./components/Layout/Layout"
 import AdminLayout from "./components/Layout/AdminLayout"
-import {BrowserRouter, Route, Routes} from "react-router-dom"
+import {Route, Routes} from "react-router-dom"
 import Shop from "./pages/public/Shop"
 import ShopCategory from "./pages/public/ShopCategory"
 import Product from "./pages/public/Product"
@@ -28,7 +28,6 @@ function App() {
  
   return (
     <div>
-      <BrowserRouter>
         <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Layout><Shop/></Layout>}/>
@@ -56,7 +55,6 @@ function App() {
             <Route path="/admin/payments" element={<ProtectedRoute requireAdmin><AdminLayout><Payments/></AdminLayout></ProtectedRoute>}/>
             <Route path="/admin/coupons" element={<ProtectedRoute requireAdmin><AdminLayout><Coupons/></AdminLayout></ProtectedRoute>}/>
         </Routes>
-      </BrowserRouter>
     </div>
   )
 }

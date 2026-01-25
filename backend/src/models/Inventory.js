@@ -36,7 +36,6 @@ const inventorySchema = new mongoose.Schema({
 });
 
 // Indexes
-inventorySchema.index({ product: 1 });
 inventorySchema.index({ quantity: 1 });
 inventorySchema.index({ isInStock: 1 });
 inventorySchema.index({ quantity: 1, lowStockThreshold: 1 }); // For low stock queries

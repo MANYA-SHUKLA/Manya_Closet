@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import "./RealatedProducts.css";
 import Item from '../Item/Item';
-import { ShopContext } from "../context/ShopContext"';
+import { ShopContext } from "/src/context/ShopContext";
 
 const RelatedProducts = ({ currentProductId, category, limit = 8 }) => {
   const { all_product } = useContext(ShopContext);

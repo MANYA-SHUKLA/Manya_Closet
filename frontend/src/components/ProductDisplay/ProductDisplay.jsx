@@ -1,11 +1,11 @@
 import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import "./ProductDisplay.css"
+import { ShopContext } from "/src/context/ShopContext";
+import { useAuth } from "/src/context/AuthContext";
 // Using online image URLs
 const star_icon = "https://cdn-icons-png.flaticon.com/512/1828/1828884.png"
 const star_dull_icon = "https://cdn-icons-png.flaticon.com/512/1828/1828970.png";
-import { ShopContext } from "../context/ShopContext"';
-import { useAuth } from "../context/AuthContext"';
 
 const ProductDisplay = (props) => {
   const { product } = props;

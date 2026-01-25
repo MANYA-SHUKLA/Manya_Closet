@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useContext } from 'react';
 import "./Popular.css";
 import Item from "../Item/Item";
-import { ShopContext } from "../context/ShopContext"';
+import { ShopContext } from "/src/context/ShopContext";
 
 const Popular = () => {
   const { all_product, loading } = useContext(ShopContext);

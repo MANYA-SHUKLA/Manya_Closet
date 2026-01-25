@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import "./NewCollections.css"
 import Item from "../Item/Item"
-import { ShopContext } from "../context/ShopContext"'
+import { ShopContext } from "/src/context/ShopContext"
 
 const NewCollections = () => {
   const { all_product, loading } = useContext(ShopContext);

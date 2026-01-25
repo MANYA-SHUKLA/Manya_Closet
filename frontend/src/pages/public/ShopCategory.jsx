@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
-import "../CSS/ShopCategory.css"
-import { ShopContext } from '../../context/ShopContext'
+import "../../CSS/ShopCategory.css"
+import { ShopContext } from '/src/context/ShopContext'
 // Using online image URL
 const dropdown_icon = "https://cdn-icons-png.flaticon.com/512/271/271210.png"
 import Item from '../../components/Item/Item'

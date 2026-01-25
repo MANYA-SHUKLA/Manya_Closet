@@ -74,10 +74,8 @@ const paymentSchema = new mongoose.Schema({
 });
 
 // Indexes
-paymentSchema.index({ order: 1 });
 paymentSchema.index({ user: 1 });
 paymentSchema.index({ status: 1 });
-paymentSchema.index({ transactionId: 1 });
 paymentSchema.index({ method: 1 });
 paymentSchema.index({ createdAt: -1 });
 paymentSchema.index({ user: 1, status: 1 });

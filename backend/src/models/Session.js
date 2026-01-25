@@ -33,7 +33,6 @@ const sessionSchema = new mongoose.Schema({
 
 // Indexes
 sessionSchema.index({ user: 1 });
-sessionSchema.index({ refreshToken: 1 });
 sessionSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 }); // TTL index for auto-deletion
 
 // Method to check if session is valid

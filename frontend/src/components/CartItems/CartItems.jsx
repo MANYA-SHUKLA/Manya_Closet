@@ -1,9 +1,9 @@
 import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import "./CartItems.css"
+import { ShopContext } from "/src/context/ShopContext"
 // Using online image URL
 const remove_icon = "https://cdn-icons-png.flaticon.com/512/1828/1828843.png"
-  import { ShopContext } from "../context/ShopContext"
 
 const CartItems = () => {
     const { getTotalCartAmount, all_product, cartItems, removeFromCart, cartLoading } = useContext(ShopContext);

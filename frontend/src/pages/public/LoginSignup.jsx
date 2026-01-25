@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Eye, EyeOff, User, Mail, Lock, ArrowRight, Sparkles, CheckCircle, X } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import '../CSS/LoginSignup.css';
+import '../../CSS/LoginSignup.css';
 
 const LoginSignup = () => {
   const navigate = useNavigate();

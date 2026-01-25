@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import CartItems from "../components/CartItems/CartItems";
 import { useAuth } from './AuthContext';
 
 export const ShopContext = createContext(null);

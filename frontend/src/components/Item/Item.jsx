@@ -1,8 +1,8 @@
 import React, { useState, useContext } from 'react';
 import "./Item.css";
 import { Link, useNavigate } from 'react-router-dom';
-import { ShopContext } from "../context/ShopContext"';
-import { useAuth } from "../context/AuthContext"';
+import { ShopContext } from "/src/context/ShopContext";
+import { useAuth } from "/src/context/AuthContext";
 
 const Item = (props) => {
   const { addTocart } = useContext(ShopContext);

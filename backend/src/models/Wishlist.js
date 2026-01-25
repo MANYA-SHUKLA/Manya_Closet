@@ -27,7 +27,6 @@ const wishlistSchema = new mongoose.Schema({
 });
 
 // Indexes
-wishlistSchema.index({ user: 1 });
 wishlistSchema.index({ 'items.product': 1 });
 
 // Prevent duplicate products in wishlist

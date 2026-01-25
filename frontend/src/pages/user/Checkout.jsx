@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { ShopContext } from '../../context/ShopContext';
+import { useAuth } from '/src/context/AuthContext';
+import { ShopContext } from '/src/context/ShopContext';
 import './Checkout.css';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api';

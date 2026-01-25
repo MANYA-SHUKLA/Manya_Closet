@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import "./Navbar.css"
-// Using online image URLs
 const logo = "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=200&h=200&fit=crop&q=80"
 const cart_icon = "https://cdn-icons-png.flaticon.com/512/263/263142.png"
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useContext } from 'react'
-import { ShopContext } from '../../context/ShopContext'
-import { useAuth } from '../../context/AuthContext'
+import { ShopContext } from '/src/context/ShopContext'
+import { useAuth } from '/src/context/AuthContext'
 
 const Navbar = () => {
     const [menu, setMenu] = useState("home")
