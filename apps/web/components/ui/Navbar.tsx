@@ -2,10 +2,12 @@
 import Link from 'next/link'
 import { useAuthStore } from '@/store/authStore'
 import { useCartStore } from '@/store/cartStore'
+import { useLogout } from '@/hooks/useAuth'
 
 export default function Navbar() {
-  const { user, logout } = useAuthStore()
+  const { user } = useAuthStore()
   const { items } = useCartStore()
+  const { mutate: logout, isPending: loggingOut } = useLogout()
 
   return (
     <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-neutral-100">
@@ -41,8 +43,9 @@ export default function Navbar() {
                 </Link>
               )}
               <button
-                onClick={logout}
-                className="text-sm text-neutral-500 hover:text-neutral-900 transition-colors"
+                onClick={() => logout()}
+                disabled={loggingOut}
+                className="text-sm text-neutral-500 hover:text-neutral-900 transition-colors disabled:opacity-50"
               >
                 Logout
               </button>

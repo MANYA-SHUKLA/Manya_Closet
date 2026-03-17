@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Geist } from 'next/font/google'
 import './globals.css'
 import QueryProvider from '@/providers/QueryProvider'
+import AuthProvider from '@/providers/AuthProvider'
 import Navbar from '@/components/ui/Navbar'
 import Footer from '@/components/ui/Footer'
 
@@ -17,9 +18,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={`${geist.variable} font-sans antialiased`}>
         <QueryProvider>
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
+          <AuthProvider>
+            <Navbar />
+            <main>{children}</main>
+            <Footer />
+          </AuthProvider>
         </QueryProvider>
       </body>
     </html>

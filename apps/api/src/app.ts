@@ -8,6 +8,8 @@ import rateLimit from 'express-rate-limit'
 import { env } from './config/env'
 import routes from './routes'
 import { errorHandler } from './middleware/error'
+import './config/passport'
+import passport from 'passport'
 
 const app = express()
 
@@ -25,6 +27,7 @@ app.use(
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
+app.use(passport.initialize())
 
 // Logging
 if (env.NODE_ENV !== 'test') app.use(morgan('dev'))
