@@ -9,11 +9,18 @@ import { sendOrderConfirmationEmail } from '../utils/emailService.js';
 
 dotenv.config();
 
-// Initialize Razorpay
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || '',
-  key_secret: process.env.RAZORPAY_KEY_SECRET || ''
-});
+// Initialize Razorpay lazily so the server can start without credentials configured
+let _razorpay = null;
+const getRazorpay = () => {
+  if (!_razorpay) {
+    _razorpay = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID || '',
+      key_secret: process.env.RAZORPAY_KEY_SECRET || ''
+    });
+  }
+  return _razorpay;
+};
+const razorpay = new Proxy({}, { get: (_, prop) => getRazorpay()[prop] });
 
 // @desc    Create Razorpay order
 // @route   POST /api/payment/create
