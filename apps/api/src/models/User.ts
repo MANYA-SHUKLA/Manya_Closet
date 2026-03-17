@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose'
 import bcrypt from 'bcryptjs'
+import crypto from 'crypto'
 
 export interface IUserDocument extends Document {
   name: string
@@ -10,7 +11,10 @@ export interface IUserDocument extends Document {
   isVerified: boolean
   googleId?: string
   refreshToken?: string
+  passwordResetToken?: string
+  passwordResetExpires?: Date
   comparePassword(password: string): Promise<boolean>
+  createPasswordResetToken(): string
 }
 
 const UserSchema = new Schema<IUserDocument>(
@@ -23,6 +27,8 @@ const UserSchema = new Schema<IUserDocument>(
     isVerified: { type: Boolean, default: false },
     googleId: String,
     refreshToken: { type: String, select: false },
+    passwordResetToken: { type: String, select: false },
+    passwordResetExpires: { type: Date, select: false },
   },
   { timestamps: true }
 )
@@ -35,6 +41,13 @@ UserSchema.pre('save', async function (next) {
 
 UserSchema.methods.comparePassword = function (password: string) {
   return bcrypt.compare(password, this.password!)
+}
+
+UserSchema.methods.createPasswordResetToken = function () {
+  const token = crypto.randomBytes(32).toString('hex')
+  this.passwordResetToken = crypto.createHash('sha256').update(token).digest('hex')
+  this.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000) // 10 min
+  return token
 }
 
 export const UserModel = mongoose.model<IUserDocument>('User', UserSchema)

@@ -1,5 +1,14 @@
 import { Router } from 'express'
-import { register, login, logout, refreshToken, googleCallback } from '../controllers/authController'
+import passport from 'passport'
+import {
+  register,
+  login,
+  logout,
+  refreshToken,
+  forgotPassword,
+  resetPassword,
+  googleAuthCallback,
+} from '../controllers/authController'
 import { validate } from '../middleware/validate'
 import { authenticate } from '../middleware/auth'
 import { z } from 'zod'
@@ -17,10 +26,26 @@ const loginSchema = z.object({
   password: z.string().min(1),
 })
 
+const forgotSchema = z.object({ email: z.string().email() })
+
+const resetSchema = z.object({
+  token: z.string().min(1),
+  password: z.string().min(8),
+})
+
 router.post('/register', validate(registerSchema), register)
 router.post('/login', validate(loginSchema), login)
 router.post('/logout', authenticate, logout)
 router.post('/refresh', refreshToken)
-router.get('/google', googleCallback)
+router.post('/forgot-password', validate(forgotSchema), forgotPassword)
+router.post('/reset-password', validate(resetSchema), resetPassword)
+
+// Google OAuth
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'], session: false }))
+router.get(
+  '/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login', session: false }),
+  googleAuthCallback
+)
 
 export default router
