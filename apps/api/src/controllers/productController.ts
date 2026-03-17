@@ -7,17 +7,18 @@ import { IProductFilters } from '@manya-closet/types'
 export const getProducts = async (req: Request, res: Response) => {
   const {
     category, brand, minPrice, maxPrice, size, color,
-    search, page = '1', limit = '12', sort, isFeatured, sale
+    search, page = '1', limit = '12', sort, isFeatured, sale, minRating
   } = req.query as Record<string, string>
 
   const filters: Record<string, unknown> = { isActive: true }
-  if (category) filters.category = category
+  if (category) filters.category = { $in: category.split(',') }
   if (isFeatured === 'true') filters.isFeatured = true
   if (sale === 'true') filters.discountPrice = { $exists: true }
-  if (brand) filters.brand = brand
+  if (brand) filters.brand = { $in: brand.split(',') }
   if (minPrice || maxPrice) filters.price = { ...(minPrice && { $gte: +minPrice }), ...(maxPrice && { $lte: +maxPrice }) }
   if (size) filters['variants.size'] = size
   if (color) filters['variants.color'] = color
+  if (minRating) filters.ratings = { $gte: +minRating }
   if (search) filters.$text = { $search: search }
 
   const sortMap: Record<string, Record<string, number>> = {
