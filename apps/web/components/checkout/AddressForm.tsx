@@ -29,11 +29,11 @@ function Field({
         placeholder=" "
         pattern={pattern}
         maxLength={maxLength}
-        className="peer w-full px-4 pt-6 pb-2 rounded-xl border border-neutral-200 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent text-sm text-neutral-900 placeholder-transparent transition-all bg-white"
+        className="peer w-full px-4 pt-6 pb-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent text-sm text-gray-900 placeholder-transparent transition-all bg-white"
       />
       <label
         htmlFor={name}
-        className="absolute left-4 top-2 text-xs font-medium text-neutral-400 peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-placeholder-shown:text-neutral-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-amber-600 transition-all pointer-events-none"
+        className="absolute left-4 top-2 text-xs font-medium text-gray-400 peer-placeholder-shown:top-4 peer-placeholder-shown:text-sm peer-placeholder-shown:text-gray-400 peer-focus:top-2 peer-focus:text-xs peer-focus:text-amber-600 transition-all pointer-events-none"
       >
         {label}{required && ' *'}
       </label>
@@ -62,8 +62,8 @@ export default function AddressForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       <div>
-        <h2 className="text-xl font-bold text-neutral-900 mb-1">Delivery Address</h2>
-        <p className="text-sm text-neutral-500">Where should we send your order?</p>
+        <h2 className="text-xl font-bold text-gray-900 mb-1">Delivery Address</h2>
+        <p className="text-sm text-gray-500">Where should we send your order?</p>
       </div>
 
       <div className="grid sm:grid-cols-2 gap-4">
@@ -81,7 +81,7 @@ export default function AddressForm() {
             value={form.state}
             onChange={(e) => set('state')(e.target.value)}
             required
-            className="w-full px-4 pt-6 pb-2 rounded-xl border border-neutral-200 focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm text-neutral-900 bg-white appearance-none"
+            className="w-full px-4 pt-6 pb-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm text-gray-900 bg-white appearance-none"
           >
             <option value="">Select State</option>
             {INDIAN_STATES.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -89,7 +89,7 @@ export default function AddressForm() {
           <label className="absolute left-4 top-2 text-xs font-medium text-amber-600 pointer-events-none">
             State *
           </label>
-          <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
           </svg>
         </div>

@@ -3,8 +3,10 @@ import crypto from 'crypto'
 import { OrderModel } from '../models/Order'
 import { CartModel } from '../models/Cart'
 import { CouponModel } from '../models/Coupon'
+import { ProductModel } from '../models/Product'
 import { AppError } from '../middleware/error'
 import { env } from '../config/env'
+import { calculateDiscount } from '../utils/calculateDiscount'
 
 const DELIVERY_OPTIONS: Record<string, { label: string; charge: number; days: string }> = {
   standard: { label: 'Standard Delivery', charge: 99, days: '5-7 business days' },
@@ -22,6 +24,30 @@ const getRazorpay = async () => {
   return razorpay
 }
 
+/** Decrement stock for each ordered variant */
+async function decrementStock(items: { product: unknown; size: string; color: string; quantity: number }[]) {
+  await Promise.all(
+    items.map((item) =>
+      ProductModel.updateOne(
+        { _id: item.product, 'variants.size': item.size, 'variants.color': item.color },
+        { $inc: { 'variants.$.stock': -item.quantity } }
+      )
+    )
+  )
+}
+
+/** Restore stock (on cancellation/refund) */
+async function restoreStock(items: { product: unknown; size: string; color: string; quantity: number }[]) {
+  await Promise.all(
+    items.map((item) =>
+      ProductModel.updateOne(
+        { _id: item.product, 'variants.size': item.size, 'variants.color': item.color },
+        { $inc: { 'variants.$.stock': item.quantity } }
+      )
+    )
+  )
+}
+
 export const createOrder = async (req: Request, res: Response) => {
   const { shippingAddress, deliveryOption = 'standard', couponCode, paymentMethod = 'razorpay' } = req.body
 
@@ -32,18 +58,34 @@ export const createOrder = async (req: Request, res: Response) => {
   const delivery = DELIVERY_OPTIONS[deliveryOption] ?? DELIVERY_OPTIONS.standard
   const shippingCharge = subtotal > FREE_SHIPPING_ABOVE && deliveryOption === 'standard' ? 0 : delivery.charge
 
-  // Apply coupon
+  // Verify stock availability before placing order
+  for (const item of cart.items) {
+    const product = await ProductModel.findById(item.product)
+    if (!product || !product.isActive) throw new AppError(`Product "${item.name}" is no longer available`, 400)
+    const variant = product.variants.find((v) => v.size === item.size && v.color === item.color)
+    if (!variant || variant.stock < item.quantity) {
+      throw new AppError(`Insufficient stock for "${item.name}" (${item.size}/${item.color})`, 400)
+    }
+  }
+
+  // Apply coupon — atomic: only increments usedCount if all conditions pass
   let discount = 0
   let appliedCoupon: string | undefined
   if (couponCode) {
-    const coupon = await CouponModel.findOne({ code: couponCode.toUpperCase(), isActive: true })
-    if (coupon && coupon.expiresAt >= new Date() && coupon.usedCount < coupon.maxUses && subtotal >= coupon.minOrderAmount) {
-      discount = coupon.type === 'percentage'
-        ? Math.round((subtotal * coupon.value) / 100)
-        : coupon.value
-      if (coupon.maxDiscount) discount = Math.min(discount, coupon.maxDiscount)
+    const coupon = await CouponModel.findOneAndUpdate(
+      {
+        code: couponCode.toUpperCase(),
+        isActive: true,
+        expiresAt: { $gte: new Date() },
+        $expr: { $lt: ['$usedCount', '$maxUses'] },
+        minOrderAmount: { $lte: subtotal },
+      },
+      { $inc: { usedCount: 1 } },
+      { new: false },
+    )
+    if (coupon) {
+      discount = calculateDiscount(coupon, subtotal)
       appliedCoupon = coupon.code
-      await CouponModel.findByIdAndUpdate(coupon._id, { $inc: { usedCount: 1 } })
     }
   }
 
@@ -75,8 +117,11 @@ export const createOrder = async (req: Request, res: Response) => {
     paymentStatus: paymentMethod === 'cod' ? 'pending' : 'pending',
   })
 
-  // Clear cart
-  await CartModel.findOneAndUpdate({ user: req.user!._id }, { items: [], total: 0 })
+  // Decrement stock & clear cart
+  await Promise.all([
+    decrementStock(cart.items),
+    CartModel.findOneAndUpdate({ user: req.user!._id }, { items: [], total: 0 }),
+  ])
 
   res.status(201).json({
     success: true,
@@ -112,8 +157,20 @@ export const verifyPayment = async (req: Request, res: Response) => {
 }
 
 export const getMyOrders = async (req: Request, res: Response) => {
-  const orders = await OrderModel.find({ user: req.user!._id }).sort({ createdAt: -1 })
-  res.json({ success: true, data: orders })
+  const page = Math.max(1, parseInt(req.query.page as string) || 1)
+  const limit = Math.min(50, parseInt(req.query.limit as string) || 10)
+  const skip = (page - 1) * limit
+
+  const [orders, total] = await Promise.all([
+    OrderModel.find({ user: req.user!._id }).sort({ createdAt: -1 }).skip(skip).limit(limit),
+    OrderModel.countDocuments({ user: req.user!._id }),
+  ])
+
+  res.json({
+    success: true,
+    data: orders,
+    pagination: { page, limit, total, pages: Math.ceil(total / limit) },
+  })
 }
 
 export const getOrder = async (req: Request, res: Response) => {
@@ -122,17 +179,61 @@ export const getOrder = async (req: Request, res: Response) => {
   res.json({ success: true, data: order })
 }
 
-export const getAllOrders = async (_req: Request, res: Response) => {
-  const orders = await OrderModel.find().populate('user', 'name email').sort({ createdAt: -1 })
-  res.json({ success: true, data: orders })
+/** User cancels their own order (only if pending/confirmed) */
+export const cancelOrder = async (req: Request, res: Response) => {
+  const order = await OrderModel.findOne({ _id: req.params.id, user: req.user!._id })
+  if (!order) throw new AppError('Order not found', 404)
+
+  const cancellableStatuses = ['pending', 'confirmed']
+  if (!cancellableStatuses.includes(order.status)) {
+    throw new AppError(`Cannot cancel an order with status "${order.status}"`, 400)
+  }
+
+  order.status = 'cancelled'
+  await order.save()
+
+  // Restore stock for cancelled order
+  await restoreStock(order.items)
+
+  res.json({ success: true, data: order })
+}
+
+// ── Admin ────────────────────────────────────────────────────────────
+
+export const getAllOrders = async (req: Request, res: Response) => {
+  const page = Math.max(1, parseInt(req.query.page as string) || 1)
+  const limit = Math.min(100, parseInt(req.query.limit as string) || 20)
+  const skip = (page - 1) * limit
+
+  const filter: Record<string, unknown> = {}
+  if (req.query.status) filter.status = req.query.status
+  if (req.query.paymentStatus) filter.paymentStatus = req.query.paymentStatus
+
+  const [orders, total] = await Promise.all([
+    OrderModel.find(filter).populate('user', 'name email').sort({ createdAt: -1 }).skip(skip).limit(limit),
+    OrderModel.countDocuments(filter),
+  ])
+
+  res.json({
+    success: true,
+    data: orders,
+    pagination: { page, limit, total, pages: Math.ceil(total / limit) },
+  })
 }
 
 export const updateOrderStatus = async (req: Request, res: Response) => {
-  const order = await OrderModel.findByIdAndUpdate(
-    req.params.id,
-    { status: req.body.status },
-    { new: true }
-  )
+  const { status, paymentStatus } = req.body
+  const update: Record<string, string> = {}
+  if (status) update.status = status
+  if (paymentStatus) update.paymentStatus = paymentStatus
+
+  const order = await OrderModel.findByIdAndUpdate(req.params.id, update, { new: true })
   if (!order) throw new AppError('Order not found', 404)
+
+  // Restore stock if admin cancels or refunds
+  if (status === 'cancelled' || status === 'refunded') {
+    await restoreStock(order.items)
+  }
+
   res.json({ success: true, data: order })
 }

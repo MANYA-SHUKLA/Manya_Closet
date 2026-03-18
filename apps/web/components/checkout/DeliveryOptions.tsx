@@ -1,6 +1,7 @@
 'use client'
 import { useCheckoutStore, DeliveryOption } from '@/store/checkoutStore'
 import { useCartStore } from '@/store/cartStore'
+import { FREE_SHIPPING_ABOVE, DELIVERY_CHARGES } from '@/lib/deliveryConfig'
 
 const OPTIONS: {
   key: DeliveryOption
@@ -15,15 +16,15 @@ const OPTIONS: {
     label: 'Standard Delivery',
     desc: '5–7 business days',
     icon: '📦',
-    charge: (s) => s > 999 ? 0 : 99,
-    badge: 'Free above ₹999',
+    charge: (s) => s > FREE_SHIPPING_ABOVE ? 0 : DELIVERY_CHARGES.standard,
+    badge: `Free above ₹${FREE_SHIPPING_ABOVE}`,
   },
   {
     key: 'express',
     label: 'Express Delivery',
     desc: '2–3 business days',
     icon: '⚡',
-    charge: () => 199,
+    charge: () => DELIVERY_CHARGES.express,
     badge: 'Faster',
   },
   {
@@ -31,7 +32,7 @@ const OPTIONS: {
     label: 'Same Day Delivery',
     desc: 'By 9 PM today',
     icon: '🚀',
-    charge: () => 299,
+    charge: () => DELIVERY_CHARGES.sameday,
     badge: 'Fastest',
   },
 ]
@@ -43,8 +44,8 @@ export default function DeliveryOptions() {
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="text-xl font-bold text-neutral-900 mb-1">Delivery Options</h2>
-        <p className="text-sm text-neutral-500">Choose how fast you want it</p>
+        <h2 className="text-xl font-bold text-gray-900 mb-1">Delivery Options</h2>
+        <p className="text-sm text-gray-500">Choose how fast you want it</p>
       </div>
 
       <div className="space-y-3">
@@ -58,8 +59,8 @@ export default function DeliveryOptions() {
               onClick={() => setDelivery(key)}
               className={`w-full flex items-center gap-4 p-5 rounded-2xl border-2 text-left transition-all duration-200 ${
                 selected
-                  ? 'border-amber-400 bg-amber-50 shadow-md shadow-amber-100'
-                  : 'border-neutral-200 hover:border-neutral-300 bg-white'
+                  ? 'border-indigo-400 bg-indigo-50 shadow-md shadow-indigo-100'
+                  : 'border-gray-200 hover:border-gray-300 bg-white'
               }`}
             >
               {/* Icon */}
@@ -68,7 +69,7 @@ export default function DeliveryOptions() {
               {/* Info */}
               <div className="flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className={`font-semibold text-sm ${selected ? 'text-amber-800' : 'text-neutral-900'}`}>
+                  <span className={`font-semibold text-sm ${selected ? 'text-indigo-800' : 'text-gray-900'}`}>
                     {label}
                   </span>
                   {badge && (
@@ -81,7 +82,7 @@ export default function DeliveryOptions() {
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-neutral-500 mt-0.5">{desc}</p>
+                <p className="text-xs text-gray-500 mt-0.5">{desc}</p>
               </div>
 
               {/* Price */}
@@ -89,10 +90,10 @@ export default function DeliveryOptions() {
                 {fee === 0 ? (
                   <div>
                     <span className="text-emerald-600 font-bold text-sm">FREE</span>
-                    <p className="text-xs text-neutral-400 line-through">₹99</p>
+                    <p className="text-xs text-gray-400 line-through">₹99</p>
                   </div>
                 ) : (
-                  <span className={`font-bold text-sm ${selected ? 'text-amber-700' : 'text-neutral-800'}`}>
+                  <span className={`font-bold text-sm ${selected ? 'text-indigo-700' : 'text-gray-800'}`}>
                     ₹{fee}
                   </span>
                 )}
@@ -100,7 +101,7 @@ export default function DeliveryOptions() {
 
               {/* Radio */}
               <div className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${
-                selected ? 'border-amber-500 bg-amber-500' : 'border-neutral-300'
+                selected ? 'border-indigo-500 bg-indigo-500' : 'border-gray-300'
               }`}>
                 {selected && <div className="w-2 h-2 rounded-full bg-white" />}
               </div>
@@ -112,13 +113,13 @@ export default function DeliveryOptions() {
       <div className="flex gap-3 pt-2">
         <button
           onClick={() => setStep('address')}
-          className="flex-1 py-3.5 border border-neutral-200 text-neutral-700 font-semibold rounded-2xl hover:bg-neutral-50 transition-colors text-sm"
+          className="flex-1 py-3.5 border border-gray-200 text-gray-700 font-semibold rounded-2xl hover:bg-gray-50 transition-colors text-sm"
         >
           ← Back
         </button>
         <button
           onClick={() => setStep('payment')}
-          className="flex-[2] py-3.5 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-2xl transition-all hover:shadow-lg hover:shadow-amber-200 active:scale-95 text-sm"
+          className="flex-[2] py-3.5 bg-indigo-500 hover:bg-indigo-600 text-white font-bold rounded-2xl transition-all hover:shadow-lg hover:shadow-indigo-200 active:scale-95 text-sm"
         >
           Continue to Payment →
         </button>

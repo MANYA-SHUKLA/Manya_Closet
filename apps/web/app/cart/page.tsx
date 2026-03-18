@@ -10,12 +10,12 @@ function CartSkeleton() {
   return (
     <div className="animate-pulse space-y-5">
       {Array.from({ length: 3 }).map((_, i) => (
-        <div key={i} className="flex gap-5 py-6 border-b border-neutral-100">
-          <div className="w-24 h-28 bg-neutral-200 rounded-2xl flex-shrink-0" />
+        <div key={i} className="flex gap-5 py-6 border-b border-gray-100">
+          <div className="w-24 h-28 bg-gray-200 rounded-2xl flex-shrink-0" />
           <div className="flex-1 space-y-3 pt-1">
-            <div className="h-4 bg-neutral-200 rounded-full w-3/4" />
-            <div className="h-3 bg-neutral-100 rounded-full w-1/4" />
-            <div className="h-9 bg-neutral-100 rounded-xl w-28 mt-4" />
+            <div className="h-4 bg-gray-200 rounded-full w-3/4" />
+            <div className="h-3 bg-gray-100 rounded-full w-1/4" />
+            <div className="h-9 bg-gray-100 rounded-xl w-28 mt-4" />
           </div>
         </div>
       ))}
@@ -33,10 +33,10 @@ export default function CartPage() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="text-5xl">🔒</div>
-          <h2 className="text-xl font-bold text-neutral-900">Sign in to view your cart</h2>
+          <h2 className="text-xl font-bold text-gray-900">Sign in to view your cart</h2>
           <Link
             href="/login?redirect=/cart"
-            className="inline-block px-8 py-3 bg-neutral-900 text-white rounded-2xl font-semibold hover:bg-neutral-700 transition-colors"
+            className="inline-block px-8 py-3 bg-indigo-500 text-white rounded-2xl font-semibold hover:bg-indigo-600 transition-colors"
           >
             Sign In
           </Link>
@@ -49,12 +49,12 @@ export default function CartPage() {
   const subtotal = cart?.total ?? 0
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#F9FAFB]">
       {/* Header */}
-      <div className="border-b border-neutral-100 bg-white sticky top-16 z-40">
+      <div className="border-b border-gray-100 bg-white sticky top-16 z-40">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <h1 className="text-lg font-bold text-neutral-900">Cart</h1>
+            <h1 className="text-lg font-bold text-gray-900">Cart</h1>
             {items.length > 0 && (
               <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">
                 {items.length} {items.length === 1 ? 'item' : 'items'}
@@ -77,14 +77,14 @@ export default function CartPage() {
         {isLoading ? (
           <div className="grid lg:grid-cols-[1fr_380px] gap-10">
             <CartSkeleton />
-            <div className="h-80 bg-neutral-100 rounded-3xl animate-pulse" />
+            <div className="h-80 bg-gray-100 rounded-3xl animate-pulse" />
           </div>
         ) : items.length === 0 ? (
           <EmptyCart />
         ) : (
           <div className="grid lg:grid-cols-[1fr_380px] gap-10 items-start">
             {/* Items */}
-            <div className="bg-white rounded-3xl border border-neutral-100 px-6 shadow-sm">
+            <div className="bg-white rounded-3xl border border-gray-100 px-6 shadow-sm">
               {items.map((item) => (
                 <CartItem key={item._id} item={item as never} />
               ))}

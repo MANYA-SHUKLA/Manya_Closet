@@ -2,6 +2,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { authApi } from '@/lib/auth'
+import api from '@/lib/axios'
 import { useAuthStore } from '@/store/authStore'
 
 export const useMe = () => {
@@ -72,3 +73,22 @@ export const useResetPassword = () => {
     onSuccess: () => router.push('/login?reset=success'),
   })
 }
+
+export const useUpdateProfile = () => {
+  const setUser = useAuthStore((s) => s.setUser)
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (data: { name: string; avatar?: string }) => api.put('/users/me', data),
+    onSuccess: async () => {
+      const { data } = await authApi.getMe()
+      setUser(data.data)
+      qc.setQueryData(['me'], data.data)
+    },
+  })
+}
+
+export const useChangePassword = () =>
+  useMutation({
+    mutationFn: ({ currentPassword, newPassword }: { currentPassword: string; newPassword: string }) =>
+      api.put('/users/me/password', { currentPassword, newPassword }),
+  })

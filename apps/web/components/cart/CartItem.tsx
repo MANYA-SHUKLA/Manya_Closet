@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import { useUpdateCartItem, useRemoveCartItem } from '@/hooks/useCart'
 
-const FALLBACK = 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&q=80'
+import { FALLBACK_IMAGES } from '@/lib/imageUtils'
 
 interface Item {
   _id: string
@@ -27,7 +27,7 @@ export default function CartItem({ item }: { item: Item }) {
       {/* Image */}
       <div className="w-24 h-28 flex-shrink-0 rounded-2xl overflow-hidden bg-neutral-100">
         <img
-          src={item.image || FALLBACK}
+          src={item.image || FALLBACK_IMAGES[0]}
           alt={item.name}
           className="w-full h-full object-cover"
         />

@@ -1,9 +1,11 @@
 export interface IProductVariant {
+  _id?: string
   size: string
   color: string
   stock: number
   sku: string
 }
+
 
 export interface IProduct {
   _id: string

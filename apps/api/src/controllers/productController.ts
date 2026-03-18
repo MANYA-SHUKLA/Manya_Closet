@@ -90,3 +90,109 @@ export const addReview = async (req: Request, res: Response) => {
 
   res.status(201).json({ success: true, data: review })
 }
+
+// ── Inventory ────────────────────────────────────────────────────────────────
+
+export const getInventory = async (req: Request, res: Response) => {
+  const product = await ProductModel.findById(req.params.id).select('name variants')
+  if (!product) throw new AppError('Product not found', 404)
+
+  const LOW_STOCK = 5
+  const inventory = product.variants.map((v) => ({
+    variantId: v._id,
+    size: v.size,
+    color: v.color,
+    sku: v.sku,
+    stock: v.stock,
+    status: v.stock === 0 ? 'out_of_stock' : v.stock <= LOW_STOCK ? 'low_stock' : 'in_stock',
+  }))
+
+  res.json({
+    success: true,
+    data: {
+      productId: product._id,
+      name: product.name,
+      totalStock: product.variants.reduce((s, v) => s + v.stock, 0),
+      inventory,
+    },
+  })
+}
+
+export const updateInventory = async (req: Request, res: Response) => {
+  // Body: { updates: [{ variantId, stock }] }
+  const { updates } = req.body as { updates: { variantId: string; stock: number }[] }
+  if (!Array.isArray(updates) || updates.length === 0) throw new AppError('updates array required', 400)
+
+  const product = await ProductModel.findById(req.params.id)
+  if (!product) throw new AppError('Product not found', 404)
+
+  for (const { variantId, stock } of updates) {
+    const variant = product.variants.find((v) => v._id!.toString() === variantId)
+    if (variant) variant.stock = Math.max(0, stock)
+  }
+  await product.save()
+
+  res.json({ success: true, data: product.variants })
+}
+
+export const getLowStock = async (req: Request, res: Response) => {
+  const threshold = Number(req.query.threshold ?? 5)
+  const products = await ProductModel.find({
+    isActive: true,
+    'variants.stock': { $lte: threshold },
+  }).select('name variants')
+
+  const alerts = products.map((p) => ({
+    productId: p._id,
+    name: p.name,
+    lowVariants: p.variants
+      .filter((v) => v.stock <= threshold)
+      .map((v) => ({ variantId: v._id, size: v.size, color: v.color, sku: v.sku, stock: v.stock })),
+  }))
+
+  res.json({ success: true, data: alerts })
+}
+
+// ── Filter facets ─────────────────────────────────────────────────────────────
+
+export const getProductFilters = async (_req: Request, res: Response) => {
+  const [brands, categories, sizeColors, priceRange] = await Promise.all([
+    ProductModel.distinct('brand', { isActive: true }),
+    ProductModel.distinct('category', { isActive: true }),
+    ProductModel.aggregate([
+      { $match: { isActive: true } },
+      { $unwind: '$variants' },
+      {
+        $group: {
+          _id: null,
+          sizes:  { $addToSet: '$variants.size' },
+          colors: { $addToSet: '$variants.color' },
+        },
+      },
+    ]),
+    ProductModel.aggregate([
+      { $match: { isActive: true } },
+      {
+        $group: {
+          _id: null,
+          min: { $min: '$price' },
+          max: { $max: '$price' },
+        },
+      },
+    ]),
+  ])
+
+  res.json({
+    success: true,
+    data: {
+      brands: brands.sort(),
+      categories: categories.sort(),
+      sizes:  (sizeColors[0]?.sizes  ?? []).sort(),
+      colors: (sizeColors[0]?.colors ?? []).sort(),
+      price: {
+        min: priceRange[0]?.min ?? 0,
+        max: priceRange[0]?.max ?? 0,
+      },
+    },
+  })
+}

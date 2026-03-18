@@ -4,24 +4,28 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import api from '@/lib/axios'
 import { IOrder } from '@manya-closet/types'
+import { useAuthStore } from '@/store/authStore'
+import { printInvoice } from '@/lib/printInvoice'
+import OrderStepper from '@/components/account/OrderStepper'
 import confetti from 'canvas-confetti'
 
 function launchConfetti() {
   confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ['#f59e0b', '#10b981', '#3b82f6', '#f43f5e'] })
 }
 
-const STATUS_STEPS = ['pending', 'confirmed', 'processing', 'shipped', 'delivered']
-
 export default function OrderSuccessPage() {
   const { orderId } = useParams<{ orderId: string }>()
   const [order, setOrder] = useState<IOrder | null>(null)
   const [loading, setLoading] = useState(true)
+  const user = useAuthStore((s) => s.user)
 
   useEffect(() => {
+    let cancelled = false
     api.get(`/orders/${orderId}`)
-      .then(({ data }) => { setOrder(data.data); launchConfetti() })
+      .then(({ data }) => { if (!cancelled) { setOrder(data.data); launchConfetti() } })
       .catch(() => null)
-      .finally(() => setLoading(false))
+      .finally(() => { if (!cancelled) setLoading(false) })
+    return () => { cancelled = true }
   }, [orderId])
 
   if (loading) return (
@@ -40,8 +44,7 @@ export default function OrderSuccessPage() {
     </div>
   )
 
-  const currentStep = STATUS_STEPS.indexOf(order.status)
-  const estimatedDate = new Date(Date.now() + 6 * 24 * 60 * 60 * 1000)
+  const estimatedDate = new Date(new Date(order.createdAt).getTime() + 7 * 24 * 60 * 60 * 1000)
 
   return (
     <div className="min-h-screen bg-neutral-50 py-12 px-6">
@@ -67,29 +70,7 @@ export default function OrderSuccessPage() {
         {/* Order tracking */}
         <div className="bg-white rounded-3xl border border-neutral-100 p-7 shadow-sm">
           <h2 className="font-bold text-neutral-900 mb-6">Order Status</h2>
-          <div className="flex items-center gap-0">
-            {STATUS_STEPS.map((s, i) => {
-              const done   = i <= currentStep
-              const active = i === currentStep
-              return (
-                <div key={s} className="flex items-center flex-1">
-                  <div className="flex flex-col items-center gap-1 flex-shrink-0">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all text-xs font-bold ${
-                      done ? (active ? 'bg-amber-500 text-black ring-4 ring-amber-100' : 'bg-emerald-500 text-white') : 'bg-neutral-200 text-neutral-400'
-                    }`}>
-                      {!active && done ? '✓' : i + 1}
-                    </div>
-                    <span className={`text-[10px] font-medium capitalize whitespace-nowrap ${done ? 'text-neutral-700' : 'text-neutral-400'}`}>
-                      {s}
-                    </span>
-                  </div>
-                  {i < STATUS_STEPS.length - 1 && (
-                    <div className={`flex-1 h-0.5 mx-1 mb-4 rounded-full ${i < currentStep ? 'bg-emerald-400' : 'bg-neutral-200'}`} />
-                  )}
-                </div>
-              )
-            })}
-          </div>
+          <OrderStepper status={order.status} />
           <p className="text-xs text-neutral-500 mt-4 text-center">
             Estimated delivery: <strong>{estimatedDate.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long' })}</strong>
           </p>
@@ -118,13 +99,13 @@ export default function OrderSuccessPage() {
         <div className="bg-neutral-950 text-white rounded-3xl p-7 space-y-3">
           <h2 className="font-bold mb-2">Payment Summary</h2>
           {[
-            { label: 'Subtotal', val: `₹${order.subtotal.toLocaleString()}` },
-            { label: 'Shipping', val: order.shippingCharge === 0 ? 'FREE' : `₹${order.shippingCharge}` },
+            { label: 'Subtotal',  val: `₹${order.subtotal.toLocaleString()}` },
+            { label: 'Shipping',  val: order.shippingCharge === 0 ? 'FREE' : `₹${order.shippingCharge}` },
             ...(order.discount > 0 ? [{ label: 'Discount', val: `-₹${order.discount.toLocaleString()}` }] : []),
           ].map(({ label, val }) => (
             <div key={label} className="flex justify-between text-sm text-neutral-400">
               <span>{label}</span>
-              <span className={val === 'FREE' ? 'text-emerald-400' : val.startsWith('-') ? 'text-emerald-400' : 'text-white'}>{val}</span>
+              <span className={val === 'FREE' || val.startsWith('-') ? 'text-emerald-400' : 'text-white'}>{val}</span>
             </div>
           ))}
           <div className="h-px bg-white/10" />
@@ -132,8 +113,8 @@ export default function OrderSuccessPage() {
             <span>Total Paid</span>
             <span className="text-amber-400">₹{order.total.toLocaleString()}</span>
           </div>
-          <div className="flex items-center gap-2 text-xs text-neutral-500 pt-1">
-            <span>{order.paymentStatus === 'paid' ? '✓ Payment confirmed' : '⏳ Payment pending'}</span>
+          <div className="text-xs text-neutral-500 pt-1">
+            {order.paymentStatus === 'paid' ? '✓ Payment confirmed' : '⏳ Payment pending'}
           </div>
         </div>
 
@@ -157,6 +138,16 @@ export default function OrderSuccessPage() {
           >
             Track My Orders
           </Link>
+          <button
+            onClick={() => printInvoice(order, user)}
+            className="flex-1 py-3.5 border border-neutral-200 text-neutral-700 font-semibold rounded-2xl text-center hover:bg-neutral-50 transition-all flex items-center justify-center gap-2"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Download Invoice
+          </button>
           <Link
             href="/shop"
             className="flex-1 py-3.5 border border-neutral-200 text-neutral-700 font-semibold rounded-2xl text-center hover:bg-neutral-50 transition-all"

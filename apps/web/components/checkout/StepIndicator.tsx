@@ -24,8 +24,8 @@ export default function StepIndicator({ current }: { current: CheckoutStep }) {
             <div className="flex flex-col items-center gap-1.5">
               <div className={`w-10 h-10 rounded-full flex items-center justify-center text-lg transition-all duration-300 ${
                 done    ? 'bg-emerald-500 shadow-lg shadow-emerald-200' :
-                active  ? 'bg-amber-500 shadow-lg shadow-amber-200 ring-4 ring-amber-100' :
-                          'bg-neutral-100'
+                active  ? 'bg-indigo-500 shadow-lg shadow-indigo-200 ring-4 ring-indigo-100' :
+                          'bg-gray-100'
               }`}>
                 {done ? (
                   <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -36,7 +36,7 @@ export default function StepIndicator({ current }: { current: CheckoutStep }) {
                 )}
               </div>
               <span className={`text-xs font-semibold whitespace-nowrap ${
-                active ? 'text-amber-600' : done ? 'text-emerald-600' : 'text-neutral-400'
+                active ? 'text-indigo-600' : done ? 'text-emerald-600' : 'text-gray-400'
               }`}>
                 {label}
               </span>
@@ -44,7 +44,7 @@ export default function StepIndicator({ current }: { current: CheckoutStep }) {
 
             {i < STEPS.length - 1 && (
               <div className={`w-16 sm:w-24 h-0.5 mx-2 mb-5 rounded-full transition-all duration-500 ${
-                i < currentIdx ? 'bg-emerald-400' : 'bg-neutral-200'
+                i < currentIdx ? 'bg-emerald-400' : 'bg-gray-200'
               }`} />
             )}
           </div>

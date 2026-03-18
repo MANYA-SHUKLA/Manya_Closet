@@ -27,17 +27,17 @@ function ShopContent() {
   const total = data?.pages[0]?.pagination.total ?? 0
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#F9FAFB]">
       {/* Hero banner */}
-      <div className="bg-gradient-to-r from-neutral-950 to-neutral-800 py-14 px-6 lg:px-8">
+      <div className="bg-gradient-to-r from-[#0f0e1e] to-[#1e1a4a] py-14 px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
-          <p className="text-amber-400 text-sm font-medium uppercase tracking-widest mb-2">Collection</p>
+          <p className="text-indigo-300 text-sm font-medium uppercase tracking-widest mb-2">Collection</p>
           <h1 className="text-4xl lg:text-5xl font-bold text-white">
             {filters.category
               ? filters.category.charAt(0).toUpperCase() + filters.category.slice(1)
               : 'All Products'}
           </h1>
-          <p className="mt-2 text-neutral-400">Curated fashion, delivered to your door</p>
+          <p className="mt-2 text-gray-400">Curated fashion, delivered to your door</p>
         </div>
       </div>
 
@@ -45,7 +45,7 @@ function ShopContent() {
         <div className="flex gap-8">
           {/* Desktop sidebar */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
-            <div className="sticky top-24 bg-white rounded-2xl border border-neutral-100 p-6 shadow-sm">
+            <div className="sticky top-24 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
               <FilterPanel />
             </div>
           </aside>

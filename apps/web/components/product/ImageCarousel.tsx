@@ -1,16 +1,9 @@
 'use client'
 import { useState } from 'react'
-
-// Fallback fashion images from Unsplash (no API key needed)
-const FALLBACK = [
-  'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=800&q=80',
-  'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800&q=80',
-  'https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?w=800&q=80',
-  'https://images.unsplash.com/photo-1554568218-0f1715e72254?w=800&q=80',
-]
+import { FALLBACK_IMAGES } from '@/lib/imageUtils'
 
 export default function ImageCarousel({ images }: { images: string[] }) {
-  const imgs = images.length > 0 ? images : FALLBACK
+  const imgs = images.length > 0 ? images : FALLBACK_IMAGES.slice(0, 4)
   const [active, setActive] = useState(0)
 
   const prev = () => setActive((i) => (i === 0 ? imgs.length - 1 : i - 1))

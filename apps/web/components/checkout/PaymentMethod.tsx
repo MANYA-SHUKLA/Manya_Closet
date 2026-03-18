@@ -6,6 +6,7 @@ import api from '@/lib/axios'
 import { useCheckoutStore, PaymentMethod } from '@/store/checkoutStore'
 import { useCartStore } from '@/store/cartStore'
 import { useAuthStore } from '@/store/authStore'
+import { calcShipping, calcOrderTotal } from '@/lib/deliveryConfig'
 
 declare global {
   interface Window {
@@ -13,19 +14,19 @@ declare global {
   }
 }
 
-const GST_RATE = 0.18
-const DELIVERY_CHARGES: Record<string, number> = { standard: 99, express: 199, sameday: 299 }
-const FREE_ABOVE = 999
-
+let razorpayLoadPromise: Promise<boolean> | null = null
 function loadRazorpay(): Promise<boolean> {
-  return new Promise((res) => {
-    if (window.Razorpay) return res(true)
-    const script = document.createElement('script')
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js'
-    script.onload = () => res(true)
-    script.onerror = () => res(false)
-    document.body.appendChild(script)
-  })
+  if (typeof window !== 'undefined' && window.Razorpay) return Promise.resolve(true)
+  if (!razorpayLoadPromise) {
+    razorpayLoadPromise = new Promise((res) => {
+      const script = document.createElement('script')
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js'
+      script.onload = () => res(true)
+      script.onerror = () => { razorpayLoadPromise = null; res(false) }
+      document.body.appendChild(script)
+    })
+  }
+  return razorpayLoadPromise
 }
 
 export default function PaymentMethod() {
@@ -36,11 +37,9 @@ export default function PaymentMethod() {
 
   const [error, setError] = useState('')
 
-  const shipping = deliveryOption === 'standard' && subtotal > FREE_ABOVE
-    ? 0 : DELIVERY_CHARGES[deliveryOption] ?? 99
+  const shipping = calcShipping(deliveryOption, subtotal)
   const discount = coupon?.discount ?? 0
-  const tax = Math.round(subtotal * GST_RATE)
-  const total = Math.max(0, subtotal + shipping - discount + tax)
+  const total = calcOrderTotal(subtotal, shipping, discount)
 
   const { mutate: placeOrder, isPending } = useMutation({
     mutationFn: () =>
@@ -104,8 +103,8 @@ export default function PaymentMethod() {
   return (
     <div className="space-y-5">
       <div>
-        <h2 className="text-xl font-bold text-neutral-900 mb-1">Payment Method</h2>
-        <p className="text-sm text-neutral-500">Choose how you&apos;d like to pay</p>
+        <h2 className="text-xl font-bold text-gray-900 mb-1">Payment Method</h2>
+        <p className="text-sm text-gray-500">Choose how you&apos;d like to pay</p>
       </div>
 
       <div className="space-y-3">
@@ -116,18 +115,18 @@ export default function PaymentMethod() {
             className={`w-full flex items-center gap-4 p-5 rounded-2xl border-2 text-left transition-all ${
               paymentMethod === key
                 ? 'border-amber-400 bg-amber-50 shadow-md shadow-amber-100'
-                : 'border-neutral-200 hover:border-neutral-300 bg-white'
+                : 'border-gray-200 hover:border-gray-300 bg-white'
             }`}
           >
             <span className="text-3xl">{icon}</span>
             <div className="flex-1">
-              <p className={`font-semibold text-sm ${paymentMethod === key ? 'text-amber-800' : 'text-neutral-900'}`}>
+              <p className={`font-semibold text-sm ${paymentMethod === key ? 'text-amber-800' : 'text-gray-900'}`}>
                 {label}
               </p>
-              <p className="text-xs text-neutral-500 mt-0.5">{desc}</p>
+              <p className="text-xs text-gray-500 mt-0.5">{desc}</p>
             </div>
             <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-              paymentMethod === key ? 'border-amber-500 bg-amber-500' : 'border-neutral-300'
+              paymentMethod === key ? 'border-amber-500 bg-amber-500' : 'border-gray-300'
             }`}>
               {paymentMethod === key && <div className="w-2 h-2 rounded-full bg-white" />}
             </div>
@@ -136,11 +135,11 @@ export default function PaymentMethod() {
       </div>
 
       {paymentMethod === 'razorpay' && (
-        <div className="flex items-center gap-3 p-4 bg-neutral-50 rounded-2xl border border-neutral-100">
+        <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100">
           <span className="text-2xl">🔒</span>
           <div>
-            <p className="text-xs font-semibold text-neutral-700">100% Secure Payment</p>
-            <p className="text-xs text-neutral-400 mt-0.5">Powered by Razorpay · SSL encrypted</p>
+            <p className="text-xs font-semibold text-gray-700">100% Secure Payment</p>
+            <p className="text-xs text-gray-400 mt-0.5">Powered by Razorpay · SSL encrypted</p>
           </div>
         </div>
       )}
@@ -154,7 +153,7 @@ export default function PaymentMethod() {
       {/* Total & CTA */}
       <div className="bg-neutral-950 rounded-2xl p-5 space-y-4">
         <div className="flex justify-between text-white">
-          <span className="text-neutral-400 text-sm">Amount to pay</span>
+          <span className="text-gray-400 text-sm">Amount to pay</span>
           <span className="text-xl font-black text-amber-400">₹{total.toLocaleString()}</span>
         </div>
         <button
@@ -175,7 +174,7 @@ export default function PaymentMethod() {
 
       <button
         onClick={() => setStep('delivery')}
-        className="w-full py-3 text-sm text-neutral-500 hover:text-neutral-700 transition-colors"
+        className="w-full py-3 text-sm text-gray-500 hover:text-gray-700 transition-colors"
       >
         ← Back to Delivery
       </button>

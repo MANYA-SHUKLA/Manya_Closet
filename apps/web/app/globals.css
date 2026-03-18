@@ -2,4 +2,25 @@
 
 @theme inline {
   --font-sans: var(--font-geist);
+  --font-display: var(--font-cormorant);
 }
+
+/* Brand palette base */
+body {
+  background-color: #F9FAFB;
+  color: #111827;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d4a853; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #b8902d; }
+
+/* Selection color */
+::selection { background: rgba(245, 158, 11, 0.25); color: inherit; }

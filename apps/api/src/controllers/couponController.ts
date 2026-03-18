@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import { CouponModel } from '../models/Coupon'
 import { AppError } from '../middleware/error'
+import { calculateDiscount } from '../utils/calculateDiscount'
 
 export const validateCoupon = async (req: Request, res: Response) => {
   const { code, subtotal } = req.body
@@ -14,12 +15,7 @@ export const validateCoupon = async (req: Request, res: Response) => {
     throw new AppError(`Minimum order of ₹${coupon.minOrderAmount} required for this coupon`, 400)
   }
 
-  let discount =
-    coupon.type === 'percentage'
-      ? Math.round((subtotal * coupon.value) / 100)
-      : coupon.value
-
-  if (coupon.maxDiscount) discount = Math.min(discount, coupon.maxDiscount)
+  const discount = calculateDiscount(coupon, subtotal)
 
   res.json({
     success: true,

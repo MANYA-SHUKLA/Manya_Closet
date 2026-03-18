@@ -36,10 +36,10 @@ interface CheckoutState {
   reset: () => void
 }
 
-const blankAddress: ShippingAddress = {
+const blankAddress: ShippingAddress = Object.freeze({
   fullName: '', phone: '', addressLine1: '', addressLine2: '',
   city: '', state: '', pincode: '', country: 'India',
-}
+}) as ShippingAddress
 
 export const useCheckoutStore = create<CheckoutState>()((set) => ({
   step: 'address',

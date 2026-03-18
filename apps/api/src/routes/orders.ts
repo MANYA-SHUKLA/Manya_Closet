@@ -4,6 +4,7 @@ import {
   getMyOrders,
   getOrder,
   verifyPayment,
+  cancelOrder,
   getAllOrders,
   updateOrderStatus,
 } from '../controllers/orderController'
@@ -12,12 +13,15 @@ import { authenticate, authorize } from '../middleware/auth'
 const router = Router()
 
 router.use(authenticate)
+
+// User routes
 router.post('/', createOrder)
+router.post('/verify-payment', verifyPayment)
 router.get('/my', getMyOrders)
 router.get('/:id', getOrder)
-router.post('/verify-payment', verifyPayment)
+router.patch('/:id/cancel', cancelOrder)
 
-// Admin
+// Admin routes
 router.get('/', authorize('admin'), getAllOrders)
 router.put('/:id/status', authorize('admin'), updateOrderStatus)
 
