@@ -13,7 +13,7 @@ import { validate } from '../middleware/validate'
 import { authenticate } from '../middleware/auth'
 import { z } from 'zod'
 
-const router = Router()
+const router: Router = Router()
 
 const registerSchema = z.object({
   name: z.string().min(2),

@@ -2,7 +2,7 @@
 import Link from 'next/link'
 
 const HERO_IMAGE = 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=1400&q=90'
-const HERO_IMAGE_2 = 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800&q=90'
+const HERO_IMAGE_2 = 'https://dsprom.com/cdn/shop/products/4fb9443dbc956513b2c80207fd530ccb.jpg?v=1666750419'
 
 export default function HeroSection() {
   return (

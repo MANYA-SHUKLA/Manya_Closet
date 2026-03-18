@@ -21,7 +21,7 @@ export const getProducts = async (req: Request, res: Response) => {
   if (minRating) filters.ratings = { $gte: +minRating }
   if (search) filters.$text = { $search: search }
 
-  const sortMap: Record<string, Record<string, number>> = {
+  const sortMap: Record<string, Record<string, 1 | -1>> = {
     price_asc: { price: 1 },
     price_desc: { price: -1 },
     newest: { createdAt: -1 },
@@ -151,6 +151,49 @@ export const getLowStock = async (req: Request, res: Response) => {
   }))
 
   res.json({ success: true, data: alerts })
+}
+
+// ── Autocomplete ──────────────────────────────────────────────────────────────
+
+export const autocomplete = async (req: Request, res: Response) => {
+  const q = ((req.query.q as string) ?? '').trim()
+  if (q.length < 2) return res.json({ success: true, data: [] })
+
+  const products = await ProductModel.find(
+    { isActive: true, $text: { $search: q } },
+    { score: { $meta: 'textScore' } }
+  )
+    .sort({ score: { $meta: 'textScore' } })
+    .limit(8)
+    .select('name slug images price discountPrice')
+
+  res.json({
+    success: true,
+    data: products.map((p) => ({
+      name: p.name,
+      slug: p.slug,
+      image: p.images[0] ?? '',
+      price: p.discountPrice ?? p.price,
+    })),
+  })
+}
+
+// ── Related products ──────────────────────────────────────────────────────────
+
+export const getRelatedProducts = async (req: Request, res: Response) => {
+  const product = await ProductModel.findById(req.params.id).select('category price')
+  if (!product) throw new AppError('Product not found', 404)
+
+  const related = await ProductModel.find({
+    isActive: true,
+    _id: { $ne: product._id },
+    category: product.category,
+  })
+    .sort({ ratings: -1 })
+    .limit(6)
+    .select('name slug images price discountPrice ratings reviewCount')
+
+  res.json({ success: true, data: related })
 }
 
 // ── Filter facets ─────────────────────────────────────────────────────────────

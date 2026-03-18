@@ -32,7 +32,7 @@ if (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET && env.GOOGLE_CALLBACK_URL)
             await user.save()
           }
 
-          done(null, user)
+          done(null, user.toObject() as unknown as Express.User)
         } catch (err) {
           done(err as Error)
         }
@@ -41,10 +41,10 @@ if (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET && env.GOOGLE_CALLBACK_URL)
   )
 }
 
-passport.serializeUser((user: Express.User, done) => done(null, (user as { id: string }).id))
+passport.serializeUser((user, done) => done(null, (user as Express.User)._id))
 passport.deserializeUser(async (id: string, done) => {
   const user = await UserModel.findById(id)
-  done(null, user)
+  done(null, user ? (user.toObject() as unknown as Express.User) : null)
 })
 
 export default passport

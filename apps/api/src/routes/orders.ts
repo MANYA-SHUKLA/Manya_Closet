@@ -10,7 +10,7 @@ import {
 } from '../controllers/orderController'
 import { authenticate, authorize } from '../middleware/auth'
 
-const router = Router()
+const router: Router = Router()
 
 router.use(authenticate)
 

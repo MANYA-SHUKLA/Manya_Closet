@@ -1,19 +1,19 @@
 import { Request, Response } from 'express'
 import crypto from 'crypto'
-import jwt from 'jsonwebtoken'
+import jwt, { type SignOptions } from 'jsonwebtoken'
 import { UserModel } from '../models/User'
 import { AppError } from '../middleware/error'
 import { env } from '../config/env'
 import { sendPasswordResetEmail } from '../utils/email'
 
-const signTokens = (id: string) => ({
-  accessToken: jwt.sign({ id }, env.JWT_ACCESS_SECRET, {
-    expiresIn: env.JWT_ACCESS_EXPIRES_IN,
-  }),
-  refreshToken: jwt.sign({ id }, env.JWT_REFRESH_SECRET, {
-    expiresIn: env.JWT_REFRESH_EXPIRES_IN,
-  }),
-})
+const signTokens = (id: string) => {
+  const accOpts: SignOptions = { expiresIn: env.JWT_ACCESS_EXPIRES_IN as SignOptions['expiresIn'] }
+  const refOpts: SignOptions = { expiresIn: env.JWT_REFRESH_EXPIRES_IN as SignOptions['expiresIn'] }
+  return {
+    accessToken: jwt.sign({ id }, env.JWT_ACCESS_SECRET, accOpts),
+    refreshToken: jwt.sign({ id }, env.JWT_REFRESH_SECRET, refOpts),
+  }
+}
 
 const cookieOptions = {
   httpOnly: true,
@@ -36,7 +36,7 @@ export const register = async (req: Request, res: Response) => {
   const existing = await UserModel.findOne({ email })
   if (existing) throw new AppError('Email already in use', 400)
   const user = await UserModel.create({ name, email, password })
-  const plain = user.toObject() as Record<string, unknown>
+  const plain = user.toObject() as unknown as Record<string, unknown>
   delete plain.password
   return sendTokens(res, user.id, plain, 201)
 }
@@ -47,7 +47,7 @@ export const login = async (req: Request, res: Response) => {
   if (!user || !(await user.comparePassword(password))) {
     throw new AppError('Invalid credentials', 401)
   }
-  const plain = user.toObject() as Record<string, unknown>
+  const plain = user.toObject() as unknown as Record<string, unknown>
   delete plain.password
   return sendTokens(res, user.id, plain)
 }
@@ -117,7 +117,7 @@ export const resetPassword = async (req: Request, res: Response) => {
   user.passwordResetExpires = undefined
   await user.save()
 
-  const plain = user.toObject() as Record<string, unknown>
+  const plain = user.toObject() as unknown as Record<string, unknown>
   delete plain.password
   return sendTokens(res, user.id, plain)
 }

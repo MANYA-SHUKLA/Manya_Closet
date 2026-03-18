@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import api from '@/lib/axios'
-import { useCheckoutStore, PaymentMethod } from '@/store/checkoutStore'
+import { useCheckoutStore, type PaymentMethod } from '@/store/checkoutStore'
 import { useCartStore } from '@/store/cartStore'
 import { useAuthStore } from '@/store/authStore'
 import { calcShipping, calcOrderTotal } from '@/lib/deliveryConfig'
@@ -114,19 +114,19 @@ export default function PaymentMethod() {
             onClick={() => setPayment(key)}
             className={`w-full flex items-center gap-4 p-5 rounded-2xl border-2 text-left transition-all ${
               paymentMethod === key
-                ? 'border-amber-400 bg-amber-50 shadow-md shadow-amber-100'
+                ? 'border-indigo-400 bg-indigo-50 shadow-md shadow-indigo-100'
                 : 'border-gray-200 hover:border-gray-300 bg-white'
             }`}
           >
             <span className="text-3xl">{icon}</span>
             <div className="flex-1">
-              <p className={`font-semibold text-sm ${paymentMethod === key ? 'text-amber-800' : 'text-gray-900'}`}>
+              <p className={`font-semibold text-sm ${paymentMethod === key ? 'text-indigo-800' : 'text-gray-900'}`}>
                 {label}
               </p>
               <p className="text-xs text-gray-500 mt-0.5">{desc}</p>
             </div>
             <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-              paymentMethod === key ? 'border-amber-500 bg-amber-500' : 'border-gray-300'
+              paymentMethod === key ? 'border-indigo-500 bg-indigo-500' : 'border-gray-300'
             }`}>
               {paymentMethod === key && <div className="w-2 h-2 rounded-full bg-white" />}
             </div>
@@ -151,15 +151,15 @@ export default function PaymentMethod() {
       )}
 
       {/* Total & CTA */}
-      <div className="bg-neutral-950 rounded-2xl p-5 space-y-4">
-        <div className="flex justify-between text-white">
-          <span className="text-gray-400 text-sm">Amount to pay</span>
-          <span className="text-xl font-black text-amber-400">₹{total.toLocaleString()}</span>
+      <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-5 space-y-4">
+        <div className="flex justify-between items-center">
+          <span className="text-gray-500 text-sm">Amount to pay</span>
+          <span className="text-2xl font-black text-indigo-600">₹{total.toLocaleString()}</span>
         </div>
         <button
           onClick={() => placeOrder()}
           disabled={isPending}
-          className="w-full py-4 bg-amber-500 hover:bg-amber-400 text-black font-black rounded-xl transition-all hover:shadow-lg hover:shadow-amber-500/30 active:scale-95 disabled:opacity-60 text-sm"
+          className="w-full py-4 bg-indigo-500 hover:bg-indigo-600 text-white font-bold rounded-xl transition-all hover:shadow-lg hover:shadow-indigo-500/30 active:scale-95 disabled:opacity-60 text-sm"
         >
           {isPending ? (
             <span className="flex items-center justify-center gap-2">

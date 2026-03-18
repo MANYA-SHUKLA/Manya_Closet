@@ -4,14 +4,15 @@ import {
   createProduct, updateProduct, deleteProduct,
   getProductReviews, addReview,
   getInventory, updateInventory, getLowStock,
-  getProductFilters,
+  getProductFilters, autocomplete, getRelatedProducts,
 } from '../controllers/productController'
 import { authenticate, authorize } from '../middleware/auth'
 
-const router = Router()
+const router: Router = Router()
 
 // Static routes before /:slug to avoid slug matching
 router.get('/filters', getProductFilters)
+router.get('/search/autocomplete', autocomplete)
 router.get('/low-stock', authenticate, authorize('admin'), getLowStock)
 
 router.get('/', getProducts)
@@ -20,6 +21,7 @@ router.post('/', authenticate, authorize('admin'), createProduct)
 router.put('/:id', authenticate, authorize('admin'), updateProduct)
 router.delete('/:id', authenticate, authorize('admin'), deleteProduct)
 
+router.get('/:id/related', getRelatedProducts)
 router.get('/:id/reviews', getProductReviews)
 router.post('/:id/reviews', authenticate, addReview)
 

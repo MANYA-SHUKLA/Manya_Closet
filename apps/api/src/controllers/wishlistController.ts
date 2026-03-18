@@ -9,6 +9,28 @@ export const getWishlist = async (req: Request, res: Response) => {
   res.json({ success: true, data: wishlist?.products ?? [] })
 }
 
+/** Add guest wishlist items to DB without removing any (called after login) */
+export const syncWishlist = async (req: Request, res: Response) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const userId = (req.user as any)._id
+  const { productIds } = req.body as { productIds: string[] }
+
+  if (!productIds?.length) return res.json({ success: true })
+
+  let wishlist = await WishlistModel.findOne({ user: userId })
+  if (!wishlist) wishlist = await WishlistModel.create({ user: userId, products: [] })
+
+  for (const pid of productIds) {
+    if (!wishlist.products.some((p) => p.toString() === pid)) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      wishlist.products.push(pid as any)
+    }
+  }
+
+  await wishlist.save()
+  res.json({ success: true })
+}
+
 export const toggleWishlist = async (req: Request, res: Response) => {
   const { productId } = req.body
   let wishlist = await WishlistModel.findOne({ user: req.user!._id })

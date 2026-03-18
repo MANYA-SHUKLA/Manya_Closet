@@ -77,5 +77,6 @@ const OrderSchema = new Schema<IOrderDocument>(
 )
 
 OrderSchema.index({ user: 1, createdAt: -1 })
+OrderSchema.index({ razorpayOrderId: 1 })
 
 export const OrderModel = mongoose.model<IOrderDocument>('Order', OrderSchema)

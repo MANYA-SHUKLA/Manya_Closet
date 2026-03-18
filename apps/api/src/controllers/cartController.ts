@@ -56,7 +56,7 @@ export const updateCartItem = async (req: Request, res: Response) => {
   const cart = await CartModel.findOne({ user: req.user!._id })
   if (!cart) throw new AppError('Cart not found', 404)
 
-  const item = cart.items.id(req.params.itemId)
+  const item = cart.items.find((i) => i._id?.toString() === req.params.itemId)
   if (!item) throw new AppError('Item not found', 404)
 
   // Verify stock for new quantity
@@ -87,4 +87,49 @@ export const removeFromCart = async (req: Request, res: Response) => {
 export const clearCart = async (req: Request, res: Response) => {
   await CartModel.findOneAndUpdate({ user: req.user!._id }, { items: [], total: 0 })
   res.json({ success: true, message: 'Cart cleared' })
+}
+
+/** Merge guest cart items into the authenticated user's DB cart (called after login) */
+export const mergeCart = async (req: Request, res: Response) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const userId = (req.user as any)._id
+  const { items } = req.body as {
+    items: { productId: string; quantity: number; size: string; color: string }[]
+  }
+
+  if (!items?.length) {
+    const cart = await CartModel.findOne({ user: userId })
+    return res.json({ success: true, data: cart || { items: [], total: 0 } })
+  }
+
+  let cart = await CartModel.findOne({ user: userId })
+  if (!cart) cart = await CartModel.create({ user: userId, items: [], total: 0 })
+
+  for (const item of items) {
+    const product = await ProductModel.findById(item.productId)
+    if (!product || !product.isActive) continue
+
+    const variant = product.variants.find((v) => v.size === item.size && v.color === item.color)
+    if (!variant || variant.stock <= 0) continue
+
+    const existingIdx = cart.items.findIndex(
+      (i) => i.product.toString() === item.productId && i.size === item.size && i.color === item.color
+    )
+    if (existingIdx >= 0) continue // keep existing DB quantity, don't override
+
+    const qty = Math.min(item.quantity, variant.stock)
+    cart.items.push({
+      product: product._id,
+      name: product.name,
+      image: product.images[0],
+      price: product.discountPrice || product.price,
+      quantity: qty,
+      size: item.size,
+      color: item.color,
+    })
+  }
+
+  cart.total = calcTotal(cart.items)
+  await cart.save()
+  res.json({ success: true, data: cart })
 }

@@ -25,7 +25,7 @@ export default function OrderSummary() {
       {/* Items */}
       <div className="px-6 py-4 space-y-3 max-h-56 overflow-y-auto border-b border-gray-100">
         {items.map((item, i) => (
-          <div key={item.product + i} className="flex items-center gap-3">
+          <div key={typeof item.product === 'string' ? item.product : item.product._id + i} className="flex items-center gap-3">
             <div className="w-12 h-14 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
               <img
                 src={item.image || FALLBACK_IMAGES[0]}

@@ -87,7 +87,7 @@ export default function Navbar() {
           {/* Auth */}
           {user ? (
             <div className="flex items-center gap-1.5 ml-1">
-              {(user.role === 'admin' || user.role === 'superadmin') && (
+              {user.role === 'admin' && (
                 <Link
                   href="/admin"
                   className="hidden sm:block text-xs font-semibold text-indigo-700 border border-indigo-200 bg-indigo-50 px-3 py-1.5 rounded-full hover:bg-indigo-100 transition-colors"

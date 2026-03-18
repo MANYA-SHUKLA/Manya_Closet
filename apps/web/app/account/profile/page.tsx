@@ -44,8 +44,9 @@ export default function ProfilePage() {
           setPwMsg('Password changed successfully!')
           setPwForm({ current: '', next: '', confirm: '' })
         },
-        onError: (e: { response?: { data?: { message?: string } } }) => {
-          setPwError(e.response?.data?.message ?? 'Failed to change password')
+        onError: (e: unknown) => {
+          const err = e as { response?: { data?: { message?: string } } }
+          setPwError(err.response?.data?.message ?? 'Failed to change password')
         },
       },
     )

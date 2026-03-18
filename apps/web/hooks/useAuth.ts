@@ -4,6 +4,38 @@ import { useRouter } from 'next/navigation'
 import { authApi } from '@/lib/auth'
 import api from '@/lib/axios'
 import { useAuthStore } from '@/store/authStore'
+import { useCartStore } from '@/store/cartStore'
+import { useWishlistStore } from '@/store/wishlistStore'
+
+async function mergeGuestData(qc: ReturnType<typeof useQueryClient>) {
+  const localItems = useCartStore.getState().items
+  if (localItems.length > 0) {
+    try {
+      const cartItems = localItems.map((item) => ({
+        productId: typeof item.product === 'string' ? item.product : item.product._id,
+        quantity: item.quantity,
+        size: item.size,
+        color: item.color,
+      }))
+      await api.post('/cart/merge', { items: cartItems })
+    } catch {
+      // ignore merge errors — DB cart already has items
+    }
+    useCartStore.getState().clear()
+    qc.invalidateQueries({ queryKey: ['cart'] })
+  }
+
+  const localWishlistIds = useWishlistStore.getState().ids
+  if (localWishlistIds.length > 0) {
+    try {
+      await api.post('/wishlist/sync', { productIds: localWishlistIds })
+    } catch {
+      // ignore sync errors
+    }
+    useWishlistStore.getState().clear()
+    qc.invalidateQueries({ queryKey: ['wishlist'] })
+  }
+}
 
 export const useMe = () => {
   const setUser = useAuthStore((s) => s.setUser)
@@ -26,10 +58,12 @@ export const useLogin = () => {
 
   return useMutation({
     mutationFn: authApi.login,
-    onSuccess: ({ data }) => {
+    onSuccess: async ({ data }) => {
       setUser(data.data.user)
       qc.setQueryData(['me'], data.data.user)
-      router.push('/')
+      await mergeGuestData(qc)
+      const redirect = new URLSearchParams(window.location.search).get('redirect') ?? '/'
+      router.push(redirect)
     },
   })
 }
@@ -37,11 +71,13 @@ export const useLogin = () => {
 export const useRegister = () => {
   const setUser = useAuthStore((s) => s.setUser)
   const router = useRouter()
+  const qc = useQueryClient()
 
   return useMutation({
     mutationFn: authApi.register,
-    onSuccess: ({ data }) => {
+    onSuccess: async ({ data }) => {
       setUser(data.data.user)
+      await mergeGuestData(qc)
       router.push('/')
     },
   })

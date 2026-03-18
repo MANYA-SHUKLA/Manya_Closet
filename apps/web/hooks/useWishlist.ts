@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import api from '@/lib/axios'
 import { IProduct } from '@manya-closet/types'
 import { useAuthStore } from '@/store/authStore'
+import { useWishlistStore } from '@/store/wishlistStore'
 
 export const useWishlist = () => {
   const user = useAuthStore((s) => s.user)
@@ -19,7 +20,17 @@ export const useWishlist = () => {
 export const useToggleWishlist = () => {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: (productId: string) => api.post('/wishlist/toggle', { productId }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['wishlist'] }),
+    mutationFn: async (productId: string) => {
+      const user = useAuthStore.getState().user
+      if (!user) {
+        useWishlistStore.getState().toggle(productId)
+        return null
+      }
+      const { data } = await api.post('/wishlist/toggle', { productId })
+      return data
+    },
+    onSuccess: (data) => {
+      if (data) qc.invalidateQueries({ queryKey: ['wishlist'] })
+    },
   })
 }

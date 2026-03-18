@@ -21,8 +21,9 @@ export interface IUserDocument extends Document {
   email: string
   password?: string
   avatar?: string
-  role: 'user' | 'admin' | 'superadmin'
+  role: 'user' | 'admin'
   isVerified: boolean
+  isBlocked: boolean
   googleId?: string
   refreshToken?: string
   passwordResetToken?: string
@@ -51,8 +52,9 @@ const UserSchema = new Schema<IUserDocument>(
     email:     { type: String, required: true, unique: true, lowercase: true },
     password:  { type: String, select: false },
     avatar:    String,
-    role:      { type: String, enum: ['user', 'admin', 'superadmin'], default: 'user' },
+    role:      { type: String, enum: ['user', 'admin'], default: 'user' },
     isVerified: { type: Boolean, default: false },
+    isBlocked:  { type: Boolean, default: false },
     googleId:  String,
     refreshToken:         { type: String, select: false },
     passwordResetToken:   { type: String, select: false },

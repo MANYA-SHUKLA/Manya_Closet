@@ -1,10 +1,11 @@
 import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
 import ImageCarousel from '@/components/product/ImageCarousel'
-import VariantSelector from '@/components/product/VariantSelector'
-import AddToCartButton from '@/components/product/AddToCartButton'
 import ReviewSection from '@/components/product/ReviewSection'
 import ProductDetailClient from '@/components/product/ProductDetailClient'
+import TrackRecentlyViewed from '@/components/product/TrackRecentlyViewed'
+import { FALLBACK_IMAGES } from '@/lib/imageUtils'
 
 async function fetchProduct(slug: string) {
   try {
@@ -20,8 +21,9 @@ async function fetchProduct(slug: string) {
   }
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const product = await fetchProduct(params.slug)
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const product = await fetchProduct(slug)
   if (!product) return { title: "Product Not Found — Manya's Closet" }
   return {
     title: `${product.name} — Manya's Closet`,
@@ -30,9 +32,26 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 }
 
-export default async function ProductPage({ params }: { params: { slug: string } }) {
-  const product = await fetchProduct(params.slug)
+async function fetchRelated(productId: string) {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/products/${productId}/related`,
+      { next: { revalidate: 120 } }
+    )
+    if (!res.ok) return []
+    const json = await res.json()
+    return json.data ?? []
+  } catch {
+    return []
+  }
+}
+
+export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const product = await fetchProduct(slug)
   if (!product) notFound()
+
+  const [related] = await Promise.all([fetchRelated(product._id)])
 
   const discountPct = product.discountPrice
     ? Math.round(((product.price - product.discountPrice) / product.price) * 100)
@@ -40,6 +59,11 @@ export default async function ProductPage({ params }: { params: { slug: string }
 
   return (
     <div className="min-h-screen bg-white">
+      <TrackRecentlyViewed product={{
+        _id: product._id, name: product.name, slug: product.slug,
+        image: product.images[0] ?? '', price: product.price,
+        discountPrice: product.discountPrice, ratings: product.ratings,
+      }} />
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-xs text-neutral-400 mb-8">
@@ -159,6 +183,28 @@ export default async function ProductPage({ params }: { params: { slug: string }
             />
           </Suspense>
         </div>
+
+        {/* Related Products */}
+        {related.length > 0 && (
+          <div className="mt-16">
+            <h2 className="text-2xl font-bold text-neutral-900 mb-6">You may also like</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+              {related.map((p: { _id: string; name: string; slug: string; images: string[]; price: number; discountPrice?: number; ratings: number }) => (
+                <Link key={p._id} href={`/product/${p.slug}`} className="group">
+                  <div className="aspect-[3/4] rounded-2xl overflow-hidden bg-neutral-100 mb-2">
+                    <img
+                      src={p.images[0] || FALLBACK_IMAGES[0]}
+                      alt={p.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  <p className="text-sm font-medium text-neutral-900 line-clamp-1">{p.name}</p>
+                  <p className="text-sm text-neutral-600">₹{(p.discountPrice ?? p.price).toLocaleString()}</p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

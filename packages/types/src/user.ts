@@ -1,4 +1,4 @@
-export type UserRole = 'user' | 'admin' | 'superadmin'
+export type UserRole = 'user' | 'admin'
 
 export interface ISavedAddress {
   _id: string
@@ -21,6 +21,7 @@ export interface IUser {
   avatar?: string
   role: UserRole
   isVerified: boolean
+  isBlocked: boolean
   googleId?: string
   savedAddresses?: ISavedAddress[]
   createdAt: string

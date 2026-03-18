@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import { useAuthStore } from '@/store/authStore'
 
 const GST_RATE = 0.18
 const FREE_SHIPPING_ABOVE = 999
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export default function CartSummary({ subtotal, itemCount }: Props) {
+  const user = useAuthStore((s) => s.user)
   const shipping = subtotal > FREE_SHIPPING_ABOVE ? 0 : SHIPPING_CHARGE
   const tax = Math.round(subtotal * GST_RATE)
   const total = subtotal + shipping + tax
@@ -72,10 +74,10 @@ export default function CartSummary({ subtotal, itemCount }: Props) {
 
       {/* CTA */}
       <Link
-        href="/checkout"
+        href={user ? '/checkout' : '/login?redirect=/checkout'}
         className="block w-full py-4 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-2xl text-center transition-all hover:shadow-lg hover:shadow-amber-500/30 active:scale-95"
       >
-        Proceed to Checkout →
+        {user ? 'Proceed to Checkout →' : 'Sign in to Checkout →'}
       </Link>
 
       <div className="flex items-center justify-center gap-4 text-xs text-neutral-600">

@@ -6,7 +6,7 @@ import {
 } from '../controllers/userController'
 import { authenticate, authorize } from '../middleware/auth'
 
-const router = Router()
+const router: Router = Router()
 
 router.use(authenticate)
 router.get('/me', getMe)

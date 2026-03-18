@@ -5,11 +5,9 @@ import { AppError } from './error'
 import { UserModel } from '../models/User'
 import { UserRole } from '@manya-closet/types'
 
-// Role hierarchy: superadmin > admin > user > guest
 const ROLE_HIERARCHY: Record<UserRole, number> = {
   user: 1,
   admin: 2,
-  superadmin: 3,
 }
 
 export const authenticate = async (
@@ -27,17 +25,14 @@ export const authenticate = async (
     const decoded = jwt.verify(token, env.JWT_ACCESS_SECRET) as { id: string }
     const user = await UserModel.findById(decoded.id).select('-password')
     if (!user) throw new AppError('User not found', 401)
-    req.user = user.toObject()
+    if (user.isBlocked) throw new AppError('Account has been suspended', 403)
+    req.user = user.toObject() as unknown as Express.User
     next()
   } catch {
     throw new AppError('Invalid or expired token', 401)
   }
 }
 
-/**
- * Require a minimum role level.
- * authorize('admin') also passes for superadmin (hierarchy-aware).
- */
 export const authorize = (...roles: UserRole[]) =>
   (req: Request, _res: Response, next: NextFunction) => {
     if (!req.user) throw new AppError('Unauthorized', 401)
@@ -51,6 +46,4 @@ export const authorize = (...roles: UserRole[]) =>
     next()
   }
 
-/** Convenience helpers */
 export const isAdmin = authorize('admin')
-export const isSuperAdmin = authorize('superadmin')

@@ -1,9 +1,17 @@
-import { IUser } from '@manya-closet/types'
-
 declare global {
   namespace Express {
-    interface Request {
-      user?: IUser
+    interface User {
+      _id: string
+      name: string
+      email: string
+      avatar?: string
+      role: 'user' | 'admin'
+      isVerified: boolean
+      isBlocked: boolean
+      googleId?: string
+      savedAddresses?: unknown[]
+      createdAt: string
+      updatedAt: string
     }
   }
 }

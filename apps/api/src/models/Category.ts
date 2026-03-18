@@ -23,7 +23,6 @@ const CategorySchema = new Schema<ICategoryDocument>(
   { timestamps: true }
 )
 
-CategorySchema.index({ slug: 1 })
 CategorySchema.index({ parent: 1, sortOrder: 1 })
 
 export const CategoryModel = mongoose.model<ICategoryDocument>('Category', CategorySchema)

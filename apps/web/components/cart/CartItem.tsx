@@ -20,7 +20,7 @@ export default function CartItem({ item }: { item: Item }) {
   const { mutate: remove, isPending: removing } = useRemoveCartItem()
 
   const productSlug =
-    typeof item.product === 'object' ? (item.product as { _id: string }).name : ''
+    typeof item.product === 'object' ? (item.product as { _id: string; name: string }).name : ''
 
   return (
     <div className={`flex gap-5 py-6 border-b border-neutral-100 last:border-0 transition-opacity ${removing ? 'opacity-40' : ''}`}>

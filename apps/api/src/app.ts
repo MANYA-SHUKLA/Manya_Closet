@@ -7,20 +7,28 @@ import cookieParser from 'cookie-parser'
 import rateLimit from 'express-rate-limit'
 import { env } from './config/env'
 import routes from './routes'
+import webhookRoutes from './routes/webhook'
 import { errorHandler } from './middleware/error'
 import './config/passport'
 import passport from 'passport'
 
-const app = express()
+const app: express.Application = express()
 
 // Security
 app.use(helmet())
 app.use(cors({ origin: env.CLIENT_URL, credentials: true }))
 
-// Rate limiting
+// Webhook routes — MUST be before express.json() so body arrives as raw Buffer
+app.use('/api/webhooks', webhookRoutes)
+
+// Rate limiting — strict on auth, relaxed on general API
 app.use(
   '/api/auth',
-  rateLimit({ windowMs: 15 * 60 * 1000, max: 20, message: 'Too many requests' })
+  rateLimit({ windowMs: 15 * 60 * 1000, max: 20, standardHeaders: true, legacyHeaders: false, message: { success: false, message: 'Too many requests, please try again later' } })
+)
+app.use(
+  '/api',
+  rateLimit({ windowMs: 1 * 60 * 1000, max: 200, standardHeaders: true, legacyHeaders: false, message: { success: false, message: 'Too many requests' } })
 )
 
 // Parsing

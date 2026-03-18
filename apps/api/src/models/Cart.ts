@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from 'mongoose'
 export interface ICartDocument extends Document {
   user: mongoose.Types.ObjectId
   items: {
+    _id?: mongoose.Types.ObjectId
     product: mongoose.Types.ObjectId
     name: string
     image: string

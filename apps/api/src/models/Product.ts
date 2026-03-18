@@ -9,7 +9,7 @@ export interface IProductDocument extends Document {
   images: string[]
   category: string
   brand: string
-  variants: { size: string; color: string; stock: number; sku: string }[]
+  variants: { _id?: mongoose.Types.ObjectId; size: string; color: string; stock: number; sku: string }[]
   ratings: number
   reviewCount: number
   isFeatured: boolean

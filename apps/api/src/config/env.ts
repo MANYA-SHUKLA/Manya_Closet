@@ -12,11 +12,13 @@ const envSchema = z.object({
   GOOGLE_CALLBACK_URL: z.string().optional(),
   RAZORPAY_KEY_ID: z.string().optional(),
   RAZORPAY_KEY_SECRET: z.string().optional(),
+  RAZORPAY_WEBHOOK_SECRET: z.string().optional(),
   SMTP_HOST: z.string().optional(),
   SMTP_PORT: z.string().optional(),
   SMTP_USER: z.string().optional(),
   SMTP_PASS: z.string().optional(),
   CLIENT_URL: z.string().default('http://localhost:3000'),
+  ADMIN_EMAIL: z.string().optional(),
 })
 
 export const env = envSchema.parse(process.env)

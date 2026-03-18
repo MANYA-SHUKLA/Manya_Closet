@@ -5,7 +5,7 @@ import {
 } from '../controllers/categoryController'
 import { authenticate, authorize } from '../middleware/auth'
 
-const router = Router()
+const router: Router = Router()
 
 router.get('/', getCategories)
 router.get('/:slug', getCategory)

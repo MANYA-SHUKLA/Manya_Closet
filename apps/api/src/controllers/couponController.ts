@@ -49,3 +49,18 @@ export const toggleCoupon = async (req: Request, res: Response) => {
   await coupon.save()
   res.json({ success: true, data: coupon })
 }
+
+export const updateCoupon = async (req: Request, res: Response) => {
+  const coupon = await CouponModel.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  })
+  if (!coupon) throw new AppError('Coupon not found', 404)
+  res.json({ success: true, data: coupon })
+}
+
+export const deleteCoupon = async (req: Request, res: Response) => {
+  const coupon = await CouponModel.findByIdAndDelete(req.params.id)
+  if (!coupon) throw new AppError('Coupon not found', 404)
+  res.json({ success: true, message: 'Coupon deleted' })
+}

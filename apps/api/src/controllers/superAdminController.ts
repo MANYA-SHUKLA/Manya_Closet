@@ -26,12 +26,11 @@ export const getDashboardStats = async (_req: Request, res: Response) => {
 
 export const updateUserRole = async (req: Request, res: Response) => {
   const { role } = req.body as { role: UserRole }
-  const validRoles: UserRole[] = ['user', 'admin', 'superadmin']
+  const validRoles: UserRole[] = ['user', 'admin']
   if (!validRoles.includes(role)) throw new AppError('Invalid role', 400)
 
-  // Protect: superadmin cannot demote themselves
-  if (req.params.id === req.user!._id.toString() && role !== 'superadmin') {
-    throw new AppError('Cannot change your own superadmin role', 400)
+  if (req.params.id === (req.user!._id as string).toString()) {
+    throw new AppError('Cannot change your own role', 400)
   }
 
   const user = await UserModel.findByIdAndUpdate(
@@ -44,7 +43,7 @@ export const updateUserRole = async (req: Request, res: Response) => {
 }
 
 export const deleteUser = async (req: Request, res: Response) => {
-  if (req.params.id === req.user!._id.toString()) {
+  if (req.params.id === (req.user!._id as string).toString()) {
     throw new AppError('Cannot delete yourself', 400)
   }
   await UserModel.findByIdAndDelete(req.params.id)

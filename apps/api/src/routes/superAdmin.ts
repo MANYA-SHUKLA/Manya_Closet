@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { authenticate, isSuperAdmin } from '../middleware/auth'
+import { authenticate, isAdmin } from '../middleware/auth'
 import {
   getDashboardStats,
   updateUserRole,
@@ -7,9 +7,9 @@ import {
   getSystemLogs,
 } from '../controllers/superAdminController'
 
-const router = Router()
+const router: Router = Router()
 
-router.use(authenticate, isSuperAdmin)
+router.use(authenticate, isAdmin)
 
 router.get('/stats', getDashboardStats)
 router.put('/users/:id/role', updateUserRole)

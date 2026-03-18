@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { useCart, useClearCart } from '@/hooks/useCart'
 import { useAuthStore } from '@/store/authStore'
+import { useCartStore } from '@/store/cartStore'
 import CartItem from '@/components/cart/CartItem'
 import CartSummary from '@/components/cart/CartSummary'
 import EmptyCart from '@/components/cart/EmptyCart'
@@ -25,28 +26,14 @@ function CartSkeleton() {
 
 export default function CartPage() {
   const user = useAuthStore((s) => s.user)
-  const { data: cart, isLoading } = useCart()
+  const { data: dbCart, isLoading } = useCart()
   const { mutate: clearCart, isPending: clearing } = useClearCart()
+  const localItems = useCartStore((s) => s.items)
+  const localTotal = useCartStore((s) => s.total)
 
-  if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <div className="text-5xl">🔒</div>
-          <h2 className="text-xl font-bold text-gray-900">Sign in to view your cart</h2>
-          <Link
-            href="/login?redirect=/cart"
-            className="inline-block px-8 py-3 bg-indigo-500 text-white rounded-2xl font-semibold hover:bg-indigo-600 transition-colors"
-          >
-            Sign In
-          </Link>
-        </div>
-      </div>
-    )
-  }
-
-  const items = cart?.items ?? []
-  const subtotal = cart?.total ?? 0
+  const items = user ? (dbCart?.items ?? []) : localItems
+  const subtotal = user ? (dbCart?.total ?? 0) : localTotal
+  const loading = user ? isLoading : false
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
@@ -74,7 +61,7 @@ export default function CartPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
-        {isLoading ? (
+        {loading ? (
           <div className="grid lg:grid-cols-[1fr_380px] gap-10">
             <CartSkeleton />
             <div className="h-80 bg-gray-100 rounded-3xl animate-pulse" />

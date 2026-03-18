@@ -1,9 +1,7 @@
 'use client'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useRouter } from 'next/navigation'
-import api from '@/lib/axios'
 import { useAuthStore } from '@/store/authStore'
-import { useCartStore } from '@/store/cartStore'
+import { useWishlistStore } from '@/store/wishlistStore'
+import { useAddToCart } from '@/hooks/useCart'
 import { useToggleWishlist, useWishlist } from '@/hooks/useWishlist'
 import { IProduct } from '@manya-closet/types'
 
@@ -16,35 +14,23 @@ interface Props {
 
 export default function AddToCartButton({ product, selectedSize, selectedColor, stock }: Props) {
   const user = useAuthStore((s) => s.user)
-  const router = useRouter()
-  const qc = useQueryClient()
+  const guestIsWishlisted = useWishlistStore((s) => s.has(product._id))
   const { data: wishlist } = useWishlist()
   const { mutate: toggleWishlist } = useToggleWishlist()
+  const { mutate: addToCart, isPending } = useAddToCart()
 
-  const isWishlisted = wishlist?.some((p) => p._id === product._id)
-
-  const { mutate: addToCart, isPending } = useMutation({
-    mutationFn: () =>
-      api.post('/cart', {
-        productId: product._id,
-        quantity: 1,
-        size: selectedSize,
-        color: selectedColor,
-      }),
-    onSuccess: ({ data }) => {
-      qc.invalidateQueries({ queryKey: ['cart'] })
-      useCartStore.getState().setCart(data.data.items, data.data.total)
-    },
-  })
+  const isWishlisted = user ? (wishlist?.some((p) => p._id === product._id) ?? false) : guestIsWishlisted
 
   const handleAddToCart = () => {
-    if (!user) return router.push(`/login?redirect=/product/${product.slug}`)
-    addToCart()
-  }
-
-  const handleWishlist = () => {
-    if (!user) return router.push('/login')
-    toggleWishlist(product._id)
+    addToCart({
+      productId: product._id,
+      name: product.name,
+      image: product.images[0] ?? '',
+      price: product.discountPrice ?? product.price,
+      quantity: 1,
+      size: selectedSize,
+      color: selectedColor,
+    })
   }
 
   const outOfStock = stock === 0
@@ -69,7 +55,7 @@ export default function AddToCartButton({ product, selectedSize, selectedColor, 
       </button>
 
       <button
-        onClick={handleWishlist}
+        onClick={() => toggleWishlist(product._id)}
         className={`w-14 h-14 rounded-2xl border flex items-center justify-center transition-all ${
           isWishlisted
             ? 'bg-rose-50 border-rose-200 text-rose-500'

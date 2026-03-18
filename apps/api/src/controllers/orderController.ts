@@ -4,9 +4,12 @@ import { OrderModel } from '../models/Order'
 import { CartModel } from '../models/Cart'
 import { CouponModel } from '../models/Coupon'
 import { ProductModel } from '../models/Product'
+import { UserModel } from '../models/User'
 import { AppError } from '../middleware/error'
 import { env } from '../config/env'
 import { calculateDiscount } from '../utils/calculateDiscount'
+import { sendOrderConfirmation, sendOrderStatusUpdate } from '../utils/email'
+import { getIO } from '../sockets'
 
 const DELIVERY_OPTIONS: Record<string, { label: string; charge: number; days: string }> = {
   standard: { label: 'Standard Delivery', charge: 99, days: '5-7 business days' },
@@ -15,7 +18,8 @@ const DELIVERY_OPTIONS: Record<string, { label: string; charge: number; days: st
 }
 const FREE_SHIPPING_ABOVE = 999
 
-let razorpay: InstanceType<typeof import('razorpay')['default']> | null = null
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let razorpay: any = null
 const getRazorpay = async () => {
   if (!razorpay && env.RAZORPAY_KEY_ID && env.RAZORPAY_KEY_SECRET) {
     const Razorpay = (await import('razorpay')).default
@@ -123,6 +127,20 @@ export const createOrder = async (req: Request, res: Response) => {
     CartModel.findOneAndUpdate({ user: req.user!._id }, { items: [], total: 0 }),
   ])
 
+  // Fire confirmation email for COD (online payment confirmed after verifyPayment)
+  if (paymentMethod === 'cod') {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const u = req.user as any
+    sendOrderConfirmation(order.toObject() as any, u.name, u.email).catch(() => null)
+  }
+
+  // Real-time: notify admin room of new order
+  getIO()?.to('admin').emit('admin:new-order', {
+    orderId: order._id,
+    total: order.total,
+    status: order.status,
+  })
+
   res.status(201).json({
     success: true,
     data: {
@@ -152,6 +170,13 @@ export const verifyPayment = async (req: Request, res: Response) => {
     { paymentStatus: 'paid', status: 'confirmed', paymentId: razorpay_payment_id },
     { new: true }
   )
+
+  if (order) {
+    const user = await UserModel.findById(order.user).select('name email')
+    if (user) {
+      sendOrderConfirmation(order.toObject() as any, user.name as string, user.email as string).catch(() => null)
+    }
+  }
 
   res.json({ success: true, data: order })
 }
@@ -192,8 +217,11 @@ export const cancelOrder = async (req: Request, res: Response) => {
   order.status = 'cancelled'
   await order.save()
 
-  // Restore stock for cancelled order
   await restoreStock(order.items)
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const u = req.user as any
+  sendOrderStatusUpdate(String(order._id), 'cancelled', u.name, u.email).catch(() => null)
 
   res.json({ success: true, data: order })
 }
@@ -233,6 +261,21 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
   // Restore stock if admin cancels or refunds
   if (status === 'cancelled' || status === 'refunded') {
     await restoreStock(order.items)
+  }
+
+  // Email user on notable status changes
+  if (status && ['shipped', 'delivered', 'cancelled', 'refunded'].includes(status)) {
+    const user = await UserModel.findById(order.user).select('name email')
+    if (user) {
+      sendOrderStatusUpdate(String(order._id), status, user.name as string, user.email as string).catch(() => null)
+    }
+  }
+
+  // Real-time: push status update to user's room + admin room
+  const io = getIO()
+  if (io) {
+    io.to(`user:${order.user}`).emit('order:update', { orderId: order._id, status: order.status, paymentStatus: order.paymentStatus })
+    io.to('admin').emit('admin:order-update', { orderId: order._id, status: order.status })
   }
 
   res.json({ success: true, data: order })
