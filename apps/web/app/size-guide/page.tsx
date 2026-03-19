@@ -139,7 +139,6 @@ export default function SizeGuidePage() {
           </div>
         </div>
 
-        {/* Footwear */}
         <div className="bg-white rounded-3xl border border-gray-100 p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2"
             style={{ fontFamily: 'var(--font-cormorant), Georgia, serif' }}>
@@ -170,7 +169,6 @@ export default function SizeGuidePage() {
           </div>
         </div>
 
-        {/* Still unsure */}
         <div className="bg-indigo-50 border border-indigo-100 rounded-3xl p-8 text-center">
           <p className="text-indigo-700 font-semibold mb-2">Still unsure about your size?</p>
           <p className="text-gray-500 text-sm mb-5">Our team is happy to help you find the perfect fit.</p>

@@ -1,7 +1,6 @@
 export default function TermsPage() {
   return (
     <div className="bg-[#F9FAFB] min-h-screen">
-      {/* Header */}
       <div className="bg-[#0f0e1e] py-16 px-6">
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-indigo-400 text-xs font-semibold uppercase tracking-[0.2em] mb-3">Legal</p>
