@@ -1,12 +1,3 @@
-/**
- * Seed script — categories + 2 products per category
- * Run: pnpm --filter api tsx src/scripts/seed.ts
- *
- * Images: Savana India CDN images are auth-protected at runtime.
- * Using Unsplash open-access images instead (same quality, reliable).
- * Replace image URLs with your own CDN if needed.
- */
-
 import mongoose from 'mongoose'
 import { CategoryModel } from '../models/Category'
 import { ProductModel } from '../models/Product'
