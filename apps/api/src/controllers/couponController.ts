@@ -31,6 +31,18 @@ export const validateCoupon = async (req: Request, res: Response) => {
   })
 }
 
+// Public — active, non-expired coupons for display on cart page
+export const getAvailableCoupons = async (_req: Request, res: Response) => {
+  const coupons = await CouponModel.find({
+    isActive: true,
+    expiresAt: { $gt: new Date() },
+    $expr: { $lt: ['$usedCount', '$maxUses'] },
+  })
+    .select('code type value minOrderAmount maxDiscount expiresAt')
+    .sort({ value: -1 })
+  res.json({ success: true, data: coupons })
+}
+
 // Admin
 export const createCoupon = async (req: Request, res: Response) => {
   const coupon = await CouponModel.create(req.body)

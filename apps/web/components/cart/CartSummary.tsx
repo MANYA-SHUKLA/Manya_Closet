@@ -1,6 +1,8 @@
 'use client'
 import Link from 'next/link'
 import { useAuthStore } from '@/store/authStore'
+import { useCheckoutStore } from '@/store/checkoutStore'
+import CouponInput from '@/components/checkout/CouponInput'
 
 const GST_RATE = 0.18
 const FREE_SHIPPING_ABOVE = 999
@@ -13,9 +15,11 @@ interface Props {
 
 export default function CartSummary({ subtotal, itemCount }: Props) {
   const user = useAuthStore((s) => s.user)
+  const coupon = useCheckoutStore((s) => s.coupon)
   const shipping = subtotal > FREE_SHIPPING_ABOVE ? 0 : SHIPPING_CHARGE
+  const couponDiscount = coupon?.discount ?? 0
   const tax = Math.round(subtotal * GST_RATE)
-  const total = subtotal + shipping + tax
+  const total = subtotal + shipping + tax - couponDiscount
   const savingsForFreeShipping = FREE_SHIPPING_ABOVE - subtotal
 
   return (
@@ -43,6 +47,9 @@ export default function CartSummary({ subtotal, itemCount }: Props) {
         </div>
       )}
 
+      {/* Coupon input */}
+      <CouponInput subtotal={subtotal} />
+
       {/* Line items */}
       <div className="space-y-3 text-sm">
         <div className="flex justify-between text-neutral-300">
@@ -63,6 +70,13 @@ export default function CartSummary({ subtotal, itemCount }: Props) {
           <span>GST (18%)</span>
           <span className="font-medium text-white">₹{tax.toLocaleString()}</span>
         </div>
+
+        {couponDiscount > 0 && (
+          <div className="flex justify-between text-emerald-400">
+            <span>Coupon ({coupon!.code})</span>
+            <span className="font-medium">−₹{couponDiscount.toLocaleString()}</span>
+          </div>
+        )}
 
         <div className="h-px bg-white/10" />
 

@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import {
   validateCoupon,
+  getAvailableCoupons,
   createCoupon,
   getAllCoupons,
   toggleCoupon,
@@ -11,6 +12,7 @@ import { authenticate, isAdmin } from '../middleware/auth'
 
 const router: Router = Router()
 
+router.get('/available', authenticate, getAvailableCoupons)
 router.post('/validate', authenticate, validateCoupon)
 router.post('/', authenticate, isAdmin, createCoupon)
 router.get('/', authenticate, isAdmin, getAllCoupons)

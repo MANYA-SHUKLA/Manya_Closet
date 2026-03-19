@@ -5,10 +5,15 @@ import api from '@/lib/axios'
 import { useCheckoutStore } from '@/store/checkoutStore'
 import { useCartStore } from '@/store/cartStore'
 
-export default function CouponInput() {
+interface Props {
+  subtotal?: number
+}
+
+export default function CouponInput({ subtotal: subtotalProp }: Props) {
   const [code, setCode] = useState('')
   const { coupon, setCoupon } = useCheckoutStore()
-  const subtotal = useCartStore((s) => s.total)
+  const cartTotal = useCartStore((s) => s.total)
+  const subtotal = subtotalProp ?? cartTotal
 
   const { mutate, isPending, error, reset } = useMutation({
     mutationFn: async (c: string) => {
