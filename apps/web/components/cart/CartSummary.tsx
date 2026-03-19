@@ -46,10 +46,8 @@ export default function CartSummary({ subtotal, itemCount }: Props) {
         </div>
       )}
 
-      {/* Coupon input */}
       <CouponInput subtotal={subtotal} />
 
-      {/* Line items */}
       <div className="space-y-3 text-sm">
         <div className="flex justify-between text-neutral-300">
           <span>Subtotal ({itemCount} {itemCount === 1 ? 'item' : 'items'})</span>
@@ -85,7 +83,6 @@ export default function CartSummary({ subtotal, itemCount }: Props) {
         </div>
       </div>
 
-      {/* CTA */}
       <Link
         href={user ? '/checkout' : '/login?redirect=/checkout'}
         className="block w-full py-4 bg-amber-500 hover:bg-amber-400 text-black font-bold rounded-2xl text-center transition-all hover:shadow-lg hover:shadow-amber-500/30 active:scale-95"
