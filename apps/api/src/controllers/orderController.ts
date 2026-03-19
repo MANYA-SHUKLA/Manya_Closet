@@ -269,8 +269,8 @@ export const requestReturn = async (req: Request, res: Response) => {
   order.status = 'return_requested'
   await order.save()
 
-  const u = req.user as any
-  sendReturnRequestAdminNotification(String(order._id), u.name, u.email, reason.trim(), order.total).catch(() => null)
+  const u2 = req.user as any
+  sendReturnRequestAdminNotification(String(order._id), u2.name, u2.email, reason.trim(), order.total).catch(() => null)
 
   getIO()?.to('admin').emit('admin:return-request', {
     orderId: order._id,
