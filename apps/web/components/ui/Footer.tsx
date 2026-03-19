@@ -103,10 +103,8 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Main footer grid */}
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16 grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
 
-        {/* Brand column */}
         <div>
           <Link href="/" className="inline-block mb-5">
             <span className="text-2xl font-bold tracking-tight text-white" style={{ fontFamily: 'var(--font-cormorant), Georgia, serif' }}>
@@ -116,7 +114,6 @@ export default function Footer() {
           <p className="text-sm leading-relaxed mb-6">
             Premium fashion curated for the modern woman. Style that speaks before you do.
           </p>
-          {/* Social icons */}
           <div className="flex gap-3">
             {[
               {
@@ -160,7 +157,6 @@ export default function Footer() {
             ))}
           </div>
 
-          {/* Portfolio links */}
           <div className="mt-4 space-y-1.5">
             <p className="text-xs text-gray-600 uppercase tracking-widest mb-2">Portfolios</p>
             {[
