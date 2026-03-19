@@ -18,11 +18,10 @@ export const subscribe = async (req: Request, res: Response) => {
   await NewsletterModel.create({ email: email.toLowerCase() })
   const total = await NewsletterModel.countDocuments()
 
-  // Fire emails without blocking the response
   Promise.all([
     sendNewsletterWelcome(email),
     sendNewsletterAdminNotification(email, total),
-  ]).catch(() => null) // swallow email errors — subscription still succeeds
+  ]).catch(() => null)
 
   res.status(201).json({ success: true, message: 'Subscribed successfully! Check your inbox.' })
 }

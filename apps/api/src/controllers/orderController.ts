@@ -18,7 +18,6 @@ const DELIVERY_OPTIONS: Record<string, { label: string; charge: number; days: st
 }
 const FREE_SHIPPING_ABOVE = 999
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let razorpay: any = null
 const getRazorpay = async () => {
   if (!razorpay && env.RAZORPAY_KEY_ID && env.RAZORPAY_KEY_SECRET) {
@@ -28,7 +27,6 @@ const getRazorpay = async () => {
   return razorpay
 }
 
-/** Decrement stock for each ordered variant */
 async function decrementStock(items: { product: unknown; size: string; color: string; quantity: number }[]) {
   await Promise.all(
     items.map((item) =>
