@@ -402,7 +402,6 @@ export const sendLoginNotification = async (userName: string, userEmail: string,
     year: 'numeric', hour: '2-digit', minute: '2-digit',
   })
 
-  // Email to user
   await transporter.sendMail({
     from: `"Manya's Closet" <${env.SMTP_USER}>`,
     to: userEmail,
@@ -448,7 +447,6 @@ export const sendLoginNotification = async (userName: string, userEmail: string,
     `,
   })
 
-  // Email to admin
   if (adminEmail) {
     await transporter.sendMail({
       from: `"Manya's Closet" <${env.SMTP_USER}>`,
