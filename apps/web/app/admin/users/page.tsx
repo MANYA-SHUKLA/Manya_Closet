@@ -156,7 +156,6 @@ export default function AdminUsersPage() {
         </table>
         </div>
 
-        {/* Pagination */}
         {pagination && pagination.totalPages > 1 && (
           <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between text-sm">
             <span className="text-gray-500">Page {page} of {pagination.totalPages}</span>
