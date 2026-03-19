@@ -74,7 +74,6 @@ export default function CartPage() {
                 <CartItem key={item._id} item={item as never} />
               ))}
 
-              {/* Continue shopping */}
               <div className="py-5">
                 <Link
                   href="/shop"
@@ -88,7 +87,6 @@ export default function CartPage() {
               </div>
             </div>
 
-            {/* Summary */}
             <CartSummary subtotal={subtotal} itemCount={items.length} />
           </div>
         )}
