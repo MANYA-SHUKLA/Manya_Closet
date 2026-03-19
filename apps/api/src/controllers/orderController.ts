@@ -184,7 +184,6 @@ export const verifyPayment = async (req: Request, res: Response) => {
 
   const total = Math.max(0, subtotal + shippingCharge - discount)
 
-  // 4. Create the order in MongoDB now that payment is confirmed
   const order = await OrderModel.create({
     user: req.user!._id,
     items: cart.items,
@@ -199,7 +198,6 @@ export const verifyPayment = async (req: Request, res: Response) => {
     paymentStatus: 'paid',
   })
 
-  // 5. Decrement stock & clear cart
   await Promise.all([
     decrementStock(cart.items),
     CartModel.findOneAndUpdate({ user: req.user!._id }, { items: [], total: 0 }),
