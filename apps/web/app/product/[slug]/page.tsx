@@ -163,7 +163,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </div>
         </div>
 
-        {/* Reviews */}
         <div id="reviews">
           <Suspense fallback={null}>
             <ReviewSection
