@@ -28,7 +28,6 @@ export default function WishlistPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
       <div className="bg-gradient-to-r from-rose-950 via-neutral-950 to-neutral-900 py-14 px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <p className="text-rose-400 text-sm font-medium uppercase tracking-widest mb-2">Your Collection</p>
@@ -66,7 +65,6 @@ export default function WishlistPage() {
           </div>
         ) : (
           <>
-            {/* Bulk actions */}
             <div className="flex justify-end mb-6">
               <Link
                 href="/shop"
