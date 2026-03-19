@@ -207,8 +207,6 @@ pnpm --filter @manya-closet/api dev
 pnpm --filter @manya-closet/web dev
 ```
 
-Default admin credentials (after seed): `admin@manyascloset.com` / `Admin@2026`
-
 ---
 
 ## Environment Variables
