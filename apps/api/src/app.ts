@@ -21,8 +21,15 @@ app.use(cors({ origin: env.CLIENT_URL, credentials: true }))
 
 app.use('/api/webhooks', webhookRoutes)
 
-// Rate limit for auth routes (excludes OAuth callbacks)
-const authRateLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 20, standardHeaders: true, legacyHeaders: false, message: { success: false, message: 'Too many requests, please try again later' }, skip: (req) => req.path.startsWith('/google') })
+// Rate limit for auth routes (excludes OAuth)
+const authRateLimiter = rateLimit({ 
+  windowMs: 15 * 60 * 1000, 
+  max: 20, 
+  standardHeaders: true, 
+  legacyHeaders: false, 
+  message: { success: false, message: 'Too many requests, please try again later' }, 
+  skip: (req) => req.path.includes('google') || req.path.includes('refresh')
+})
 
 app.use('/api/auth', authRateLimiter)
 app.use(
