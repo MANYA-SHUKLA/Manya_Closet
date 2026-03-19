@@ -71,14 +71,14 @@ export default function ReturnsPage() {
   const orderItems = orders.find((o) => o._id === selectedOrder)?.items ?? []
 
   function toggleItem(item: typeof orderItems[0]) {
-    const exists = selectedItems.find((i) => i.product === item.product._id)
+    const exists = selectedItems.find((i) => i.product === item.product)
     if (exists) {
-      setSelectedItems((prev) => prev.filter((i) => i.product !== item.product._id))
+      setSelectedItems((prev) => prev.filter((i) => i.product !== item.product))
     } else {
       setSelectedItems((prev) => [
         ...prev,
         {
-          product:  item.product._id,
+          product:  item.product,
           name:     item.name,
           image:    item.image,
           quantity: item.quantity,
@@ -209,7 +209,7 @@ export default function ReturnsPage() {
                         <label className="block text-xs font-semibold text-gray-700 mb-2">Select Items to Return</label>
                         <div className="space-y-2">
                           {orderItems.map((item, idx) => {
-                            const checked = !!selectedItems.find((i) => i.product === item.product._id)
+                            const checked = !!selectedItems.find((i) => i.product === item.product)
                             return (
                               <label
                                 key={idx}
