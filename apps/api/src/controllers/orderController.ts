@@ -112,7 +112,6 @@ export const createOrder = async (req: Request, res: Response) => {
     })
   }
 
-  // ── COD: save order immediately ────────────────────────────────────
   const order = await OrderModel.create({
     user: req.user!._id,
     items: cart.items,
