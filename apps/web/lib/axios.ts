@@ -19,8 +19,10 @@ api.interceptors.response.use(
         )
         return api(original)
       } catch {
-        // Redirect to login
-        if (typeof window !== 'undefined') window.location.href = '/login'
+        // Redirect to login only if not already there
+        if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
+          window.location.href = '/login'
+        }
       }
     }
     return Promise.reject(error)
