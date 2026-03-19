@@ -51,9 +51,9 @@ export default function PaymentMethod() {
         paymentMethod,
       }),
     onSuccess: async ({ data }) => {
-      const { order, razorpayOrderId, key } = data.data
-
+      // ── COD: order already saved, redirect immediately ──
       if (paymentMethod === 'cod') {
+        const { order } = data.data
         qc.invalidateQueries({ queryKey: ['orders'] })
         clearCart()
         reset()
@@ -61,7 +61,9 @@ export default function PaymentMethod() {
         return
       }
 
-      // Razorpay payment
+      // ── Razorpay: open payment modal, save order ONLY after payment succeeds ──
+      const { razorpayOrderId, key } = data.data
+
       const loaded = await loadRazorpay()
       if (!loaded) { setError('Failed to load payment gateway'); return }
 
@@ -76,14 +78,16 @@ export default function PaymentMethod() {
         theme: { color: '#f59e0b' },
         handler: async (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) => {
           try {
-            await api.post('/orders/verify-payment', {
+            const { data: vData } = await api.post('/orders/verify-payment', {
               ...response,
-              orderId: order._id,
+              shippingAddress: address,
+              deliveryOption,
+              couponCode: coupon?.code,
             })
             qc.invalidateQueries({ queryKey: ['orders'] })
             clearCart()
             reset()
-            router.push(`/order-success/${order._id}`)
+            router.push(`/order-success/${vData.data.order._id}`)
           } catch {
             setError('Payment verification failed. Contact support.')
           }

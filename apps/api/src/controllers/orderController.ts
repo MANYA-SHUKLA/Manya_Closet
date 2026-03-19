@@ -233,17 +233,7 @@ export const getMyOrders = async (req: Request, res: Response) => {
   const limit = Math.min(50, parseInt(req.query.limit as string) || 10)
   const skip = (page - 1) * limit
 
-  // Show:
-  //   1. COD orders — razorpayOrderId is missing/null/empty
-  //   2. Razorpay orders where payment completed or was refunded (paymentStatus != pending)
-  // Hide: Razorpay orders where user abandoned before paying (has an ID but still pending)
-  const filter: Record<string, unknown> = {
-    user: req.user!._id,
-    $or: [
-      { razorpayOrderId: { $in: [null, ''] } },                                         // COD
-      { razorpayOrderId: { $nin: [null, ''] }, paymentStatus: { $ne: 'pending' } },     // Razorpay paid/refunded
-    ],
-  }
+  const filter: Record<string, unknown> = { user: req.user!._id }
 
   const [orders, total] = await Promise.all([
     OrderModel.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
@@ -292,13 +282,7 @@ export const getAllOrders = async (req: Request, res: Response) => {
   const limit = Math.min(100, parseInt(req.query.limit as string) || 20)
   const skip = (page - 1) * limit
 
-  // Exclude Razorpay orders where payment was never completed
-  const filter: Record<string, unknown> = {
-    $or: [
-      { razorpayOrderId: { $in: [null, ''] } },
-      { razorpayOrderId: { $nin: [null, ''] }, paymentStatus: { $ne: 'pending' } },
-    ],
-  }
+  const filter: Record<string, unknown> = {}
   if (req.query.status) filter.status = req.query.status
   if (req.query.paymentStatus) filter.paymentStatus = req.query.paymentStatus
 
