@@ -59,7 +59,6 @@ export const createOrder = async (req: Request, res: Response) => {
   const delivery = DELIVERY_OPTIONS[deliveryOption] ?? DELIVERY_OPTIONS.standard
   const shippingCharge = subtotal > FREE_SHIPPING_ABOVE && deliveryOption === 'standard' ? 0 : delivery.charge
 
-  // Verify stock availability
   for (const item of cart.items) {
     const product = await ProductModel.findById(item.product)
     if (!product || !product.isActive) throw new AppError(`Product "${item.name}" is no longer available`, 400)
