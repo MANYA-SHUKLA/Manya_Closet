@@ -174,7 +174,7 @@ const STATUS_COPY: Record<string, { emoji: string; headline: string; body: strin
   shipped:   { emoji: '🚚', headline: 'Your order is on its way!', body: 'Your order has been shipped and is heading to you. You can expect it within the estimated delivery window.' },
   delivered: { emoji: '✅', headline: 'Order Delivered!', body: 'Your order has been delivered. We hope you love your new look! Please leave a review to help other shoppers.' },
   cancelled: { emoji: '❌', headline: 'Order Cancelled', body: 'Your order has been cancelled. If you paid online, your refund will be processed within 5-7 business days.' },
-  refunded:  { emoji: '💸', headline: 'Refund Initiated', body: 'Your refund has been initiated and will reflect in your account within 5-7 business days.' },
+  refunded:  { emoji: '💸', headline: 'Refund Initiated', body: 'Our team will arrange a pickup for your order. Once the pickup is completed (within 1–2 days), your refund will be processed and reflect in your account.' },
 }
 
 export const sendOrderStatusUpdate = async (

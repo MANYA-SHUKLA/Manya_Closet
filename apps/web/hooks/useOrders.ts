@@ -1,5 +1,5 @@
 'use client'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import api from '@/lib/axios'
 import { IOrder } from '@manya-closet/types'
 
@@ -22,3 +22,15 @@ export const useOrder = (id: string) =>
     },
     enabled: !!id,
   })
+
+export const useRequestReturn = (orderId: string) => {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (reason: string) =>
+      api.patch(`/orders/${orderId}/return`, { reason }),
+    onSuccess: ({ data }) => {
+      qc.setQueryData(['order', orderId], data.data)
+      qc.invalidateQueries({ queryKey: ['orders'] })
+    },
+  })
+}

@@ -6,21 +6,58 @@ const STATUSES = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled', '
 type OrderStatus = typeof STATUSES[number]
 
 const STATUS_COLORS: Record<string, string> = {
-  pending: 'bg-amber-100 text-amber-700',
-  confirmed: 'bg-blue-100 text-blue-700',
-  shipped: 'bg-indigo-100 text-indigo-700',
-  delivered: 'bg-green-100 text-green-700',
-  cancelled: 'bg-red-100 text-red-700',
-  refunded: 'bg-gray-100 text-gray-600',
+  pending:          'bg-amber-100 text-amber-700',
+  confirmed:        'bg-blue-100 text-blue-700',
+  shipped:          'bg-indigo-100 text-indigo-700',
+  delivered:        'bg-green-100 text-green-700',
+  return_requested: 'bg-orange-100 text-orange-700',
+  cancelled:        'bg-red-100 text-red-700',
+  refunded:         'bg-gray-100 text-gray-600',
+}
+
+const STATUS_LABELS: Record<string, string> = {
+  return_requested: 'Return Requested',
 }
 
 const NEXT_STATUS: Record<string, OrderStatus[]> = {
-  pending: ['confirmed', 'cancelled'],
-  confirmed: ['shipped', 'cancelled'],
-  shipped: ['delivered'],
-  delivered: ['refunded'],
-  cancelled: [],
-  refunded: [],
+  pending:          ['confirmed', 'cancelled'],
+  confirmed:        ['shipped', 'cancelled'],
+  shipped:          ['delivered'],
+  delivered:        ['refunded'],
+  return_requested: ['refunded'],
+  cancelled:        [],
+  refunded:         [],
+}
+
+function RefundModal({ order, onConfirm, onClose }: {
+  order: AdminOrder
+  onConfirm: () => void
+  onClose: () => void
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
+      <div className="w-full max-w-sm bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <div className="p-6">
+          <div className="text-3xl text-center mb-3">💸</div>
+          <h2 className="font-bold text-gray-900 text-center mb-2">Issue Refund?</h2>
+          <p className="text-sm text-gray-500 text-center leading-relaxed">
+            This will refund order <span className="font-semibold text-gray-700">#{order._id.slice(-8).toUpperCase()}</span> (₹{order.total.toLocaleString()}).
+            Stock will be restored and the customer will be notified by email.
+          </p>
+        </div>
+        <div className="flex gap-3 px-6 pb-6">
+          <button onClick={onClose}
+            className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+            Cancel
+          </button>
+          <button onClick={onConfirm}
+            className="flex-1 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-sm font-semibold transition-colors">
+            Confirm Refund
+          </button>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 function OrderRow({ order, onStatusChange, isUpdating }: {
@@ -29,11 +66,19 @@ function OrderRow({ order, onStatusChange, isUpdating }: {
   isUpdating: boolean
 }) {
   const [expanded, setExpanded] = useState(false)
+  const [refundModal, setRefundModal] = useState(false)
   const nextOptions = NEXT_STATUS[order.status] ?? []
-  const canRefund = order.status === 'delivered'
+  const canRefund = order.status === 'delivered' || order.status === 'return_requested'
 
   return (
     <>
+      {refundModal && (
+        <RefundModal
+          order={order}
+          onConfirm={() => { setRefundModal(false); onStatusChange(order._id, 'refunded') }}
+          onClose={() => setRefundModal(false)}
+        />
+      )}
       <tr className={`border-b border-gray-50 hover:bg-gray-50/50 transition-colors cursor-pointer ${expanded ? 'bg-gray-50/50' : ''}`}>
         <td className="px-6 py-4" onClick={() => setExpanded(!expanded)}>
           <div className="flex items-center gap-2">
@@ -66,7 +111,7 @@ function OrderRow({ order, onStatusChange, isUpdating }: {
         </td>
         <td className="px-6 py-4" onClick={() => setExpanded(!expanded)}>
           <span className={`px-2 py-0.5 rounded-full text-xs font-medium capitalize ${STATUS_COLORS[order.status] ?? 'bg-gray-100 text-gray-700'}`}>
-            {order.status}
+            {STATUS_LABELS[order.status] ?? order.status}
           </span>
         </td>
         <td className="px-6 py-4">
@@ -74,11 +119,7 @@ function OrderRow({ order, onStatusChange, isUpdating }: {
             {canRefund && (
               <button
                 disabled={isUpdating}
-                onClick={() => {
-                  if (confirm('Issue a refund for this order? Stock will be restored.')) {
-                    onStatusChange(order._id, 'refunded')
-                  }
-                }}
+                onClick={() => setRefundModal(true)}
                 className="px-3 py-1.5 text-xs font-medium text-orange-600 hover:text-orange-800 hover:bg-orange-50 rounded-lg transition-colors disabled:opacity-50 border border-orange-200"
               >
                 Refund

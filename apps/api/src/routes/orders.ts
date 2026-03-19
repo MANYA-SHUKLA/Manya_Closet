@@ -5,6 +5,7 @@ import {
   getOrder,
   verifyPayment,
   cancelOrder,
+  requestReturn,
   getAllOrders,
   updateOrderStatus,
 } from '../controllers/orderController'
@@ -20,6 +21,7 @@ router.post('/verify-payment', verifyPayment)
 router.get('/my', getMyOrders)
 router.get('/:id', getOrder)
 router.patch('/:id/cancel', cancelOrder)
+router.patch('/:id/return', requestReturn)
 
 // Admin routes
 router.get('/', authorize('admin'), getAllOrders)

@@ -1,7 +1,8 @@
 'use client'
 import Link from 'next/link'
+import { useState } from 'react'
 import { useParams } from 'next/navigation'
-import { useOrder } from '@/hooks/useOrders'
+import { useOrder, useRequestReturn } from '@/hooks/useOrders'
 import { useAuthStore } from '@/store/authStore'
 import OrderStepper from '@/components/account/OrderStepper'
 import { OrderStatusBadge, PaymentStatusBadge } from '@/components/account/StatusBadge'
@@ -13,6 +14,9 @@ export default function OrderDetailPage() {
   const { orderId } = useParams<{ orderId: string }>()
   const { data: order, isLoading } = useOrder(orderId)
   const user = useAuthStore((s) => s.user)
+  const [returnModal, setReturnModal] = useState(false)
+  const [returnReason, setReturnReason] = useState('')
+  const { mutate: requestReturn, isPending: returning, isSuccess: returnDone } = useRequestReturn(orderId)
 
   if (isLoading) return (
     <div className="flex items-center justify-center py-24">
@@ -52,6 +56,14 @@ export default function OrderDetailPage() {
         <div className="flex items-center gap-2 flex-wrap">
           <OrderStatusBadge status={order.status} />
           <PaymentStatusBadge status={order.paymentStatus} />
+          {order.status === 'delivered' && (
+            <button
+              onClick={() => setReturnModal(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-orange-50 text-orange-700 border border-orange-200 text-xs font-semibold rounded-xl hover:bg-orange-100 transition-all"
+            >
+              ↩ Request Return
+            </button>
+          )}
           <button
             onClick={() => printInvoice(order, user)}
             className="flex items-center gap-2 px-4 py-2 bg-neutral-900 text-white text-xs font-semibold rounded-xl hover:bg-amber-500 hover:text-black transition-all"
@@ -132,6 +144,61 @@ export default function OrderDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Return Request Modal */}
+      {returnModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
+          <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-neutral-100">
+              <div>
+                <h2 className="font-bold text-neutral-900">Request Return</h2>
+                <p className="text-xs text-neutral-400 mt-0.5">Order #{order._id.slice(-8).toUpperCase()}</p>
+              </div>
+              <button onClick={() => setReturnModal(false)} className="text-neutral-400 hover:text-neutral-700 transition-colors">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {returnDone ? (
+              <div className="px-6 py-10 text-center">
+                <div className="text-4xl mb-3">✅</div>
+                <h3 className="font-bold text-neutral-900 mb-1">Return Requested</h3>
+                <p className="text-sm text-neutral-500">Our team has been notified and will get back to you shortly.</p>
+                <button onClick={() => setReturnModal(false)}
+                  className="mt-6 px-6 py-2.5 bg-neutral-900 text-white text-sm font-semibold rounded-xl hover:bg-amber-500 hover:text-black transition-all">
+                  Close
+                </button>
+              </div>
+            ) : (
+              <div className="px-6 py-5 space-y-4">
+                <p className="text-sm text-neutral-600">Please tell us why you&apos;d like to return this order. Our team will review your request and get back to you.</p>
+                <textarea
+                  value={returnReason}
+                  onChange={(e) => setReturnReason(e.target.value)}
+                  rows={4}
+                  placeholder="e.g. Wrong size, damaged item, not as described..."
+                  className="w-full border border-neutral-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400/40 focus:border-orange-400 resize-none"
+                />
+                <div className="flex gap-3 pt-1">
+                  <button onClick={() => setReturnModal(false)}
+                    className="flex-1 py-2.5 border border-neutral-200 rounded-xl text-sm font-semibold text-neutral-700 hover:bg-neutral-50 transition-colors">
+                    Cancel
+                  </button>
+                  <button
+                    disabled={!returnReason.trim() || returning}
+                    onClick={() => requestReturn(returnReason)}
+                    className="flex-1 py-2.5 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white rounded-xl text-sm font-semibold transition-colors"
+                  >
+                    {returning ? 'Submitting…' : 'Submit Request'}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
