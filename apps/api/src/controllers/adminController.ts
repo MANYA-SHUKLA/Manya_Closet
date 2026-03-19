@@ -7,9 +7,17 @@ import { AppError } from '../middleware/error'
 export const getDashboard = async (_req: Request, res: Response) => {
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
 
+  // Exclude Razorpay orders where payment was never completed
+  const realOrderFilter = {
+    $or: [
+      { razorpayOrderId: { $in: [null, ''] } },
+      { razorpayOrderId: { $nin: [null, ''] }, paymentStatus: { $ne: 'pending' } },
+    ],
+  }
+
   const [totalOrders, totalUsers, totalProducts, salesByDay, ordersByStatus, recentOrders] =
     await Promise.all([
-      OrderModel.countDocuments(),
+      OrderModel.countDocuments(realOrderFilter),
       UserModel.countDocuments({ role: 'user' }),
       ProductModel.countDocuments({ isActive: true }),
       OrderModel.aggregate([
@@ -23,8 +31,11 @@ export const getDashboard = async (_req: Request, res: Response) => {
         },
         { $sort: { _id: 1 } },
       ]),
-      OrderModel.aggregate([{ $group: { _id: '$status', count: { $sum: 1 } } }]),
-      OrderModel.find()
+      OrderModel.aggregate([
+        { $match: realOrderFilter },
+        { $group: { _id: '$status', count: { $sum: 1 } } },
+      ]),
+      OrderModel.find(realOrderFilter)
         .sort({ createdAt: -1 })
         .limit(10)
         .populate('user', 'name email')

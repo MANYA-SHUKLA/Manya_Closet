@@ -249,7 +249,13 @@ export const getAllOrders = async (req: Request, res: Response) => {
   const limit = Math.min(100, parseInt(req.query.limit as string) || 20)
   const skip = (page - 1) * limit
 
-  const filter: Record<string, unknown> = {}
+  // Exclude Razorpay orders where payment was never completed
+  const filter: Record<string, unknown> = {
+    $or: [
+      { razorpayOrderId: { $in: [null, ''] } },
+      { razorpayOrderId: { $nin: [null, ''] }, paymentStatus: { $ne: 'pending' } },
+    ],
+  }
   if (req.query.status) filter.status = req.query.status
   if (req.query.paymentStatus) filter.paymentStatus = req.query.paymentStatus
 
