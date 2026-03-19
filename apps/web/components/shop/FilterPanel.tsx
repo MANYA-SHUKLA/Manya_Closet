@@ -55,7 +55,6 @@ export default function FilterPanel({ onClose }: { onClose?: () => void }) {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <h3 className="font-bold text-neutral-900 text-lg">Filters</h3>
         {hasFilters && (
@@ -65,7 +64,6 @@ export default function FilterPanel({ onClose }: { onClose?: () => void }) {
         )}
       </div>
 
-      {/* Sale */}
       <div>
         <button
           onClick={() => toggle('sale', 'true')}
@@ -80,7 +78,6 @@ export default function FilterPanel({ onClose }: { onClose?: () => void }) {
         </button>
       </div>
 
-      {/* Category */}
       <div>
         <p className="text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-3">Category</p>
         <div className="space-y-1.5">
@@ -106,7 +103,6 @@ export default function FilterPanel({ onClose }: { onClose?: () => void }) {
         </div>
       </div>
 
-      {/* Price */}
       <div>
         <p className="text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-3">Price Range</p>
         <div className="space-y-1.5">
@@ -130,7 +126,6 @@ export default function FilterPanel({ onClose }: { onClose?: () => void }) {
         </div>
       </div>
 
-      {/* Rating */}
       <div>
         <p className="text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-3">Min Rating</p>
         <div className="space-y-1.5">
