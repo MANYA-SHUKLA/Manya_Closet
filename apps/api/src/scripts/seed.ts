@@ -5,7 +5,6 @@ import { UserModel } from '../models/User'
 
 const MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/manya_closet'
 
-// ── Category definitions ──────────────────────────────────────────────
 const CATEGORIES = [
   {
     name: 'Dresses',
@@ -51,7 +50,6 @@ const CATEGORIES = [
   },
 ]
 
-// ── Helpers ───────────────────────────────────────────────────────────
 const sizes   = ['XS', 'S', 'M', 'L', 'XL']
 const shoeSizes = ['UK 4', 'UK 5', 'UK 6', 'UK 7', 'UK 8']
 const colors  = (list: string[]) => list
@@ -87,7 +85,6 @@ function accessoryVariants(colorList: string[]) {
   }))
 }
 
-// ── Product definitions (2 per category, keyed by category slug) ──────
 const PRODUCTS: Record<string, {
   name: string
   slug: string
