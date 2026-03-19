@@ -42,7 +42,6 @@ export const getAvailableCoupons = async (_req: Request, res: Response) => {
   res.json({ success: true, data: coupons })
 }
 
-// Admin
 export const createCoupon = async (req: Request, res: Response) => {
   const coupon = await CouponModel.create(req.body)
   res.status(201).json({ success: true, data: coupon })
