@@ -12,17 +12,17 @@ async function mergeGuestData(qc: ReturnType<typeof useQueryClient>) {
   if (localItems.length > 0) {
     try {
       const cartItems = localItems.map((item) => ({
-        productId: typeof item.product === 'string' ? item.product : item.product._id,
+        productId: typeof item.product === 'string' ? item.product : (item.product as { _id: string })._id,
         quantity: item.quantity,
         size: item.size,
         color: item.color,
       }))
-      await api.post('/cart/merge', { items: cartItems })
-      useCartStore.getState().clear()
-      qc.invalidateQueries({ queryKey: ['cart'] })
+      const { data } = await api.post('/cart/merge', { items: cartItems })
+      // Pre-populate cart cache so useCart reads this immediately without a GET /cart race
+      qc.setQueryData(['cart'], data.data)
+      useCartStore.getState().setCart(data.data.items, data.data.total)
     } catch {
-      // merge failed — keep local cart, still refresh from DB
-      qc.invalidateQueries({ queryKey: ['cart'] })
+      // merge failed — leave local cart intact, user keeps seeing their items
     }
   }
 
@@ -60,9 +60,9 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: authApi.login,
     onSuccess: async ({ data }) => {
-      setUser(data.data.user)
       qc.setQueryData(['me'], data.data.user)
-      await mergeGuestData(qc)
+      await mergeGuestData(qc)   // merge BEFORE setUser so useCart doesn't race with merge
+      setUser(data.data.user)
       const redirect = new URLSearchParams(window.location.search).get('redirect') ?? '/'
       router.push(redirect)
     },
@@ -77,8 +77,9 @@ export const useRegister = () => {
   return useMutation({
     mutationFn: authApi.register,
     onSuccess: async ({ data }) => {
-      setUser(data.data.user)
+      qc.setQueryData(['me'], data.data.user)
       await mergeGuestData(qc)
+      setUser(data.data.user)
       router.push('/')
     },
   })
