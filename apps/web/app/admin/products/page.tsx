@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useAdminProducts, useCreateProduct, useUpdateProduct, useDeleteProduct } from '@/hooks/useAdmin'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation } from '@tanstack/react-query'
 import api from '@/lib/axios'
 import { IProduct } from '@manya-closet/types'
 import { FALLBACK_IMAGES } from '@/lib/imageUtils'
@@ -29,6 +29,86 @@ function toForm(p: IProduct): ProductForm {
     isFeatured: p.isFeatured, isActive: p.isActive,
     variants: p.variants.map((v) => ({ size: v.size, color: v.color, stock: v.stock, sku: v.sku })),
   }
+}
+
+function StockModal({ product, onClose }: { product: IProduct; onClose: () => void }) {
+  const [stocks, setStocks] = useState<Record<string, number>>(
+    Object.fromEntries(product.variants.map((v) => [v._id as string, v.stock]))
+  )
+  const [saved, setSaved] = useState(false)
+
+  const { mutate: save, isPending } = useMutation({
+    mutationFn: () =>
+      api.patch(`/products/${product._id}/inventory`, {
+        updates: Object.entries(stocks).map(([variantId, stock]) => ({ variantId, stock })),
+      }),
+    onSuccess: () => { setSaved(true); setTimeout(onClose, 800) },
+  })
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <div>
+            <h2 className="font-bold text-gray-900">Update Stock</h2>
+            <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">{product.name}</p>
+          </div>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-700 transition-colors">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="px-6 py-4 space-y-3 max-h-80 overflow-y-auto">
+          {product.variants.map((v) => {
+            const vid = v._id as string
+            const qty = stocks[vid] ?? v.stock
+            return (
+              <div key={vid} className="flex items-center justify-between gap-4 py-2 border-b border-gray-50 last:border-0">
+                <div>
+                  <span className="text-sm font-medium text-gray-900">{v.size} / {v.color}</span>
+                  {v.sku && <span className="text-xs text-gray-400 ml-2">SKU: {v.sku}</span>}
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setStocks((s) => ({ ...s, [vid]: Math.max(0, (s[vid] ?? 0) - 1) }))}
+                    className="w-7 h-7 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 font-bold transition-colors"
+                  >−</button>
+                  <input
+                    type="number"
+                    min={0}
+                    value={qty}
+                    onChange={(e) => setStocks((s) => ({ ...s, [vid]: Math.max(0, Number(e.target.value)) }))}
+                    className="w-16 text-center border border-gray-200 rounded-lg py-1 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-400"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setStocks((s) => ({ ...s, [vid]: (s[vid] ?? 0) + 1 }))}
+                    className="w-7 h-7 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 font-bold transition-colors"
+                  >+</button>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        <div className="px-6 py-4 border-t border-gray-100 flex gap-3">
+          <button onClick={onClose} className="flex-1 py-2.5 border border-gray-200 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+            Cancel
+          </button>
+          <button
+            onClick={() => save()}
+            disabled={isPending || saved}
+            className="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 text-white rounded-xl text-sm font-semibold transition-colors"
+          >
+            {saved ? '✓ Saved' : isPending ? 'Saving…' : 'Save Stock'}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 function ProductDrawer({
@@ -242,6 +322,7 @@ export default function AdminProductsPage() {
   const [status, setStatus] = useState('')
   const [page, setPage] = useState(1)
   const [drawer, setDrawer] = useState<{ open: boolean; product: IProduct | null }>({ open: false, product: null })
+  const [stockProduct, setStockProduct] = useState<IProduct | null>(null)
 
   const { data, refetch } = useAdminProducts({ search, page, status: status || undefined })
   const { mutate: deleteProduct } = useDeleteProduct()
@@ -268,6 +349,9 @@ export default function AdminProductsPage() {
           onClose={() => setDrawer({ open: false, product: null })}
           onSaved={() => refetch()}
         />
+      )}
+      {stockProduct && (
+        <StockModal product={stockProduct} onClose={() => { setStockProduct(null); refetch() }} />
       )}
 
       {/* Header */}
@@ -359,6 +443,12 @@ export default function AdminProductsPage() {
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => setStockProduct(p)}
+                        className="px-3 py-1.5 text-xs font-medium text-emerald-600 hover:text-emerald-800 hover:bg-emerald-50 rounded-lg transition-colors"
+                      >
+                        Stock
+                      </button>
                       <button
                         onClick={() => setDrawer({ open: true, product: p })}
                         className="px-3 py-1.5 text-xs font-medium text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-lg transition-colors"

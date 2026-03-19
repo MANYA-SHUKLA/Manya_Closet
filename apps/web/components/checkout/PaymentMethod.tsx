@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import api from '@/lib/axios'
 import { useCheckoutStore, type PaymentMethod } from '@/store/checkoutStore'
@@ -31,6 +31,7 @@ function loadRazorpay(): Promise<boolean> {
 
 export default function PaymentMethod() {
   const router = useRouter()
+  const qc = useQueryClient()
   const user = useAuthStore((s) => s.user)
   const { address, deliveryOption, coupon, paymentMethod, setPayment, setStep, reset } = useCheckoutStore()
   const { total: subtotal, clear: clearCart } = useCartStore()
@@ -53,6 +54,7 @@ export default function PaymentMethod() {
       const { order, razorpayOrderId, key } = data.data
 
       if (paymentMethod === 'cod') {
+        qc.invalidateQueries({ queryKey: ['orders'] })
         clearCart()
         reset()
         router.push(`/order-success/${order._id}`)
@@ -78,6 +80,7 @@ export default function PaymentMethod() {
               ...response,
               orderId: order._id,
             })
+            qc.invalidateQueries({ queryKey: ['orders'] })
             clearCart()
             reset()
             router.push(`/order-success/${order._id}`)

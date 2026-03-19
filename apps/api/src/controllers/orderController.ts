@@ -190,14 +190,12 @@ export const getMyOrders = async (req: Request, res: Response) => {
   const limit = Math.min(50, parseInt(req.query.limit as string) || 10)
   const skip = (page - 1) * limit
 
-  // Exclude Razorpay orders where payment is still pending (user abandoned checkout)
-  // COD orders have no razorpayOrderId so are always shown; Razorpay orders only shown after payment
+  // Hide only Razorpay orders where payment is still pending (abandoned checkouts)
+  // COD orders have no razorpayOrderId so are never excluded
   const filter: Record<string, unknown> = {
     user: req.user!._id,
-    $or: [
-      { razorpayOrderId: { $exists: false } },
-      { razorpayOrderId: null },
-      { paymentStatus: { $ne: 'pending' } },
+    $nor: [
+      { razorpayOrderId: { $exists: true, $ne: null }, paymentStatus: 'pending' },
     ],
   }
 

@@ -18,9 +18,10 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     if (!user) router.replace('/login?redirect=/checkout')
-    else if (items.length === 0) router.replace('/cart')
-  }, [user, items.length, router])
+  }, [user, router])
 
+  // items.length check is kept as a render guard only (no redirect — clearing
+  // cart after order placement must not compete with the order-success redirect)
   if (!user || items.length === 0) return null
 
   return (
