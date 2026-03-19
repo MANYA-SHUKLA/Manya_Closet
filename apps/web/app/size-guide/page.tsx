@@ -35,7 +35,6 @@ const TIPS = [
 export default function SizeGuidePage() {
   return (
     <div className="bg-[#F9FAFB] min-h-screen">
-      {/* Header */}
       <div className="bg-[#0f0e1e] py-16 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-indigo-400 text-xs font-semibold uppercase tracking-[0.2em] mb-3">Fit Guide</p>
@@ -51,7 +50,6 @@ export default function SizeGuidePage() {
 
       <div className="max-w-4xl mx-auto px-6 lg:px-8 py-16 space-y-10">
 
-        {/* How to measure */}
         <div className="bg-white rounded-3xl border border-gray-100 p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6"
             style={{ fontFamily: 'var(--font-cormorant), Georgia, serif' }}>
@@ -79,7 +77,6 @@ export default function SizeGuidePage() {
           </div>
         </div>
 
-        {/* Tops */}
         <div className="bg-white rounded-3xl border border-gray-100 p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2"
             style={{ fontFamily: 'var(--font-cormorant), Georgia, serif' }}>
@@ -112,7 +109,6 @@ export default function SizeGuidePage() {
           </div>
         </div>
 
-        {/* Bottoms */}
         <div className="bg-white rounded-3xl border border-gray-100 p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2"
             style={{ fontFamily: 'var(--font-cormorant), Georgia, serif' }}>

@@ -28,7 +28,6 @@ function ShopContent() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
-      {/* Hero banner */}
       <div className="bg-gradient-to-r from-[#0f0e1e] to-[#1e1a4a] py-14 px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <p className="text-indigo-300 text-sm font-medium uppercase tracking-widest mb-2">Collection</p>
@@ -43,14 +42,12 @@ function ShopContent() {
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
         <div className="flex gap-8">
-          {/* Desktop sidebar */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
             <div className="sticky top-24 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
               <FilterPanel />
             </div>
           </aside>
 
-          {/* Main content */}
           <div className="flex-1 min-w-0">
             <SortBar total={total} onFilterClick={() => setMobileFiltersOpen(true)} />
             <div className="mt-4">
@@ -61,7 +58,6 @@ function ShopContent() {
         </div>
       </div>
 
-      {/* Mobile filter drawer */}
       {mobileFiltersOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={() => setMobileFiltersOpen(false)} />
