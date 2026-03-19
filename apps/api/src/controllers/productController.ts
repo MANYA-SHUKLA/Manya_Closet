@@ -149,8 +149,6 @@ export const getLowStock = async (req: Request, res: Response) => {
   res.json({ success: true, data: alerts })
 }
 
-// ── Autocomplete ──────────────────────────────────────────────────────────────
-
 export const autocomplete = async (req: Request, res: Response) => {
   const q = ((req.query.q as string) ?? '').trim()
   if (q.length < 2) return res.json({ success: true, data: [] })
