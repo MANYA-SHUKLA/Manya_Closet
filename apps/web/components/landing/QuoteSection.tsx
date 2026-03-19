@@ -1,18 +1,15 @@
 export default function QuoteSection() {
   return (
     <section className="relative py-32 px-6 overflow-hidden">
-      {/* Background image */}
       <img
         src="https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcRF-7h60655aTPNkPEl0Dg3j5BYnSRwe-Zi7GJ606Zi0Tv3YHkfEuYEso3JfPHelF82quaB2ykX9B7II4grp4jVG7s9Yfkb5rIfixMXcNLmaXfp_BWhgsfrew"
         alt=""
         className="absolute inset-0 w-full h-full object-cover object-center"
       />
-      {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-[#0f0e1e]/95 via-[#0f0e1e]/75 to-[#0f0e1e]/40" />
 
       <div className="relative z-10 max-w-4xl mx-auto">
         <div className="max-w-2xl">
-          {/* Decorative quote mark */}
           <div className="text-[8rem] leading-none font-serif text-indigo-400/30 select-none mb-[-2rem]">&ldquo;</div>
 
           <blockquote

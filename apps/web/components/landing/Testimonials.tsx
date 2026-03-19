@@ -94,7 +94,6 @@ export default function Testimonials() {
     <section className="py-24 px-6 lg:px-8 bg-[#F9FAFB]">
       <div className="max-w-7xl mx-auto">
 
-        {/* Header */}
         <div className="text-center mb-16">
           <p className="text-indigo-500 text-xs font-semibold uppercase tracking-[0.2em] mb-3">Testimonials</p>
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-900"
@@ -106,12 +105,9 @@ export default function Testimonials() {
           </p>
         </div>
 
-        {/* Featured quote + cards grid */}
         <div className="grid lg:grid-cols-5 gap-6 mb-16">
 
-          {/* Featured review — left large panel */}
           <div className="lg:col-span-3 bg-[#0f0e1e] rounded-3xl p-8 lg:p-12 flex flex-col justify-between relative overflow-hidden">
-            {/* Decorative quote mark */}
             <div className="absolute top-6 right-8 text-[8rem] leading-none font-serif text-white/5 select-none pointer-events-none">"</div>
 
             <div>
