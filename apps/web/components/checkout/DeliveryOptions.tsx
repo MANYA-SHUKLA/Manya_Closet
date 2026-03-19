@@ -63,10 +63,8 @@ export default function DeliveryOptions() {
                   : 'border-gray-200 hover:border-gray-300 bg-white'
               }`}
             >
-              {/* Icon */}
               <span className="text-3xl flex-shrink-0">{icon}</span>
 
-              {/* Info */}
               <div className="flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className={`font-semibold text-sm ${selected ? 'text-indigo-800' : 'text-gray-900'}`}>

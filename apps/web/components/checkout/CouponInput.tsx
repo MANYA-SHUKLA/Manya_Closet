@@ -98,7 +98,6 @@ export default function CouponInput({ subtotal: subtotalProp }: Props) {
         </p>
       )}
 
-      {/* Available coupons toggle */}
       {availableCoupons && availableCoupons.length > 0 && (
         <div>
           <button

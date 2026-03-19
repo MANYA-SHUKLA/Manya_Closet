@@ -4,7 +4,6 @@ export default function EmptyCart() {
   return (
     <div className="flex flex-col items-center justify-center py-24 text-center">
       <div className="relative w-32 h-32 mb-8">
-        {/* Bag illustration */}
         <div className="w-32 h-32 rounded-full bg-amber-50 flex items-center justify-center">
           <svg className="w-16 h-16 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
