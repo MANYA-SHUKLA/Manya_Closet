@@ -56,7 +56,6 @@ export default function OrdersPage() {
             return (
               <div key={order._id} className="bg-white rounded-3xl border border-gray-100 hover:border-gray-200 hover:shadow-md transition-all overflow-hidden">
                 <div className="flex items-center gap-5 p-5">
-                  {/* Image stack */}
                   <div className="relative flex-shrink-0">
                     <div className="w-16 h-20 rounded-xl overflow-hidden bg-gray-100">
                       <img src={firstImg} alt="" className="w-full h-full object-cover" />
@@ -68,7 +67,6 @@ export default function OrdersPage() {
                     )}
                   </div>
 
-                  {/* Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-3 flex-wrap">
                       <div>
@@ -88,7 +86,6 @@ export default function OrdersPage() {
                     </div>
                   </div>
 
-                  {/* CTA */}
                   <Link
                     href={`/account/orders/${order._id}`}
                     className="flex-shrink-0 flex items-center gap-1.5 text-sm font-semibold text-gray-700 hover:text-amber-600 transition-colors"

@@ -167,7 +167,6 @@ function ProductDrawer({
     <div className="fixed inset-0 z-50 flex">
       <div className="flex-1 bg-black/40" onClick={onClose} />
       <div className="w-full sm:w-[520px] bg-white shadow-2xl overflow-y-auto flex flex-col">
-        {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 sticky top-0 bg-white z-10">
           <h2 className="font-bold text-gray-900">{product ? 'Edit Product' : 'New Product'}</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-700 transition-colors">
@@ -180,7 +179,6 @@ function ProductDrawer({
         <form onSubmit={handleSubmit} className="flex-1 p-6 space-y-5">
           {error && <p className="text-sm text-red-600 bg-red-50 px-4 py-2.5 rounded-xl">{error}</p>}
 
-          {/* Basic info */}
           <div className="space-y-4">
             <div>
               <label className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Product Name *</label>
@@ -224,7 +222,6 @@ function ProductDrawer({
             </div>
           </div>
 
-          {/* Images */}
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Image URLs</label>
@@ -252,7 +249,6 @@ function ProductDrawer({
             </div>
           </div>
 
-          {/* Variants */}
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Variants</label>
@@ -285,7 +281,6 @@ function ProductDrawer({
             </div>
           </div>
 
-          {/* Flags */}
           <div className="flex gap-6">
             <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
               <input type="checkbox" checked={form.isActive} onChange={(e) => set('isActive', e.target.checked)}
@@ -299,7 +294,6 @@ function ProductDrawer({
             </label>
           </div>
 
-          {/* Submit */}
           <div className="flex gap-3 pt-2">
             <button type="button" onClick={onClose}
               className="flex-1 py-3 border border-gray-200 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors">

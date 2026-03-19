@@ -70,10 +70,8 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
       <div className="max-w-6xl mx-auto px-4 lg:px-8 py-8">
         <div className="flex flex-col lg:flex-row gap-6">
 
-          {/* Sidebar */}
           <aside className="lg:w-64 flex-shrink-0">
             <div className="bg-white rounded-3xl border border-gray-100 p-6 lg:sticky lg:top-24">
-              {/* User info */}
               <div className="flex items-center gap-3 mb-6 pb-6 border-b border-gray-100">
                 <div className="w-12 h-12 rounded-2xl bg-indigo-500 flex items-center justify-center text-white font-black text-lg flex-shrink-0">
                   {initials}
@@ -84,7 +82,6 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                 </div>
               </div>
 
-              {/* Nav */}
               <nav className="space-y-1">
                 {NAV.map(({ href, label, icon }) => {
                   const active = pathname === href || (href !== '/wishlist' && pathname.startsWith(href))
@@ -107,7 +104,6 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
             </div>
           </aside>
 
-          {/* Main */}
           <main className="flex-1 min-w-0">{children}</main>
         </div>
       </div>

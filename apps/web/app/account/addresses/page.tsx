@@ -86,7 +86,6 @@ export default function AddressesPage() {
                 addr.isDefault ? 'border-amber-400' : 'border-gray-100'
               }`}
             >
-              {/* Label + default badge */}
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-xs font-bold px-2.5 py-0.5 bg-gray-100 text-gray-600 rounded-full">
                   {addr.label}
@@ -98,7 +97,6 @@ export default function AddressesPage() {
                 )}
               </div>
 
-              {/* Address text */}
               <div className="text-sm text-gray-700 space-y-0.5">
                 <p className="font-semibold text-gray-900">{addr.fullName}</p>
                 <p>{addr.addressLine1}</p>
@@ -107,7 +105,6 @@ export default function AddressesPage() {
                 <p className="text-gray-400">📞 {addr.phone}</p>
               </div>
 
-              {/* Actions */}
               <div className="flex items-center gap-2 mt-4 pt-4 border-t border-neutral-50">
                 <button
                   onClick={() => openEdit(addr)}

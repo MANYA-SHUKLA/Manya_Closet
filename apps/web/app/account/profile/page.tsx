@@ -61,7 +61,6 @@ export default function ProfilePage() {
         <p className="text-sm text-gray-500 mt-1">Manage your personal information</p>
       </div>
 
-      {/* Personal Info */}
       <div className="bg-white rounded-3xl border border-gray-100 p-7">
         <h2 className="font-bold text-gray-900 mb-5">Personal Information</h2>
         <form onSubmit={handleProfile} className="space-y-4">
@@ -98,7 +97,6 @@ export default function ProfilePage() {
         </form>
       </div>
 
-      {/* Change Password */}
       <div className="bg-white rounded-3xl border border-gray-100 p-7">
         <h2 className="font-bold text-gray-900 mb-1">Change Password</h2>
 
@@ -157,7 +155,6 @@ export default function ProfilePage() {
         )}
       </div>
 
-      {/* Account info */}
       <div className="bg-white rounded-3xl border border-gray-100 p-7">
         <h2 className="font-bold text-gray-900 mb-4">Account Details</h2>
         <div className="space-y-3 text-sm">

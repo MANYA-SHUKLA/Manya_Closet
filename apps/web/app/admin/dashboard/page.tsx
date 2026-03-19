@@ -47,7 +47,6 @@ export default function DashboardPage() {
         <p className="text-sm text-gray-500 mt-1">Overview of your store</p>
       </div>
 
-      {/* Stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
           label="Total Sales"
@@ -76,7 +75,6 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid lg:grid-cols-[1fr_280px] gap-6">
-        {/* Sales chart */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
           <h2 className="font-semibold text-gray-900 mb-6">Sales — Last 30 Days</h2>
           {salesByDay.length === 0 ? (
@@ -101,7 +99,6 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* Orders by status */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6">
           <h2 className="font-semibold text-gray-900 mb-4">Orders by Status</h2>
           <div className="space-y-3">
@@ -117,7 +114,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Recent orders */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-100">
           <h2 className="font-semibold text-gray-900">Recent Orders</h2>

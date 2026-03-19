@@ -207,7 +207,6 @@ export default function AdminCouponsPage() {
         />
       )}
 
-      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Coupons</h1>
@@ -224,7 +223,6 @@ export default function AdminCouponsPage() {
         </button>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
         {[
           { label: 'Active', value: active.length, color: 'text-green-600' },
@@ -239,7 +237,6 @@ export default function AdminCouponsPage() {
         ))}
       </div>
 
-      {/* Table */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
         <table className="w-full text-sm">

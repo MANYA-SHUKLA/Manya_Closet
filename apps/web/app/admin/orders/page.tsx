@@ -138,12 +138,10 @@ function OrderRow({ order, onStatusChange, onRefund, isUpdating }: {
         </td>
       </tr>
 
-      {/* Expanded detail row */}
       {expanded && (
         <tr className="border-b border-gray-100 bg-gray-50/70">
           <td colSpan={7} className="px-6 py-4">
             <div className="grid sm:grid-cols-2 gap-6">
-              {/* Items */}
               <div>
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
                   Order Items ({order.items.length})
@@ -168,7 +166,6 @@ function OrderRow({ order, onStatusChange, onRefund, isUpdating }: {
                 </div>
               </div>
 
-              {/* Shipping address */}
               {order.shippingAddress && (
                 <div>
                   <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
@@ -227,7 +224,6 @@ export default function AdminOrdersPage() {
         </div>
       </div>
 
-      {/* Status filter tabs */}
       <div className="flex gap-2 mb-6 overflow-x-auto pb-1">
         <button
           onClick={() => { setFilterStatus(''); setPage(1) }}
@@ -248,7 +244,6 @@ export default function AdminOrdersPage() {
 
       <p className="text-xs text-gray-400 mb-3">Click a row to expand order details</p>
 
-      {/* Table */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">

@@ -43,7 +43,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     else if (user && user.role !== 'admin') router.push('/')
   }, [user, router, pathname])
 
-  // Close sidebar when navigating
   useEffect(() => {
     setSidebarOpen(false)
   }, [pathname])
@@ -61,7 +60,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="fixed inset-0 z-[100] bg-gray-50 flex overflow-hidden">
 
-      {/* Mobile overlay backdrop */}
       {sidebarOpen && (
         <div
           className="lg:hidden fixed inset-0 z-[110] bg-black/50"
@@ -69,7 +67,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         />
       )}
 
-      {/* Sidebar */}
       <aside className={`
         fixed lg:static inset-y-0 left-0 z-[120]
         w-64 lg:w-56 bg-gray-900 flex flex-col flex-shrink-0
@@ -125,9 +122,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
       </aside>
 
-      {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
-        {/* Mobile top bar */}
         <header className="lg:hidden flex items-center gap-3 px-4 py-3 bg-gray-900 border-b border-gray-700/50 flex-shrink-0">
           <button
             onClick={() => setSidebarOpen(true)}

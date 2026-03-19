@@ -42,7 +42,6 @@ export default function OrderDetailPage() {
 
   return (
     <div className="space-y-5">
-      {/* Header */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
           <Link href="/account/orders" className="text-xs text-neutral-400 hover:text-neutral-600 transition-colors mb-2 block">
@@ -77,7 +76,6 @@ export default function OrderDetailPage() {
         </div>
       </div>
 
-      {/* Tracking */}
       <div className="bg-white rounded-3xl border border-neutral-100 p-7">
         <h2 className="font-bold text-neutral-900 mb-6">Order Tracking</h2>
         <OrderStepper status={order.status} />
@@ -89,7 +87,6 @@ export default function OrderDetailPage() {
         )}
       </div>
 
-      {/* Items */}
       <div className="bg-white rounded-3xl border border-neutral-100 p-7">
         <h2 className="font-bold text-neutral-900 mb-4">Items Ordered</h2>
         <div className="space-y-3">
@@ -110,9 +107,7 @@ export default function OrderDetailPage() {
         </div>
       </div>
 
-      {/* Price summary + Address side by side on larger screens */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        {/* Payment summary */}
         <div className="bg-neutral-950 text-white rounded-3xl p-6 space-y-3">
           <h2 className="font-bold mb-1">Payment Summary</h2>
           {[
@@ -132,7 +127,6 @@ export default function OrderDetailPage() {
           </div>
         </div>
 
-        {/* Shipping address */}
         <div className="bg-white rounded-3xl border border-neutral-100 p-6">
           <h2 className="font-bold text-neutral-900 mb-3">Delivering to</h2>
           <div className="text-sm text-neutral-600 space-y-1">
@@ -145,7 +139,6 @@ export default function OrderDetailPage() {
         </div>
       </div>
 
-      {/* Return Request Modal */}
       {returnModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
           <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden">
