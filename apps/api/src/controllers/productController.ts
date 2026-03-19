@@ -172,8 +172,6 @@ export const autocomplete = async (req: Request, res: Response) => {
   })
 }
 
-// ── Related products ──────────────────────────────────────────────────────────
-
 export const getRelatedProducts = async (req: Request, res: Response) => {
   const product = await ProductModel.findById(req.params.id).select('category price')
   if (!product) throw new AppError('Product not found', 404)
@@ -189,8 +187,6 @@ export const getRelatedProducts = async (req: Request, res: Response) => {
 
   res.json({ success: true, data: related })
 }
-
-// ── Filter facets ─────────────────────────────────────────────────────────────
 
 export const getProductFilters = async (_req: Request, res: Response) => {
   const [brands, categories, sizeColors, priceRange] = await Promise.all([
