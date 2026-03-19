@@ -2,7 +2,15 @@
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { useCallback, useState } from 'react'
 
-const CATEGORIES = ['Tops', 'Dresses', 'Bottoms', 'Outerwear', 'Accessories', 'Footwear']
+const CATEGORIES = [
+  { label: 'Dresses',       slug: 'dresses' },
+  { label: 'Tops & Blouses', slug: 'tops-blouses' },
+  { label: 'Bottoms',       slug: 'bottoms' },
+  { label: 'Ethnic Wear',   slug: 'ethnic-wear' },
+  { label: 'Western Wear',  slug: 'western-wear' },
+  { label: 'Footwear',      slug: 'footwear' },
+  { label: 'Accessories',   slug: 'accessories' },
+]
 const RATINGS = [4, 3, 2]
 const PRICE_PRESETS = [
   { label: 'Under ₹999', min: '', max: '999' },
@@ -76,12 +84,11 @@ export default function FilterPanel({ onClose }: { onClose?: () => void }) {
       <div>
         <p className="text-xs font-semibold text-neutral-400 uppercase tracking-widest mb-3">Category</p>
         <div className="space-y-1.5">
-          {CATEGORIES.map((cat) => {
-            const slug = cat.toLowerCase()
+          {CATEGORIES.map(({ label, slug }) => {
             const isActive = active('category', slug)
             return (
               <button
-                key={cat}
+                key={slug}
                 onClick={() => toggle('category', slug)}
                 className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm transition-all ${
                   isActive
@@ -89,7 +96,7 @@ export default function FilterPanel({ onClose }: { onClose?: () => void }) {
                     : 'text-neutral-600 hover:bg-neutral-50 border border-transparent'
                 }`}
               >
-                {cat}
+                {label}
                 {isActive && (
                   <span className="w-2 h-2 rounded-full bg-amber-500" />
                 )}
