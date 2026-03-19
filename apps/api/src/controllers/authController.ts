@@ -81,7 +81,6 @@ export const refreshToken = async (req: Request, res: Response) => {
 
 export const forgotPassword = async (req: Request, res: Response) => {
   const user = await UserModel.findOne({ email: req.body.email })
-  // Always return 200 to prevent email enumeration
   if (!user) {
     return res.json({ success: true, message: 'If that email exists, a reset link was sent.' })
   }
@@ -124,7 +123,6 @@ export const resetPassword = async (req: Request, res: Response) => {
   return sendTokens(res, user.id, plain)
 }
 
-// Google OAuth — called after passport callback
 export const googleAuthCallback = async (req: Request, res: Response) => {
   const user = req.user!
   const { accessToken, refreshToken } = signTokens(user._id.toString())

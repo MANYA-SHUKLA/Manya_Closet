@@ -8,7 +8,6 @@ export const getCategories = async (_req: Request, res: Response) => {
     .sort({ sortOrder: 1, name: 1 })
     .populate('parent', 'name slug')
 
-  // Attach product counts
   const slugs = categories.map((c) => c.slug)
   const counts = await ProductModel.aggregate([
     { $match: { isActive: true, category: { $in: slugs } } },

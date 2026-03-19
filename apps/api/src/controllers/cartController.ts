@@ -16,7 +16,6 @@ export const addToCart = async (req: Request, res: Response) => {
   const product = await ProductModel.findById(productId)
   if (!product || !product.isActive) throw new AppError('Product not found', 404)
 
-  // Check variant stock
   const variant = product.variants.find((v) => v.size === size && v.color === color)
   if (!variant) throw new AppError('Selected size/color not available', 400)
 
@@ -59,7 +58,6 @@ export const updateCartItem = async (req: Request, res: Response) => {
   const item = cart.items.find((i) => i._id?.toString() === req.params.itemId)
   if (!item) throw new AppError('Item not found', 404)
 
-  // Verify stock for new quantity
   const product = await ProductModel.findById(item.product)
   if (product) {
     const variant = product.variants.find((v) => v.size === item.size && v.color === item.color)
@@ -89,9 +87,7 @@ export const clearCart = async (req: Request, res: Response) => {
   res.json({ success: true, message: 'Cart cleared' })
 }
 
-/** Merge guest cart items into the authenticated user's DB cart (called after login) */
 export const mergeCart = async (req: Request, res: Response) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const userId = (req.user as any)._id
   const { items } = req.body as {
     items: { productId: string; quantity: number; size: string; color: string }[]
@@ -115,7 +111,7 @@ export const mergeCart = async (req: Request, res: Response) => {
     const existingIdx = cart.items.findIndex(
       (i) => i.product.toString() === item.productId && i.size === item.size && i.color === item.color
     )
-    if (existingIdx >= 0) continue // keep existing DB quantity, don't override
+    if (existingIdx >= 0) continue
 
     const qty = Math.min(item.quantity, variant.stock)
     cart.items.push({
