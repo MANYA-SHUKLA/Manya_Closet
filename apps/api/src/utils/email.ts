@@ -341,6 +341,60 @@ export const sendNewOrderAdminNotification = async (order: OrderEmailData, userN
   })
 }
 
+export const sendReturnRequestAdminNotification = async (
+  orderId: string,
+  userName: string,
+  userEmail: string,
+  reason: string,
+  orderTotal: number,
+) => {
+  const adminEmail = env.ADMIN_EMAIL || env.SMTP_USER
+  if (!adminEmail) return
+  const shortId = orderId.slice(-8).toUpperCase()
+  await transporter.sendMail({
+    from: `"Manya's Closet" <${env.SMTP_USER}>`,
+    to: adminEmail,
+    subject: `↩️ Return Requested — Order #${shortId} by ${userName}`,
+    html: `
+      <div style="font-family:sans-serif;max-width:520px;margin:auto;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden">
+        ${BRAND_HEADER}
+        <div style="padding:32px;background:#fff">
+          <div style="font-size:40px;text-align:center;margin-bottom:16px">↩️</div>
+          <h2 style="color:#111827;text-align:center;margin:0 0 8px">Return Requested</h2>
+          <p style="color:#6b7280;text-align:center;margin:0 0 28px">A customer has requested a return for their order.</p>
+
+          <div style="background:#f9fafb;border-radius:12px;padding:20px;margin-bottom:20px;border:1px solid #f3f4f6">
+            <table style="width:100%;border-collapse:collapse">
+              <tr>
+                <td style="padding:5px 0;font-size:13px;color:#9ca3af;width:110px">Order ID</td>
+                <td style="padding:5px 0;font-size:13px;color:#111827;font-weight:600">#${shortId}</td>
+              </tr>
+              <tr>
+                <td style="padding:5px 0;font-size:13px;color:#9ca3af">Customer</td>
+                <td style="padding:5px 0;font-size:13px;color:#111827;font-weight:600">${userName} &lt;${userEmail}&gt;</td>
+              </tr>
+              <tr>
+                <td style="padding:5px 0;font-size:13px;color:#9ca3af">Order Total</td>
+                <td style="padding:5px 0;font-size:13px;color:#6366f1;font-weight:700">₹${orderTotal.toLocaleString('en-IN')}</td>
+              </tr>
+            </table>
+          </div>
+
+          <div style="background:#fef3c7;border-radius:12px;padding:16px;margin-bottom:24px;border:1px solid #fcd34d">
+            <p style="margin:0 0 6px;font-size:12px;color:#92400e;font-weight:600;text-transform:uppercase;letter-spacing:1px">Reason</p>
+            <p style="margin:0;color:#78350f;font-size:14px;line-height:1.6">${reason}</p>
+          </div>
+
+          <a href="${env.CLIENT_URL}/admin/orders"
+             style="display:block;padding:14px;background:#6366f1;color:#fff;font-weight:600;border-radius:12px;text-decoration:none;text-align:center;font-size:14px">
+            Review Order →
+          </a>
+        </div>
+      </div>
+    `,
+  })
+}
+
 export const sendLoginNotification = async (userName: string, userEmail: string, ip: string) => {
   const adminEmail = env.ADMIN_EMAIL || env.SMTP_USER
   const loginTime = new Date().toLocaleString('en-IN', {

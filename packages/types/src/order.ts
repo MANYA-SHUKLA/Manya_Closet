@@ -4,6 +4,7 @@ export type OrderStatus =
   | 'processing'
   | 'shipped'
   | 'delivered'
+  | 'return_requested'
   | 'cancelled'
   | 'refunded'
 

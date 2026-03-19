@@ -8,7 +8,7 @@ import { UserModel } from '../models/User'
 import { AppError } from '../middleware/error'
 import { env } from '../config/env'
 import { calculateDiscount } from '../utils/calculateDiscount'
-import { sendOrderConfirmation, sendOrderStatusUpdate, sendNewOrderAdminNotification } from '../utils/email'
+import { sendOrderConfirmation, sendOrderStatusUpdate, sendNewOrderAdminNotification, sendReturnRequestAdminNotification } from '../utils/email'
 import { getIO } from '../sockets'
 
 const DELIVERY_OPTIONS: Record<string, { label: string; charge: number; days: string }> = {
@@ -271,6 +271,29 @@ export const cancelOrder = async (req: Request, res: Response) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const u = req.user as any
   sendOrderStatusUpdate(String(order._id), 'cancelled', u.name, u.email).catch(() => null)
+
+  res.json({ success: true, data: order })
+}
+
+export const requestReturn = async (req: Request, res: Response) => {
+  const { reason } = req.body
+  if (!reason?.trim()) throw new AppError('Please provide a reason for the return', 400)
+
+  const order = await OrderModel.findOne({ _id: req.params.id, user: req.user!._id })
+  if (!order) throw new AppError('Order not found', 404)
+  if (order.status !== 'delivered') throw new AppError('Only delivered orders can be returned', 400)
+
+  order.status = 'return_requested'
+  await order.save()
+
+  const u = req.user as any
+  sendReturnRequestAdminNotification(String(order._id), u.name, u.email, reason.trim(), order.total).catch(() => null)
+
+  getIO()?.to('admin').emit('admin:return-request', {
+    orderId: order._id,
+    userName: u.name,
+    total: order.total,
+  })
 
   res.json({ success: true, data: order })
 }
