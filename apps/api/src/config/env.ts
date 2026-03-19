@@ -20,5 +20,4 @@ const envSchema = z.object({
   CLIENT_URL: z.string().default('http://localhost:3000'),
   ADMIN_EMAIL: z.string().optional(),
 })
-
 export const env = envSchema.parse(process.env)
