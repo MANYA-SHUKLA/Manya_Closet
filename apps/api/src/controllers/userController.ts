@@ -32,7 +32,6 @@ export const getAddresses = async (req: Request, res: Response) => {
 
 export const addAddress = async (req: Request, res: Response) => {
   const { isDefault, ...rest } = req.body
-  // If this is the default, clear all other defaults first
   if (isDefault) {
     await UserModel.updateOne(
       { _id: req.user!._id },

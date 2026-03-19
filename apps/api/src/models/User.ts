@@ -77,7 +77,7 @@ UserSchema.methods.comparePassword = function (password: string) {
 UserSchema.methods.createPasswordResetToken = function () {
   const token = crypto.randomBytes(32).toString('hex')
   this.passwordResetToken = crypto.createHash('sha256').update(token).digest('hex')
-  this.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000) // 10 min
+  this.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000)
   return token
 }
 

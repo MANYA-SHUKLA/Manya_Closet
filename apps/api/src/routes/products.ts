@@ -10,7 +10,6 @@ import { authenticate, authorize } from '../middleware/auth'
 
 const router: Router = Router()
 
-// Static routes before /:slug to avoid slug matching
 router.get('/filters', getProductFilters)
 router.get('/search/autocomplete', autocomplete)
 router.get('/low-stock', authenticate, authorize('admin'), getLowStock)

@@ -9,9 +9,7 @@ export const getWishlist = async (req: Request, res: Response) => {
   res.json({ success: true, data: wishlist?.products ?? [] })
 }
 
-/** Add guest wishlist items to DB without removing any (called after login) */
 export const syncWishlist = async (req: Request, res: Response) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const userId = (req.user as any)._id
   const { productIds } = req.body as { productIds: string[] }
 
@@ -22,7 +20,6 @@ export const syncWishlist = async (req: Request, res: Response) => {
 
   for (const pid of productIds) {
     if (!wishlist.products.some((p) => p.toString() === pid)) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       wishlist.products.push(pid as any)
     }
   }

@@ -17,7 +17,6 @@ router.post('/me/addresses', addAddress)
 router.put('/me/addresses/:addressId', updateAddress)
 router.delete('/me/addresses/:addressId', deleteAddress)
 
-// Admin
 router.get('/', authorize('admin'), getAllUsers)
 
 export default router
