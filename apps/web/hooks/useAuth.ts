@@ -18,11 +18,12 @@ async function mergeGuestData(qc: ReturnType<typeof useQueryClient>) {
         color: item.color,
       }))
       await api.post('/cart/merge', { items: cartItems })
+      useCartStore.getState().clear()
+      qc.invalidateQueries({ queryKey: ['cart'] })
     } catch {
-      // ignore merge errors — DB cart already has items
+      // merge failed — keep local cart, still refresh from DB
+      qc.invalidateQueries({ queryKey: ['cart'] })
     }
-    useCartStore.getState().clear()
-    qc.invalidateQueries({ queryKey: ['cart'] })
   }
 
   const localWishlistIds = useWishlistStore.getState().ids
