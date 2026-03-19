@@ -317,12 +317,10 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
   const order = await OrderModel.findByIdAndUpdate(req.params.id, update, { new: true })
   if (!order) throw new AppError('Order not found', 404)
 
-  // Restore stock if admin cancels or refunds
   if (status === 'cancelled' || status === 'refunded') {
     await restoreStock(order.items)
   }
 
-  // Email user on notable status changes
   if (status && ['confirmed', 'shipped', 'delivered', 'cancelled', 'refunded'].includes(status)) {
     const user = await UserModel.findById(order.user).select('name email')
     if (user) {
