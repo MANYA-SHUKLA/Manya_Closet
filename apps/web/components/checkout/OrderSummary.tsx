@@ -16,7 +16,6 @@ export default function OrderSummary() {
 
   return (
     <div className="bg-white border border-gray-100 rounded-3xl overflow-hidden sticky top-24 shadow-sm">
-      {/* Header */}
       <div className="px-6 pt-6 pb-4 border-b border-gray-100 bg-gray-50">
         <h2 className="font-bold text-lg text-gray-900">Order Summary</h2>
         <p className="text-gray-400 text-xs mt-0.5">{items.length} {items.length === 1 ? 'item' : 'items'}</p>
