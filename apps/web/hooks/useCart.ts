@@ -73,7 +73,7 @@ export const useAddToCart = () => {
     },
     onSuccess: (cart) => {
       if (cart) {
-        qc.setQueryData(['cart'], { data: cart })
+        qc.setQueryData(['cart'], cart)
         useCartStore.getState().setCart(cart.items, cart.total)
       }
     },
@@ -94,7 +94,7 @@ export const useUpdateCartItem = () => {
     },
     onSuccess: (cart) => {
       if (cart) {
-        qc.setQueryData(['cart'], { data: cart })
+        qc.setQueryData(['cart'], cart)
         useCartStore.getState().setCart(cart.items, cart.total)
       }
     },
@@ -115,7 +115,7 @@ export const useRemoveCartItem = () => {
     },
     onSuccess: (cart) => {
       if (cart) {
-        qc.setQueryData(['cart'], { data: cart })
+        qc.setQueryData(['cart'], cart)
         useCartStore.getState().setCart(cart.items, cart.total)
       }
     },
