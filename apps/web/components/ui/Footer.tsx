@@ -91,7 +91,6 @@ export default function Footer() {
   return (
     <footer className="bg-[#0f0e1e] text-gray-500">
 
-      {/* Newsletter banner */}
       <div className="border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div>
