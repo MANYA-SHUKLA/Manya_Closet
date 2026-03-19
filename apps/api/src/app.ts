@@ -52,7 +52,9 @@ app.get('/', (_req, res) => res.json({
   health: '/health'
 }))
 
-app.use('/swagger', express.static(path.join(__dirname, '..', 'swagger.yaml')))
+app.get('/swagger', (_req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'swagger.yaml'))
+})
 
 app.use('/api', routes)
 
