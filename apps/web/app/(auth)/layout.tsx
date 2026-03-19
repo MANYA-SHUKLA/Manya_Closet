@@ -32,7 +32,6 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         </div>
       </div>
 
-      {/* Right — form panel */}
       <div className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-md">
           <Link href="/" className="lg:hidden text-lg font-bold text-neutral-900 block mb-8">
