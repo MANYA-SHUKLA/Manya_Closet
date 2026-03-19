@@ -348,7 +348,6 @@ export default function AdminProductsPage() {
         <StockModal product={stockProduct} onClose={() => { setStockProduct(null); refetch() }} />
       )}
 
-      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Products</h1>
@@ -366,7 +365,6 @@ export default function AdminProductsPage() {
         </button>
       </div>
 
-      {/* Filters */}
       <div className="flex gap-3 mb-6">
         <form onSubmit={handleSearch} className="flex-1 flex gap-2">
           <input
@@ -390,7 +388,6 @@ export default function AdminProductsPage() {
         </select>
       </div>
 
-      {/* Table */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
         <table className="w-full text-sm">
@@ -471,7 +468,6 @@ export default function AdminProductsPage() {
         </table>
         </div>
 
-        {/* Pagination */}
         {pagination && pagination.totalPages > 1 && (
           <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between text-sm">
             <span className="text-gray-500">

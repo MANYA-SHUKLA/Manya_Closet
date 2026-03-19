@@ -34,13 +34,11 @@ export default function AdminUsersPage() {
 
   return (
     <div className="p-4 sm:p-8">
-      {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Users</h1>
         {pagination && <p className="text-sm text-gray-500 mt-0.5">{pagination.total} total</p>}
       </div>
 
-      {/* Filters */}
       <div className="flex gap-3 mb-6 flex-wrap">
         <form onSubmit={handleSearch} className="flex gap-2 flex-1 min-w-[200px]">
           <input
@@ -75,7 +73,6 @@ export default function AdminUsersPage() {
         </select>
       </div>
 
-      {/* Table */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
         <table className="w-full text-sm">
