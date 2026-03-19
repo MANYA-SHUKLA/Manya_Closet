@@ -5,7 +5,7 @@ const CATEGORIES = [
     name: 'Tops',
     slug: 'tops',
     count: '120+ styles',
-    image: 'https://images.unsplash.com/photo-1562572159-4efd90fdafc7?w=600&q=80',
+    image: 'https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcSI7B2elbamEzW7MBu0RYenv_URJgsGuuSB039hE56MSl0KPm9lMxJJCxxBlKFDwt3HBLa41JamzumqJ41W94L3JjIstJgo-SGGNrH1cHM',
     color: 'from-rose-900/80',
   },
   {
