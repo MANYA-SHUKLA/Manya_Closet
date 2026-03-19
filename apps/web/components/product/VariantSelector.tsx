@@ -23,7 +23,6 @@ export default function VariantSelector({ variants, selectedSize, selectedColor,
 
   return (
     <div className="space-y-5">
-      {/* Size */}
       {sizes.length > 0 && (
         <div>
           <div className="flex justify-between items-center mb-2">
@@ -58,7 +57,6 @@ export default function VariantSelector({ variants, selectedSize, selectedColor,
         </div>
       )}
 
-      {/* Color */}
       {colors.length > 0 && (
         <div>
           <p className="text-sm font-semibold text-neutral-700 mb-2">
@@ -82,7 +80,6 @@ export default function VariantSelector({ variants, selectedSize, selectedColor,
         </div>
       )}
 
-      {/* Stock indicator */}
       {selectedStock !== null && (
         <div className={`flex items-center gap-2 text-sm font-medium ${
           selectedStock > 10 ? 'text-emerald-600' :

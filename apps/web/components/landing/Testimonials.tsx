@@ -136,7 +136,6 @@ export default function Testimonials() {
             </div>
           </div>
 
-          {/* Reviewer thumbnails — right column */}
           <div className="lg:col-span-2 flex flex-col gap-4">
             {TESTIMONIALS.map((t, i) => (
               <button
@@ -169,7 +168,6 @@ export default function Testimonials() {
           </div>
         </div>
 
-        {/* Trust badges */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {TRUST_ITEMS.map(({ icon, title, desc }) => (
             <div key={title} className="flex flex-col items-center text-center p-6 bg-white rounded-2xl border border-gray-100">

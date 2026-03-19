@@ -4,6 +4,6 @@ import { useRecentlyViewedStore, RecentProduct } from '@/store/recentlyViewedSto
 
 export default function TrackRecentlyViewed({ product }: { product: RecentProduct }) {
   const add = useRecentlyViewedStore((s) => s.add)
-  useEffect(() => { add(product) }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { add(product) }, [])
   return null
 }

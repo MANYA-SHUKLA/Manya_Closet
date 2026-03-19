@@ -10,7 +10,6 @@ export default function ProductDetailClient({ product }: { product: IProduct }) 
   const [selectedColor, setSelectedColor] = useState('')
   const [showModal, setShowModal] = useState(false)
 
-  // Modal-local selections (start from whatever is already chosen)
   const [modalSize, setModalSize] = useState('')
   const [modalColor, setModalColor] = useState('')
 
@@ -44,7 +43,6 @@ export default function ProductDetailClient({ product }: { product: IProduct }) 
       size: modalSize,
       color: modalColor,
     })
-    // Sync back to page selections and close
     setSelectedSize(modalSize)
     setSelectedColor(modalColor)
     setShowModal(false)
@@ -77,7 +75,6 @@ export default function ProductDetailClient({ product }: { product: IProduct }) 
         onMissingVariant={openModal}
       />
 
-      {/* Variant picker modal */}
       {showModal && (
         <div
           className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
@@ -87,7 +84,6 @@ export default function ProductDetailClient({ product }: { product: IProduct }) 
             className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header */}
             <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-gray-100">
               <div>
                 <h2 className="font-bold text-gray-900">Choose your {missing}</h2>
@@ -101,7 +97,6 @@ export default function ProductDetailClient({ product }: { product: IProduct }) 
               </button>
             </div>
 
-            {/* Variant selector */}
             <div className="px-6 py-5">
               <VariantSelector
                 variants={product.variants}
@@ -112,7 +107,6 @@ export default function ProductDetailClient({ product }: { product: IProduct }) 
               />
             </div>
 
-            {/* Footer */}
             <div className="px-6 pb-6">
               <button
                 onClick={handleModalAdd}
