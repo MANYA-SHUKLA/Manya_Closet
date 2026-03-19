@@ -238,7 +238,6 @@ export const getOrder = async (req: Request, res: Response) => {
   res.json({ success: true, data: order })
 }
 
-/** User cancels their own order (only if pending/confirmed) */
 export const cancelOrder = async (req: Request, res: Response) => {
   const order = await OrderModel.findOne({ _id: req.params.id, user: req.user!._id })
   if (!order) throw new AppError('Order not found', 404)
@@ -253,7 +252,6 @@ export const cancelOrder = async (req: Request, res: Response) => {
 
   await restoreStock(order.items)
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const u = req.user as any
   sendOrderStatusUpdate(String(order._id), 'cancelled', u.name, u.email).catch(() => null)
 
