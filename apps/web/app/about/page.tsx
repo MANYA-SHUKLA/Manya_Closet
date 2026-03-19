@@ -158,7 +158,6 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Team */}
       <div className="bg-white py-20">
         <div className="max-w-6xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-14">
@@ -181,7 +180,6 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* CTA */}
       <div className="max-w-6xl mx-auto px-6 lg:px-8 py-20 text-center">
         <h2 className="text-4xl font-bold text-gray-900 mb-4"
           style={{ fontFamily: 'var(--font-cormorant), Georgia, serif' }}>
