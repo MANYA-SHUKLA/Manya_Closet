@@ -3,7 +3,7 @@ export default function QuoteSection() {
     <section className="relative py-32 px-6 overflow-hidden">
       {/* Background image */}
       <img
-        src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=90"
+        src="https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcRF-7h60655aTPNkPEl0Dg3j5BYnSRwe-Zi7GJ606Zi0Tv3YHkfEuYEso3JfPHelF82quaB2ykX9B7II4grp4jVG7s9Yfkb5rIfixMXcNLmaXfp_BWhgsfrew"
         alt=""
         className="absolute inset-0 w-full h-full object-cover object-center"
       />
