@@ -90,8 +90,6 @@ export const addReview = async (req: Request, res: Response) => {
   res.status(201).json({ success: true, data: review })
 }
 
-// ── Inventory ────────────────────────────────────────────────────────────────
-
 export const getInventory = async (req: Request, res: Response) => {
   const product = await ProductModel.findById(req.params.id).select('name variants')
   if (!product) throw new AppError('Product not found', 404)
@@ -118,7 +116,6 @@ export const getInventory = async (req: Request, res: Response) => {
 }
 
 export const updateInventory = async (req: Request, res: Response) => {
-  // Body: { updates: [{ variantId, stock }] }
   const { updates } = req.body as { updates: { variantId: string; stock: number }[] }
   if (!Array.isArray(updates) || updates.length === 0) throw new AppError('updates array required', 400)
 
