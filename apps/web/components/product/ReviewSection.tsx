@@ -114,7 +114,6 @@ export default function ReviewSection({ productId, ratings, reviewCount }: {
         </div>
       )}
 
-      {/* Write review — only shown if user hasn't reviewed yet */}
       {user && !userReview && (
         <div className="mb-8">
           {!showForm ? (
@@ -160,7 +159,6 @@ export default function ReviewSection({ productId, ratings, reviewCount }: {
         </div>
       )}
 
-      {/* Review list */}
       {reviews.length === 0 ? (
         <div className="text-center py-12 text-gray-400">
           <div className="text-4xl mb-3">💬</div>
