@@ -64,7 +64,6 @@ export default function AboutPage() {
   return (
     <div className="bg-[#F9FAFB] min-h-screen">
 
-      {/* Hero */}
       <div className="relative bg-[#0f0e1e] overflow-hidden">
         <div className="absolute inset-0 opacity-[0.04]"
           style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '40px 40px' }} />
@@ -83,7 +82,6 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Mission */}
       <div className="max-w-6xl mx-auto px-6 lg:px-8 py-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div>
