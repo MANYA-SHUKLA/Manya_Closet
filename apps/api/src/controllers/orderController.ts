@@ -129,7 +129,6 @@ export const createOrder = async (req: Request, res: Response) => {
     CartModel.findOneAndUpdate({ user: req.user!._id }, { items: [], total: 0 }),
   ])
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const u = req.user as any
   const orderObj = order.toObject() as any
   sendOrderConfirmation(orderObj, u.name, u.email).catch(() => null)
@@ -149,7 +148,6 @@ export const verifyPayment = async (req: Request, res: Response) => {
     shippingAddress, deliveryOption = 'standard', couponCode,
   } = req.body
 
-  // 1. Verify Razorpay signature
   const body = `${razorpay_order_id}|${razorpay_payment_id}`
   const expected = crypto
     .createHmac('sha256', env.RAZORPAY_KEY_SECRET!)
@@ -157,7 +155,6 @@ export const verifyPayment = async (req: Request, res: Response) => {
     .digest('hex')
   if (expected !== razorpay_signature) throw new AppError('Payment verification failed', 400)
 
-  // 2. Re-read cart and recalculate totals
   const cart = await CartModel.findOne({ user: req.user!._id })
   if (!cart || cart.items.length === 0) throw new AppError('Cart not found', 400)
 
@@ -165,7 +162,6 @@ export const verifyPayment = async (req: Request, res: Response) => {
   const delivery = DELIVERY_OPTIONS[deliveryOption] ?? DELIVERY_OPTIONS.standard
   const shippingCharge = subtotal > FREE_SHIPPING_ABOVE && deliveryOption === 'standard' ? 0 : delivery.charge
 
-  // 3. Apply coupon atomically (commits usedCount now)
   let discount = 0
   let appliedCoupon: string | undefined
   if (couponCode) {
