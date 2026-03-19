@@ -44,7 +44,7 @@ router.post('/reset-password', validate(resetSchema), resetPassword)
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'], session: false }))
 router.get(
   '/google/callback',
-  passport.authenticate('google', { failureRedirect: '/login', session: false }),
+  passport.authenticate('google', { failureRedirect: `${process.env.CLIENT_URL ?? 'http://localhost:3001'}/login`, session: false }),
   googleAuthCallback
 )
 

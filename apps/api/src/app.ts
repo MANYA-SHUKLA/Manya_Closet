@@ -4,6 +4,7 @@ import cors from 'cors'
 import helmet from 'helmet'
 import morgan from 'morgan'
 import cookieParser from 'cookie-parser'
+import session from 'express-session'
 import rateLimit from 'express-rate-limit'
 import { env } from './config/env'
 import routes from './routes'
@@ -35,6 +36,14 @@ app.use(
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
+// Session is required by passport-oauth2 to store/verify the OAuth state parameter.
+// User auth remains stateless JWT — session is never used for that.
+app.use(session({
+  secret: env.JWT_ACCESS_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: env.NODE_ENV === 'production', httpOnly: true, sameSite: 'lax' },
+}))
 app.use(passport.initialize())
 
 // Logging
