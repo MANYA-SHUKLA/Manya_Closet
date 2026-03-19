@@ -43,7 +43,7 @@ export default function Navbar() {
           {[
             { href: '/shop', label: 'Shop' },
             { href: '/shop?category=dresses', label: 'Dresses' },
-            { href: '/shop?category=tops', label: 'Tops' },
+            { href: '/shop?category=tops-blouses', label: 'Tops' },
             { href: '/shop?sale=true', label: 'Sale', accent: true },
             { href: '/shop?sort=popular', label: 'Trending' },
           ].map(({ href, label, accent }) => (
@@ -155,7 +155,7 @@ export default function Navbar() {
           {[
             { href: '/shop', label: 'Shop All' },
             { href: '/shop?category=dresses', label: 'Dresses' },
-            { href: '/shop?category=tops', label: 'Tops' },
+            { href: '/shop?category=tops-blouses', label: 'Tops' },
             { href: '/shop?sale=true', label: '🔥 Sale' },
             { href: '/shop?sort=popular', label: 'Trending' },
           ].map(({ href, label }) => (
