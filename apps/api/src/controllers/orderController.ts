@@ -89,7 +89,6 @@ export const createOrder = async (req: Request, res: Response) => {
 
   const total = Math.max(0, subtotal + shippingCharge - discount)
 
-  // ── Razorpay: just create the payment order, NO MongoDB order yet ──
   if (paymentMethod === 'razorpay') {
     const rz = await getRazorpay()
     if (!rz) throw new AppError('Payment gateway unavailable', 503)
