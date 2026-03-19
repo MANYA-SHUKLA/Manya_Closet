@@ -186,9 +186,20 @@ export const getMyOrders = async (req: Request, res: Response) => {
   const limit = Math.min(50, parseInt(req.query.limit as string) || 10)
   const skip = (page - 1) * limit
 
+  // Exclude Razorpay orders where payment is still pending (user abandoned checkout)
+  // COD orders have no razorpayOrderId so are always shown; Razorpay orders only shown after payment
+  const filter: Record<string, unknown> = {
+    user: req.user!._id,
+    $or: [
+      { razorpayOrderId: { $exists: false } },
+      { razorpayOrderId: null },
+      { paymentStatus: { $ne: 'pending' } },
+    ],
+  }
+
   const [orders, total] = await Promise.all([
-    OrderModel.find({ user: req.user!._id }).sort({ createdAt: -1 }).skip(skip).limit(limit),
-    OrderModel.countDocuments({ user: req.user!._id }),
+    OrderModel.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit),
+    OrderModel.countDocuments(filter),
   ])
 
   res.json({

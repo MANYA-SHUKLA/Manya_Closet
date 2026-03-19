@@ -10,9 +10,10 @@ interface Props {
   selectedSize: string
   selectedColor: string
   stock: number
+  onMissingVariant?: () => void
 }
 
-export default function AddToCartButton({ product, selectedSize, selectedColor, stock }: Props) {
+export default function AddToCartButton({ product, selectedSize, selectedColor, stock, onMissingVariant }: Props) {
   const user = useAuthStore((s) => s.user)
   const guestIsWishlisted = useWishlistStore((s) => s.has(product._id))
   const { data: wishlist } = useWishlist()
@@ -22,6 +23,10 @@ export default function AddToCartButton({ product, selectedSize, selectedColor, 
   const isWishlisted = user ? (wishlist?.some((p) => p._id === product._id) ?? false) : guestIsWishlisted
 
   const handleAddToCart = () => {
+    if (!selectedSize || !selectedColor) {
+      onMissingVariant?.()
+      return
+    }
     addToCart({
       productId: product._id,
       name: product.name,
