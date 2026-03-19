@@ -173,7 +173,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </Suspense>
         </div>
 
-        {/* Related Products */}
         {related.length > 0 && (
           <div className="mt-16">
             <h2 className="text-2xl font-bold text-neutral-900 mb-6">You may also like</h2>
