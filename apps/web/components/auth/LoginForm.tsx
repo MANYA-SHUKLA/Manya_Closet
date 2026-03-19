@@ -28,7 +28,7 @@ export default function LoginForm({ redirect }: { redirect?: string }) {
           required
           value={form.email}
           onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-          placeholder="you@example.com"
+          placeholder="shuklamanya99@gmail.com"
           className="w-full px-4 py-3 rounded-xl border border-neutral-200 focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm"
         />
       </div>

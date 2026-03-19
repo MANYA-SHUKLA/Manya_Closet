@@ -76,9 +76,9 @@ export default function ContactPage() {
                     </svg>
                   ),
                   label: 'Email',
-                  value: 'support@manyascloset.in',
+                  value: 'shuklamanya99@gmail.com',
                   sub: 'Reply within 24 hours',
-                  href: 'mailto:support@manyascloset.in',
+                  href: 'mailto:shuklamanya99@gmail.com',
                 },
                 {
                   icon: (

@@ -350,7 +350,7 @@ async function seed() {
   }
 
   // ── Admin user (credentials from .env) ──────────────────────────────
-  const ADMIN_EMAIL = process.env.SEED_ADMIN_EMAIL || 'admin@manyascloset.com'
+  const ADMIN_EMAIL = process.env.SEED_ADMIN_EMAIL || 'shuklamanya99@gmail.com'
   const ADMIN_PASS  = process.env.SEED_ADMIN_PASS  || 'Admin@2026'
   const existingAdmin = await UserModel.findOne({ email: ADMIN_EMAIL })
   if (existingAdmin) {

@@ -37,7 +37,7 @@ export default function SignupForm() {
 
       {[
         { key: 'name', label: 'Full Name', type: 'text', placeholder: 'Manya Shukla' },
-        { key: 'email', label: 'Email', type: 'email', placeholder: 'you@example.com' },
+        { key: 'email', label: 'Email', type: 'email', placeholder: 'shuklamanya99@gmail.com' },
         { key: 'password', label: 'Password', type: 'password', placeholder: '8+ characters' },
         { key: 'confirm', label: 'Confirm Password', type: 'password', placeholder: '••••••••' },
       ].map(({ key, label, type, placeholder }) => (
