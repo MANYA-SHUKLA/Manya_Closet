@@ -121,7 +121,6 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Stats */}
       <div className="bg-indigo-500">
         <div className="max-w-6xl mx-auto px-6 lg:px-8 py-14 grid grid-cols-2 sm:grid-cols-4 gap-8 text-center text-white">
           {[
@@ -138,7 +137,6 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Values */}
       <div className="max-w-6xl mx-auto px-6 lg:px-8 py-20">
         <div className="text-center mb-14">
           <p className="text-indigo-500 text-xs font-semibold uppercase tracking-[0.2em] mb-3">What We Stand For</p>
