@@ -4,9 +4,7 @@ import Image from 'next/image'
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-neutral-50 flex">
-      {/* Left — image panel */}
       <div className="hidden lg:flex lg:w-1/2 relative flex-col justify-between p-12 overflow-hidden">
-        {/* Background image */}
         <Image
           src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1200&q=85"
           alt="Fashion"
@@ -14,10 +12,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           className="object-cover object-center"
           priority
         />
-        {/* Dark gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/70" />
 
-        {/* Content over image */}
         <Link href="/" className="relative text-xl font-bold text-white z-10">
           Manya&apos;s <span className="text-amber-400">Closet</span>
         </Link>
