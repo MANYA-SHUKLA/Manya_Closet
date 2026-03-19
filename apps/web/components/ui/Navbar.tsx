@@ -90,7 +90,7 @@ export default function Navbar() {
               {user.role === 'admin' && (
                 <Link
                   href="/admin"
-                  className="hidden sm:block text-xs font-semibold text-indigo-700 border border-indigo-200 bg-indigo-50 px-3 py-1.5 rounded-full hover:bg-indigo-100 transition-colors"
+                  className="text-xs font-semibold text-indigo-700 border border-indigo-200 bg-indigo-50 px-3 py-1.5 rounded-full hover:bg-indigo-100 transition-colors"
                 >
                   Dashboard
                 </Link>
@@ -164,6 +164,15 @@ export default function Navbar() {
               {label}
             </Link>
           ))}
+          {user?.role === 'admin' && (
+            <>
+              <div className="h-px bg-gray-100 my-1" />
+              <Link href="/admin" onClick={() => setMenuOpen(false)}
+                className="block py-2.5 text-sm font-semibold text-indigo-600 hover:text-indigo-700 transition-colors">
+                Admin Dashboard
+              </Link>
+            </>
+          )}
         </div>
       )}
     </nav>

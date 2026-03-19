@@ -166,7 +166,7 @@ function ProductDrawer({
   return (
     <div className="fixed inset-0 z-50 flex">
       <div className="flex-1 bg-black/40" onClick={onClose} />
-      <div className="w-[520px] bg-white shadow-2xl overflow-y-auto flex flex-col">
+      <div className="w-full sm:w-[520px] bg-white shadow-2xl overflow-y-auto flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 sticky top-0 bg-white z-10">
           <h2 className="font-bold text-gray-900">{product ? 'Edit Product' : 'New Product'}</h2>
@@ -342,7 +342,7 @@ export default function AdminProductsPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-8">
       {drawer.open && (
         <ProductDrawer
           product={drawer.product}
@@ -362,12 +362,13 @@ export default function AdminProductsPage() {
         </div>
         <button
           onClick={() => setDrawer({ open: true, product: null })}
-          className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-semibold transition-colors"
+          className="flex items-center gap-2 px-4 sm:px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-semibold transition-colors flex-shrink-0"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
-          New Product
+          <span className="hidden sm:inline">New Product</span>
+          <span className="sm:hidden">Add</span>
         </button>
       </div>
 
@@ -397,6 +398,7 @@ export default function AdminProductsPage() {
 
       {/* Table */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-gray-50 border-b border-gray-100">
@@ -473,6 +475,7 @@ export default function AdminProductsPage() {
             )}
           </tbody>
         </table>
+        </div>
 
         {/* Pagination */}
         {pagination && pagination.totalPages > 1 && (

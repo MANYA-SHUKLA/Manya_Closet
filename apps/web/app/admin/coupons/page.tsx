@@ -199,7 +199,7 @@ export default function AdminCouponsPage() {
   const totalUsed = coupons.reduce((s, c) => s + c.usedCount, 0)
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-8">
       {drawer.open && (
         <CouponDrawer
           coupon={drawer.coupon}
@@ -241,6 +241,7 @@ export default function AdminCouponsPage() {
 
       {/* Table */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-gray-50 border-b border-gray-100">
@@ -352,6 +353,7 @@ export default function AdminCouponsPage() {
             )}
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   )

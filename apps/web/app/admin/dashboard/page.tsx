@@ -25,7 +25,7 @@ export default function DashboardPage() {
 
   if (isLoading) {
     return (
-      <div className="p-8 space-y-6">
+      <div className="p-4 sm:p-8 space-y-6">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="h-32 bg-white rounded-2xl border border-gray-100 animate-pulse" />
@@ -41,7 +41,7 @@ export default function DashboardPage() {
   const maxSales = Math.max(...salesByDay.map((d) => d.sales), 1)
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-4 sm:p-8 space-y-6 sm:space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
         <p className="text-sm text-gray-500 mt-1">Overview of your store</p>

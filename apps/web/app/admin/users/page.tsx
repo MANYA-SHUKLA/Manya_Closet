@@ -33,7 +33,7 @@ export default function AdminUsersPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-8">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Users</h1>
@@ -77,6 +77,7 @@ export default function AdminUsersPage() {
 
       {/* Table */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-gray-50 border-b border-gray-100">
@@ -156,6 +157,7 @@ export default function AdminUsersPage() {
             )}
           </tbody>
         </table>
+        </div>
 
         {/* Pagination */}
         {pagination && pagination.totalPages > 1 && (
