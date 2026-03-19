@@ -96,7 +96,6 @@ export default function DeliveryOptions() {
                 )}
               </div>
 
-              {/* Radio */}
               <div className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all ${
                 selected ? 'border-indigo-500 bg-indigo-500' : 'border-gray-300'
               }`}>
