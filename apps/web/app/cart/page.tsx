@@ -37,7 +37,6 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
-      {/* Header */}
       <div className="border-b border-gray-100 bg-white sticky top-16 z-40">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -70,7 +69,6 @@ export default function CartPage() {
           <EmptyCart />
         ) : (
           <div className="grid lg:grid-cols-[1fr_380px] gap-10 items-start">
-            {/* Items */}
             <div className="bg-white rounded-3xl border border-gray-100 px-6 shadow-sm">
               {items.map((item) => (
                 <CartItem key={item._id} item={item as never} />
