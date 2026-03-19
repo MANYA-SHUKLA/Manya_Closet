@@ -69,7 +69,6 @@ export const updateReview = async (req: Request, res: Response) => {
 export const deleteReview = async (req: Request, res: Response) => {
   const productId = req.params.productId as string
   const reviewId = req.params.reviewId as string
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const reqUser = req.user as any
 
   const review = await ReviewModel.findOne({ _id: reviewId, product: productId })
