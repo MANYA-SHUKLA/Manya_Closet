@@ -10,7 +10,7 @@ export const useOrders = () =>
       const { data } = await api.get<{ success: boolean; data: IOrder[] }>('/orders')
       return data.data
     },
-    staleTime: 2 * 60 * 1000,
+    staleTime: 0,
   })
 
 export const useOrder = (id: string) =>
