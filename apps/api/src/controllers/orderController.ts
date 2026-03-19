@@ -203,7 +203,6 @@ export const verifyPayment = async (req: Request, res: Response) => {
     CartModel.findOneAndUpdate({ user: req.user!._id }, { items: [], total: 0 }),
   ])
 
-  // 6. Send emails & socket event
   const u = req.user as any
   const orderObj = order.toObject() as any
   sendOrderConfirmation(orderObj, u.name, u.email).catch(() => null)
