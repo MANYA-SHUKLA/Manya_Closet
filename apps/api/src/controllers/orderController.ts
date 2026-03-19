@@ -308,7 +308,6 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
   if (status) update.status = status
   if (paymentStatus) update.paymentStatus = paymentStatus
 
-  // COD orders: auto-mark payment as paid when delivered
   const existing = await OrderModel.findById(req.params.id)
   if (!existing) throw new AppError('Order not found', 404)
   if (status === 'delivered' && !existing.razorpayOrderId && existing.paymentStatus === 'pending') {
