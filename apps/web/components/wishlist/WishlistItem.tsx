@@ -19,8 +19,8 @@ export default function WishlistItem({ product }: { product: IProduct }) {
       api.post('/cart', {
         productId: product._id,
         quantity: 1,
-        size: product.variants[0]?.size ?? '',
-        color: product.variants[0]?.color ?? '',
+        size: product.variants?.[0]?.size ?? '',
+        color: product.variants?.[0]?.color ?? '',
       }),
     onSuccess: ({ data }) => {
       useCartStore.getState().setCart(data.data.items, data.data.total)
@@ -35,7 +35,7 @@ export default function WishlistItem({ product }: { product: IProduct }) {
     : null
 
   const imgSrc = product.images[0] || getFallbackImage(product._id)
-  const totalStock = product.variants.reduce((s, v) => s + v.stock, 0)
+  const totalStock = (product.variants ?? []).reduce((s, v) => s + v.stock, 0)
 
   if (moved) return null
 
