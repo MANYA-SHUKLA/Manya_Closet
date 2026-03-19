@@ -38,7 +38,6 @@ export default function SortBar({ total, onFilterClick }: { total: number; onFil
         </p>
       </div>
 
-      {/* Sort pills */}
       <div className="flex items-center gap-2 overflow-x-auto pb-0.5">
         <span className="text-xs text-neutral-400 whitespace-nowrap hidden sm:block">Sort by:</span>
         {SORTS.map(({ value, label }) => (
