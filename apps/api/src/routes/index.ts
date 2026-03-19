@@ -10,6 +10,7 @@ import couponRoutes from './coupons'
 import newsletterRoutes from './newsletter'
 import reviewRoutes from './reviews'
 import adminRoutes from './admin'
+import contactRoutes from './contact'
 
 const router: Router = Router()
 
@@ -24,5 +25,6 @@ router.use('/users', userRoutes)
 router.use('/wishlist', wishlistRoutes)
 router.use('/coupons', couponRoutes)
 router.use('/newsletter', newsletterRoutes)
+router.use('/contact', contactRoutes)
 
 export default router

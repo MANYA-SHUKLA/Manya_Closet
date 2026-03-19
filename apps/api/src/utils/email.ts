@@ -211,6 +211,74 @@ export const sendOrderStatusUpdate = async (
   })
 }
 
+export const sendContactEmailToAdmin = async (
+  name: string,
+  email: string,
+  subject: string,
+  message: string
+) => {
+  const adminEmail = env.ADMIN_EMAIL || env.SMTP_USER
+  if (!adminEmail) return
+  await transporter.sendMail({
+    from: `"Manya's Closet" <${env.SMTP_USER}>`,
+    to: adminEmail,
+    subject: `📩 Contact Form: ${subject} — from ${name}`,
+    html: `
+      <div style="font-family:sans-serif;max-width:520px;margin:auto;padding:0;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden">
+        ${BRAND_HEADER}
+        <div style="padding:32px;background:#fff">
+          <h2 style="color:#111827;margin:0 0 20px">New Contact Message</h2>
+          <div style="background:#f9fafb;border-radius:12px;padding:16px;margin-bottom:16px">
+            <p style="margin:0 0 4px;font-size:12px;color:#9ca3af;text-transform:uppercase;letter-spacing:1px">From</p>
+            <p style="margin:0;font-weight:600;color:#111827">${name} &lt;${email}&gt;</p>
+          </div>
+          <div style="background:#f9fafb;border-radius:12px;padding:16px;margin-bottom:16px">
+            <p style="margin:0 0 4px;font-size:12px;color:#9ca3af;text-transform:uppercase;letter-spacing:1px">Subject</p>
+            <p style="margin:0;font-weight:600;color:#111827">${subject}</p>
+          </div>
+          <div style="background:#f9fafb;border-radius:12px;padding:16px">
+            <p style="margin:0 0 8px;font-size:12px;color:#9ca3af;text-transform:uppercase;letter-spacing:1px">Message</p>
+            <p style="margin:0;color:#374151;line-height:1.7;font-size:14px">${message.replace(/\n/g, '<br/>')}</p>
+          </div>
+          <a href="mailto:${email}" style="display:block;margin-top:24px;padding:14px;background:#6366f1;color:#fff;font-weight:600;border-radius:12px;text-decoration:none;text-align:center;font-size:14px">
+            Reply to ${name} →
+          </a>
+        </div>
+      </div>
+    `,
+  })
+}
+
+export const sendContactConfirmationToUser = async (name: string, email: string, subject: string) => {
+  await transporter.sendMail({
+    from: `"Manya's Closet" <${env.SMTP_USER}>`,
+    to: email,
+    subject: `We received your message — Manya's Closet`,
+    html: `
+      <div style="font-family:sans-serif;max-width:520px;margin:auto;padding:0;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden">
+        ${BRAND_HEADER}
+        <div style="padding:32px;background:#fff">
+          <h2 style="color:#111827;margin:0 0 12px">Thanks for reaching out, ${name}!</h2>
+          <p style="color:#6b7280;line-height:1.7;margin:0 0 24px">
+            We've received your message about <strong style="color:#111827">"${subject}"</strong> and will get back to you within <strong style="color:#111827">24 hours</strong>.
+          </p>
+          <div style="background:#eef2ff;border-radius:12px;padding:16px;margin-bottom:28px">
+            <p style="margin:0;font-size:13px;color:#6366f1;text-align:center">
+              In the meantime, check our <a href="${env.CLIENT_URL}/contact" style="color:#6366f1;font-weight:600">FAQ section</a> — your question might already be answered!
+            </p>
+          </div>
+          <a href="${env.CLIENT_URL}/shop" style="display:block;padding:14px;background:#6366f1;color:#fff;font-weight:600;border-radius:12px;text-decoration:none;text-align:center;font-size:14px">
+            Continue Shopping →
+          </a>
+        </div>
+        <div style="background:#f9fafb;padding:16px;text-align:center">
+          <p style="margin:0;font-size:12px;color:#9ca3af">© 2026 Manya's Closet</p>
+        </div>
+      </div>
+    `,
+  })
+}
+
 export const sendPasswordResetEmail = async (email: string, token: string) => {
   const resetUrl = `${env.CLIENT_URL}/reset-password?token=${token}`
   await transporter.sendMail({
