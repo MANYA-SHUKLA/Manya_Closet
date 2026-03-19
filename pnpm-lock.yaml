@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      strip-comments:
+        specifier: ^2.0.1
+        version: 2.0.1
       turbo:
         specifier: ^2.3.3
         version: 2.8.17
@@ -1461,6 +1464,10 @@ packages:
     resolution: {integrity: sha512-DvEy55V3DB7uknRo+4iOGT5fP1slR8wQohVdknigZPMpMstaKJQWhwiYBACJE3Ul2pTnATihhBYnRhZQHGBiRw==}
     engines: {node: '>= 0.8'}
 
+  strip-comments@2.0.1:
+    resolution: {integrity: sha512-ZprKx+bBLXv067WTCALv8SSz5l2+XhpYCsVtSqlMnkAXMWDq+/ekVbl1ghqP9rUHTzv6sm/DwCOiYutU/yp1fw==}
+    engines: {node: '>=10'}
+
   styled-jsx@5.1.6:
     resolution: {integrity: sha512-qSVyDTeMotdvQYoHWLNGwRFJHC+i+ZvdBRYosOFgC+Wg1vx4frN2/RG/NA7SYqqvKNLf39P2LSRA2pu6n0XYZA==}
     engines: {node: '>= 12.0.0'}
@@ -2825,6 +2832,8 @@ snapshots:
       memory-pager: 1.5.0
 
   statuses@2.0.2: {}
+
+  strip-comments@2.0.1: {}
 
   styled-jsx@5.1.6(react@19.2.3):
     dependencies:
