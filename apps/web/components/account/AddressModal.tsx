@@ -111,7 +111,6 @@ export default function AddressModal({ open, initial, onClose, onSave, saving }:
             <Field label="Country" value={form.country} onChange={(v) => set('country', v)} required />
           </div>
 
-          {/* Default */}
           <label className="flex items-center gap-3 cursor-pointer">
             <input
               type="checkbox"

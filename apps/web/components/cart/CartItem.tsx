@@ -24,7 +24,6 @@ export default function CartItem({ item }: { item: Item }) {
 
   return (
     <div className={`flex gap-5 py-6 border-b border-neutral-100 last:border-0 transition-opacity ${removing ? 'opacity-40' : ''}`}>
-      {/* Image */}
       <div className="w-24 h-28 flex-shrink-0 rounded-2xl overflow-hidden bg-neutral-100">
         <img
           src={item.image || FALLBACK_IMAGES[0]}
