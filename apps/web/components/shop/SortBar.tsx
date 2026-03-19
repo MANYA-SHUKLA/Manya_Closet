@@ -24,7 +24,6 @@ export default function SortBar({ total, onFilterClick }: { total: number; onFil
   return (
     <div className="flex items-center justify-between gap-4 py-4 border-b border-neutral-100">
       <div className="flex items-center gap-3">
-        {/* Mobile filter button */}
         <button
           onClick={onFilterClick}
           className="lg:hidden flex items-center gap-2 px-4 py-2 border border-neutral-200 rounded-xl text-sm font-medium text-neutral-700 hover:bg-neutral-50"

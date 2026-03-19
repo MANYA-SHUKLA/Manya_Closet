@@ -10,7 +10,6 @@ export default function ProductGrid({ filters }: { filters: ProductFilters }) {
 
   const sentinelRef = useRef<HTMLDivElement>(null)
 
-  // Infinite scroll via Intersection Observer
   useEffect(() => {
     const el = sentinelRef.current
     if (!el) return
@@ -52,7 +51,6 @@ export default function ProductGrid({ filters }: { filters: ProductFilters }) {
           Array.from({ length: 4 }).map((_, i) => <ProductCardSkeleton key={`sk-${i}`} />)}
       </div>
 
-      {/* Infinite scroll sentinel */}
       <div ref={sentinelRef} className="h-1" />
 
       {!hasNextPage && products.length > 0 && (
