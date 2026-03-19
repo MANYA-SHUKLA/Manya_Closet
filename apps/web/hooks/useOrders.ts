@@ -7,7 +7,7 @@ export const useOrders = () =>
   useQuery({
     queryKey: ['orders'],
     queryFn: async () => {
-      const { data } = await api.get<{ success: boolean; data: IOrder[] }>('/orders')
+      const { data } = await api.get<{ success: boolean; data: IOrder[] }>('/orders/my')
       return data.data
     },
     staleTime: 0,
