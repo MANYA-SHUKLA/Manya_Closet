@@ -62,7 +62,7 @@ export const createOrder = async (req: Request, res: Response) => {
   const delivery = DELIVERY_OPTIONS[deliveryOption] ?? DELIVERY_OPTIONS.standard
   const shippingCharge = subtotal > FREE_SHIPPING_ABOVE && deliveryOption === 'standard' ? 0 : delivery.charge
 
-  // Verify stock availability before placing order
+  // Verify stock availability
   for (const item of cart.items) {
     const product = await ProductModel.findById(item.product)
     if (!product || !product.isActive) throw new AppError(`Product "${item.name}" is no longer available`, 400)
@@ -72,7 +72,108 @@ export const createOrder = async (req: Request, res: Response) => {
     }
   }
 
-  // Apply coupon — atomic: only increments usedCount if all conditions pass
+  // Calculate coupon discount (don't commit usedCount yet for Razorpay — committed on verifyPayment)
+  let discount = 0
+  let appliedCoupon: string | undefined
+  if (couponCode) {
+    const coupon = await CouponModel.findOne({
+      code: couponCode.toUpperCase(),
+      isActive: true,
+      expiresAt: { $gte: new Date() },
+      $expr: { $lt: ['$usedCount', '$maxUses'] },
+      minOrderAmount: { $lte: subtotal },
+    })
+    if (coupon) {
+      discount = calculateDiscount(coupon, subtotal)
+      appliedCoupon = coupon.code
+      // For COD commit the coupon use immediately
+      if (paymentMethod === 'cod') {
+        await CouponModel.updateOne({ _id: coupon._id }, { $inc: { usedCount: 1 } })
+      }
+    }
+  }
+
+  const total = Math.max(0, subtotal + shippingCharge - discount)
+
+  // ── Razorpay: just create the payment order, NO MongoDB order yet ──
+  if (paymentMethod === 'razorpay') {
+    const rz = await getRazorpay()
+    if (!rz) throw new AppError('Payment gateway unavailable', 503)
+
+    const rzOrder = await rz.orders.create({
+      amount: total * 100,
+      currency: 'INR',
+      receipt: `rcpt_${Date.now()}`,
+    })
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        razorpayOrderId: rzOrder.id,
+        key: env.RAZORPAY_KEY_ID,
+        amount: total * 100,
+        deliveryLabel: delivery.label,
+        estimatedDelivery: delivery.days,
+        appliedCoupon,
+      },
+    })
+  }
+
+  // ── COD: save order immediately ────────────────────────────────────
+  const order = await OrderModel.create({
+    user: req.user!._id,
+    items: cart.items,
+    shippingAddress,
+    subtotal,
+    shippingCharge,
+    discount,
+    total,
+    status: 'confirmed',
+    paymentStatus: 'pending',
+  })
+
+  await Promise.all([
+    decrementStock(cart.items),
+    CartModel.findOneAndUpdate({ user: req.user!._id }, { items: [], total: 0 }),
+  ])
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const u = req.user as any
+  const orderObj = order.toObject() as any
+  sendOrderConfirmation(orderObj, u.name, u.email).catch(() => null)
+  sendNewOrderAdminNotification(orderObj, u.name, u.email).catch(() => null)
+
+  getIO()?.to('admin').emit('admin:new-order', { orderId: order._id, total: order.total, status: order.status })
+
+  res.status(201).json({
+    success: true,
+    data: { order, deliveryLabel: delivery.label, estimatedDelivery: delivery.days, appliedCoupon },
+  })
+}
+
+export const verifyPayment = async (req: Request, res: Response) => {
+  const {
+    razorpay_order_id, razorpay_payment_id, razorpay_signature,
+    shippingAddress, deliveryOption = 'standard', couponCode,
+  } = req.body
+
+  // 1. Verify Razorpay signature
+  const body = `${razorpay_order_id}|${razorpay_payment_id}`
+  const expected = crypto
+    .createHmac('sha256', env.RAZORPAY_KEY_SECRET!)
+    .update(body)
+    .digest('hex')
+  if (expected !== razorpay_signature) throw new AppError('Payment verification failed', 400)
+
+  // 2. Re-read cart and recalculate totals
+  const cart = await CartModel.findOne({ user: req.user!._id })
+  if (!cart || cart.items.length === 0) throw new AppError('Cart not found', 400)
+
+  const subtotal = cart.total
+  const delivery = DELIVERY_OPTIONS[deliveryOption] ?? DELIVERY_OPTIONS.standard
+  const shippingCharge = subtotal > FREE_SHIPPING_ABOVE && deliveryOption === 'standard' ? 0 : delivery.charge
+
+  // 3. Apply coupon atomically (commits usedCount now)
   let discount = 0
   let appliedCoupon: string | undefined
   if (couponCode) {
@@ -95,19 +196,7 @@ export const createOrder = async (req: Request, res: Response) => {
 
   const total = Math.max(0, subtotal + shippingCharge - discount)
 
-  let razorpayOrderId: string | undefined
-  if (paymentMethod === 'razorpay') {
-    const rz = await getRazorpay()
-    if (rz) {
-      const rzOrder = await rz.orders.create({
-        amount: total * 100,
-        currency: 'INR',
-        receipt: `rcpt_${Date.now()}`,
-      })
-      razorpayOrderId = rzOrder.id
-    }
-  }
-
+  // 4. Create the order in MongoDB now that payment is confirmed
   const order = await OrderModel.create({
     user: req.user!._id,
     items: cart.items,
@@ -116,73 +205,27 @@ export const createOrder = async (req: Request, res: Response) => {
     shippingCharge,
     discount,
     total,
-    razorpayOrderId,
-    status: paymentMethod === 'cod' ? 'confirmed' : 'pending',
-    paymentStatus: paymentMethod === 'cod' ? 'pending' : 'pending',
+    razorpayOrderId: razorpay_order_id,
+    paymentId: razorpay_payment_id,
+    status: 'confirmed',
+    paymentStatus: 'paid',
   })
 
-  // Decrement stock & clear cart
+  // 5. Decrement stock & clear cart
   await Promise.all([
     decrementStock(cart.items),
     CartModel.findOneAndUpdate({ user: req.user!._id }, { items: [], total: 0 }),
   ])
 
-  // Fire confirmation email for COD (online payment confirmed after verifyPayment)
-  if (paymentMethod === 'cod') {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const u = req.user as any
-    const orderObj = order.toObject() as any
-    sendOrderConfirmation(orderObj, u.name, u.email).catch(() => null)
-    sendNewOrderAdminNotification(orderObj, u.name, u.email).catch(() => null)
-  }
+  // 6. Send emails & socket event
+  const u = req.user as any
+  const orderObj = order.toObject() as any
+  sendOrderConfirmation(orderObj, u.name, u.email).catch(() => null)
+  sendNewOrderAdminNotification(orderObj, u.name, u.email).catch(() => null)
 
-  // Real-time: notify admin room of new order
-  getIO()?.to('admin').emit('admin:new-order', {
-    orderId: order._id,
-    total: order.total,
-    status: order.status,
-  })
+  getIO()?.to('admin').emit('admin:new-order', { orderId: order._id, total: order.total, status: order.status })
 
-  res.status(201).json({
-    success: true,
-    data: {
-      order,
-      razorpayOrderId,
-      key: env.RAZORPAY_KEY_ID,
-      deliveryLabel: delivery.label,
-      estimatedDelivery: delivery.days,
-      appliedCoupon,
-    },
-  })
-}
-
-export const verifyPayment = async (req: Request, res: Response) => {
-  const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId } = req.body
-
-  const body = `${razorpay_order_id}|${razorpay_payment_id}`
-  const expected = crypto
-    .createHmac('sha256', env.RAZORPAY_KEY_SECRET!)
-    .update(body)
-    .digest('hex')
-
-  if (expected !== razorpay_signature) throw new AppError('Payment verification failed', 400)
-
-  const order = await OrderModel.findByIdAndUpdate(
-    orderId,
-    { paymentStatus: 'paid', status: 'confirmed', paymentId: razorpay_payment_id },
-    { new: true }
-  )
-
-  if (order) {
-    const user = await UserModel.findById(order.user).select('name email')
-    if (user) {
-      const orderObj = order.toObject() as any
-      sendOrderConfirmation(orderObj, user.name as string, user.email as string).catch(() => null)
-      sendNewOrderAdminNotification(orderObj, user.name as string, user.email as string).catch(() => null)
-    }
-  }
-
-  res.json({ success: true, data: order })
+  res.json({ success: true, data: { order, appliedCoupon } })
 }
 
 export const getMyOrders = async (req: Request, res: Response) => {
