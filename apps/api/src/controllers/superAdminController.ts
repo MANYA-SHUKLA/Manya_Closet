@@ -51,6 +51,5 @@ export const deleteUser = async (req: Request, res: Response) => {
 }
 
 export const getSystemLogs = async (_req: Request, res: Response) => {
-  // Placeholder — wire to a logging service in production
   res.json({ success: true, data: [], message: 'Connect a logging service (e.g. Winston + MongoDB)' })
 }
