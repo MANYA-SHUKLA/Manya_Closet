@@ -60,25 +60,18 @@ function RefundModal({ order, onConfirm, onClose }: {
   )
 }
 
-function OrderRow({ order, onStatusChange, isUpdating }: {
+function OrderRow({ order, onStatusChange, onRefund, isUpdating }: {
   order: AdminOrder
   onStatusChange: (id: string, status: string) => void
+  onRefund: (order: AdminOrder) => void
   isUpdating: boolean
 }) {
   const [expanded, setExpanded] = useState(false)
-  const [refundModal, setRefundModal] = useState(false)
   const nextOptions = NEXT_STATUS[order.status] ?? []
   const canRefund = order.status === 'delivered' || order.status === 'return_requested'
 
   return (
     <>
-      {refundModal && (
-        <RefundModal
-          order={order}
-          onConfirm={() => { setRefundModal(false); onStatusChange(order._id, 'refunded') }}
-          onClose={() => setRefundModal(false)}
-        />
-      )}
       <tr className={`border-b border-gray-50 hover:bg-gray-50/50 transition-colors cursor-pointer ${expanded ? 'bg-gray-50/50' : ''}`}>
         <td className="px-6 py-4" onClick={() => setExpanded(!expanded)}>
           <div className="flex items-center gap-2">
@@ -119,7 +112,7 @@ function OrderRow({ order, onStatusChange, isUpdating }: {
             {canRefund && (
               <button
                 disabled={isUpdating}
-                onClick={() => setRefundModal(true)}
+                onClick={() => onRefund(order)}
                 className="px-3 py-1.5 text-xs font-medium text-orange-600 hover:text-orange-800 hover:bg-orange-50 rounded-lg transition-colors disabled:opacity-50 border border-orange-200"
               >
                 Refund
@@ -199,6 +192,7 @@ export default function AdminOrdersPage() {
   const [filterStatus, setFilterStatus] = useState('')
   const [page, setPage] = useState(1)
   const [updatingId, setUpdatingId] = useState<string | null>(null)
+  const [refundTarget, setRefundTarget] = useState<AdminOrder | null>(null)
 
   const { data, refetch } = useAdminOrders({ page, status: filterStatus || undefined })
   const { mutate: updateStatus } = useUpdateOrderStatus()
@@ -219,6 +213,13 @@ export default function AdminOrdersPage() {
 
   return (
     <div className="p-4 sm:p-8">
+      {refundTarget && (
+        <RefundModal
+          order={refundTarget}
+          onConfirm={() => { handleStatusChange(refundTarget._id, 'refunded'); setRefundTarget(null) }}
+          onClose={() => setRefundTarget(null)}
+        />
+      )}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Orders</h1>
@@ -268,6 +269,7 @@ export default function AdminOrdersPage() {
                   key={order._id}
                   order={order}
                   onStatusChange={handleStatusChange}
+                  onRefund={setRefundTarget}
                   isUpdating={updatingId === order._id}
                 />
               ))}
