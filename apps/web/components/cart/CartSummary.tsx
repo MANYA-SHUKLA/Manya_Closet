@@ -26,7 +26,6 @@ export default function CartSummary({ subtotal, itemCount }: Props) {
     <div className="bg-neutral-950 text-white rounded-3xl p-7 space-y-6 sticky top-24">
       <h2 className="text-xl font-bold">Order Summary</h2>
 
-      {/* Free shipping progress */}
       {subtotal > 0 && subtotal <= FREE_SHIPPING_ABOVE && (
         <div className="space-y-2">
           <div className="flex justify-between text-xs text-neutral-400">

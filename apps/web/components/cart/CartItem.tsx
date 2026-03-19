@@ -32,7 +32,6 @@ export default function CartItem({ item }: { item: Item }) {
         />
       </div>
 
-      {/* Details */}
       <div className="flex-1 min-w-0">
         <div className="flex justify-between gap-2">
           <div>
@@ -64,9 +63,7 @@ export default function CartItem({ item }: { item: Item }) {
           </button>
         </div>
 
-        {/* Qty + price row */}
         <div className="flex items-center justify-between mt-4">
-          {/* Quantity stepper */}
           <div className="flex items-center gap-1 border border-neutral-200 rounded-xl overflow-hidden">
             <button
               onClick={() => item.quantity > 1 && update({ itemId: item._id, quantity: item.quantity - 1 })}
@@ -93,7 +90,6 @@ export default function CartItem({ item }: { item: Item }) {
             </button>
           </div>
 
-          {/* Line total */}
           <div className="text-right">
             <p className="font-bold text-neutral-900">
               ₹{(item.price * item.quantity).toLocaleString()}
