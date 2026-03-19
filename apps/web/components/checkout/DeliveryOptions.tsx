@@ -83,7 +83,6 @@ export default function DeliveryOptions() {
                 <p className="text-xs text-gray-500 mt-0.5">{desc}</p>
               </div>
 
-              {/* Price */}
               <div className="text-right flex-shrink-0">
                 {fee === 0 ? (
                   <div>
