@@ -48,7 +48,6 @@ export default function ContactPage() {
 
   return (
     <div className="bg-[#F9FAFB] min-h-screen">
-      {/* Header */}
       <div className="bg-[#0f0e1e] py-16 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-indigo-400 text-xs font-semibold uppercase tracking-[0.2em] mb-3">Support</p>
@@ -63,10 +62,8 @@ export default function ContactPage() {
       <div className="max-w-6xl mx-auto px-6 lg:px-8 py-16">
         <div className="grid lg:grid-cols-5 gap-10">
 
-          {/* Left — info + form */}
           <div className="lg:col-span-3 space-y-6">
 
-            {/* Contact channels */}
             <div className="grid sm:grid-cols-3 gap-4">
               {[
                 {
@@ -115,7 +112,6 @@ export default function ContactPage() {
               ))}
             </div>
 
-            {/* Contact form */}
             <div className="bg-white rounded-3xl border border-gray-100 p-8">
               <h2 className="text-xl font-bold text-gray-900 mb-6">Send us a message</h2>
 
@@ -201,7 +197,6 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Right — FAQs */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-3xl border border-gray-100 p-8 sticky top-24">
               <h2 className="text-xl font-bold text-gray-900 mb-6">Frequently Asked</h2>

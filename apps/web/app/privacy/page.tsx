@@ -1,7 +1,6 @@
 export default function PrivacyPage() {
   return (
     <div className="bg-[#F9FAFB] min-h-screen">
-      {/* Header */}
       <div className="bg-[#0f0e1e] py-16 px-6">
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-indigo-400 text-xs font-semibold uppercase tracking-[0.2em] mb-3">Legal</p>
@@ -13,7 +12,6 @@ export default function PrivacyPage() {
         </div>
       </div>
 
-      {/* Content */}
       <div className="max-w-3xl mx-auto px-6 lg:px-8 py-16">
         <div className="bg-white rounded-3xl border border-gray-100 p-8 lg:p-12 space-y-10 text-gray-600 leading-relaxed">
 

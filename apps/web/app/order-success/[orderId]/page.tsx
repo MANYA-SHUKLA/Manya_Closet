@@ -50,7 +50,6 @@ export default function OrderSuccessPage() {
     <div className="min-h-screen bg-neutral-50 py-12 px-6">
       <div className="max-w-2xl mx-auto space-y-6">
 
-        {/* Hero */}
         <div className="bg-white rounded-3xl border border-neutral-100 p-10 text-center shadow-sm">
           <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-5">
             <svg className="w-10 h-10 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,7 +66,6 @@ export default function OrderSuccessPage() {
           </div>
         </div>
 
-        {/* Order tracking */}
         <div className="bg-white rounded-3xl border border-neutral-100 p-7 shadow-sm">
           <h2 className="font-bold text-neutral-900 mb-6">Order Status</h2>
           <OrderStepper status={order.status} />
@@ -76,7 +74,6 @@ export default function OrderSuccessPage() {
           </p>
         </div>
 
-        {/* Items */}
         <div className="bg-white rounded-3xl border border-neutral-100 p-7 shadow-sm">
           <h2 className="font-bold text-neutral-900 mb-4">Items Ordered</h2>
           <div className="space-y-3">
@@ -95,7 +92,6 @@ export default function OrderSuccessPage() {
           </div>
         </div>
 
-        {/* Price summary */}
         <div className="bg-neutral-950 text-white rounded-3xl p-7 space-y-3">
           <h2 className="font-bold mb-2">Payment Summary</h2>
           {[
@@ -118,7 +114,6 @@ export default function OrderSuccessPage() {
           </div>
         </div>
 
-        {/* Shipping address */}
         <div className="bg-white rounded-3xl border border-neutral-100 p-7 shadow-sm">
           <h2 className="font-bold text-neutral-900 mb-3">Delivering to</h2>
           <div className="text-sm text-neutral-600 space-y-1">
@@ -130,7 +125,6 @@ export default function OrderSuccessPage() {
           </div>
         </div>
 
-        {/* CTAs */}
         <div className="flex flex-col sm:flex-row gap-3">
           <Link
             href="/account/orders"

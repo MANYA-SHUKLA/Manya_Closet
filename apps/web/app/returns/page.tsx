@@ -108,7 +108,6 @@ export default function ReturnsPage() {
   return (
     <div className="min-h-screen bg-[#F9FAFB]">
 
-      {/* Hero */}
       <div className="bg-neutral-950 text-white">
         <div className="max-w-5xl mx-auto px-6 lg:px-8 py-16 text-center">
           <p className="text-amber-400 text-xs font-semibold uppercase tracking-[0.2em] mb-3">Hassle-free</p>
@@ -123,7 +122,6 @@ export default function ReturnsPage() {
 
       <div className="max-w-5xl mx-auto px-6 lg:px-8 py-12 space-y-12">
 
-        {/* Policy cards */}
         <section>
           <h2 className="text-lg font-bold text-gray-900 mb-6">Return Policy</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -137,12 +135,10 @@ export default function ReturnsPage() {
           </div>
         </section>
 
-        {/* Non-eligible note */}
         <div className="bg-amber-50 border border-amber-200 rounded-2xl px-6 py-4 text-sm text-amber-800">
           <strong>Not eligible for return:</strong> Innerwear, swimwear, customised items, and products marked as final sale.
         </div>
 
-        {/* My returns — logged-in only */}
         {user ? (
           <section className="space-y-6">
             <div className="flex items-center justify-between">
@@ -160,7 +156,6 @@ export default function ReturnsPage() {
               )}
             </div>
 
-            {/* Return request form */}
             {showForm && (
               <div className="bg-white rounded-3xl border border-gray-100 p-7 shadow-sm space-y-6">
                 <div className="flex items-center justify-between">
@@ -184,7 +179,6 @@ export default function ReturnsPage() {
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* Step 1 — select order */}
                     <div>
                       <label className="block text-xs font-semibold text-gray-700 mb-2">Select Order</label>
                       <select
@@ -203,7 +197,6 @@ export default function ReturnsPage() {
                       </select>
                     </div>
 
-                    {/* Step 2 — select items */}
                     {selectedOrder && (
                       <div>
                         <label className="block text-xs font-semibold text-gray-700 mb-2">Select Items to Return</label>
@@ -236,7 +229,6 @@ export default function ReturnsPage() {
                       </div>
                     )}
 
-                    {/* Step 3 — reason */}
                     {selectedItems.length > 0 && (
                       <>
                         <div>
@@ -276,7 +268,6 @@ export default function ReturnsPage() {
                           />
                         </div>
 
-                        {/* Refund preview */}
                         <div className="flex items-center justify-between px-5 py-3 bg-emerald-50 border border-emerald-200 rounded-xl">
                           <span className="text-sm text-emerald-700">Estimated refund</span>
                           <span className="text-sm font-bold text-emerald-700">
@@ -304,7 +295,6 @@ export default function ReturnsPage() {
               </div>
             )}
 
-            {/* Existing return requests */}
             {loadingReturns ? (
               <div className="space-y-3">
                 {[1, 2].map((i) => (
@@ -378,7 +368,6 @@ export default function ReturnsPage() {
             )}
           </section>
         ) : (
-          /* Guest CTA */
           <div className="bg-white rounded-3xl border border-gray-100 p-14 text-center shadow-sm">
             <p className="text-5xl mb-5">🔐</p>
             <h3 className="text-lg font-bold text-gray-900 mb-2">Sign in to manage returns</h3>
@@ -392,7 +381,6 @@ export default function ReturnsPage() {
           </div>
         )}
 
-        {/* Help */}
         <div className="text-center text-sm text-gray-400">
           Questions about your return?{' '}
           <Link href="/contact" className="text-amber-600 hover:underline font-medium">Contact us</Link>

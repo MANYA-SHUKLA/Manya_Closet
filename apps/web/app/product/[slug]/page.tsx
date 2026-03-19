@@ -65,7 +65,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         discountPrice: product.discountPrice, ratings: product.ratings,
       }} />
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-8">
-        {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-xs text-neutral-400 mb-8">
           <a href="/" className="hover:text-neutral-600">Home</a>
           <span>/</span>
@@ -79,14 +78,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         </nav>
 
         <div className="grid lg:grid-cols-2 gap-12 xl:gap-20">
-          {/* Left — Images */}
           <div>
             <ImageCarousel images={product.images} />
           </div>
 
-          {/* Right — Info */}
           <div className="space-y-6">
-            {/* Brand + badges */}
             <div className="flex items-center gap-3">
               <span className="text-xs font-semibold text-amber-600 uppercase tracking-widest">
                 {product.brand}
@@ -103,12 +99,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               )}
             </div>
 
-            {/* Name */}
             <h1 className="text-3xl lg:text-4xl font-bold text-neutral-900 leading-tight">
               {product.name}
             </h1>
 
-            {/* Rating */}
             {product.reviewCount > 0 && (
               <div className="flex items-center gap-3">
                 <div className="flex">
@@ -125,7 +119,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               </div>
             )}
 
-            {/* Price */}
             <div className="flex items-baseline gap-4">
               <span className="text-4xl font-black text-neutral-900">
                 ₹{(product.discountPrice ?? product.price).toLocaleString()}
@@ -144,20 +137,17 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
             <div className="h-px bg-neutral-100" />
 
-            {/* Interactive client section */}
             <Suspense fallback={<div className="h-48 animate-pulse bg-neutral-50 rounded-2xl" />}>
               <ProductDetailClient product={product} />
             </Suspense>
 
             <div className="h-px bg-neutral-100" />
 
-            {/* Description */}
             <div>
               <h3 className="font-semibold text-neutral-900 mb-3">About this product</h3>
               <p className="text-sm text-neutral-600 leading-relaxed">{product.description}</p>
             </div>
 
-            {/* Trust badges */}
             <div className="grid grid-cols-3 gap-3">
               {[
                 { icon: '🚚', text: 'Free shipping above ₹999' },
