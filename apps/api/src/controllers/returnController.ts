@@ -55,8 +55,6 @@ export const getReturn = async (req: Request, res: Response) => {
   res.json({ success: true, data: ret })
 }
 
-// ── Admin ──────────────────────────────────────────────────────────────────
-
 export const getAllReturns = async (req: Request, res: Response) => {
   const page  = Math.max(1, parseInt(req.query.page as string) || 1)
   const limit = Math.min(50, parseInt(req.query.limit as string) || 20)
