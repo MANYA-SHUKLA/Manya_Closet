@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 const PROTECTED = ['/account', '/checkout', '/orders', '/admin']
 const AUTH_ROUTES = ['/login', '/signup', '/forgot-password', '/reset-password']
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl
   const token = req.cookies.get('accessToken')?.value
 
