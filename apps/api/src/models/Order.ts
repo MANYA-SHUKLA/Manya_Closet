@@ -3,6 +3,8 @@ import { OrderStatus, PaymentStatus } from '@manya-closet/types'
 
 export interface IOrderDocument extends Document {
   user: mongoose.Types.ObjectId
+  createdAt: Date
+  updatedAt: Date
   items: {
     product: mongoose.Types.ObjectId
     name: string
