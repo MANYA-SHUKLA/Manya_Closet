@@ -19,10 +19,7 @@ api.interceptors.response.use(
         )
         return api(original)
       } catch {
-        // Redirect to login only if not already there
-        if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
-          window.location.href = '/login'
-        }
+        // Token refresh failed — proxy handles redirecting protected routes
       }
     }
     return Promise.reject(error)
