@@ -72,7 +72,6 @@ export default function Deals() {
     <section className="py-24 px-6 lg:px-8 bg-[#0f0e1e]">
       <div className="max-w-7xl mx-auto">
 
-        {/* Header */}
         <div className="text-center mb-14">
           <p className="text-amber-400 text-xs font-semibold uppercase tracking-[0.2em] mb-3">Limited Time</p>
           <h2 className="text-4xl lg:text-5xl font-bold text-white"
@@ -81,7 +80,6 @@ export default function Deals() {
           </h2>
         </div>
 
-        {/* Hero deal banner */}
         <div className="relative rounded-3xl overflow-hidden mb-8">
           <img
             src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=1400&q=85"
@@ -116,7 +114,6 @@ export default function Deals() {
           </div>
         </div>
 
-        {/* Deal cards */}
         <div className="grid sm:grid-cols-3 gap-4">
           {DEALS.map((deal) => (
             <Link

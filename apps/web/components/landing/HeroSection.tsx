@@ -8,23 +8,18 @@ export default function HeroSection() {
   return (
     <section className="relative min-h-[92vh] flex overflow-hidden bg-[#0f0e1e]">
 
-      {/* Background texture */}
       <div className="absolute inset-0 opacity-[0.03]"
         style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '40px 40px' }}
       />
 
-      {/* Subtle indigo glow */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Left content */}
       <div className="relative z-10 flex flex-col justify-center px-8 lg:px-16 xl:px-24 max-w-3xl pt-12 pb-20 lg:pb-12">
-        {/* Eyebrow */}
         <div className="flex items-center gap-3 mb-8">
           <div className="h-px w-12 bg-indigo-400" />
           <span className="text-indigo-300 text-xs font-semibold uppercase tracking-[0.2em]">Spring / Summer 2026</span>
         </div>
 
-        {/* Headline */}
         <h1 className="text-[clamp(3.5rem,8vw,7rem)] font-bold leading-[0.9] tracking-tight text-white mb-8"
           style={{ fontFamily: 'var(--font-cormorant), Georgia, serif' }}>
           Dress<br />
@@ -36,7 +31,6 @@ export default function HeroSection() {
           Curated fashion for women who know who they are. Premium quality, timeless style — delivered to your door.
         </p>
 
-        {/* CTAs */}
         <div className="flex flex-wrap gap-4 mb-16">
           <Link
             href="/shop"
@@ -55,7 +49,6 @@ export default function HeroSection() {
           </Link>
         </div>
 
-        {/* Stats */}
         <div className="flex gap-10">
           {[
             { value: '500+', label: 'Products' },
@@ -70,7 +63,6 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Right — editorial image grid */}
       <div className="hidden lg:flex absolute right-0 top-0 h-full w-[48%] gap-3 p-4">
         <div className="w-full h-full rounded-3xl overflow-hidden relative">
           <img
@@ -79,19 +71,16 @@ export default function HeroSection() {
             className="w-full h-full object-cover object-center"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#0f0e1e] via-transparent to-transparent" />
-          {/* Floating card */}
           <div className="absolute bottom-10 left-6 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl px-5 py-3.5">
             <p className="text-white/60 text-xs uppercase tracking-widest mb-0.5">Today&apos;s Deal</p>
             <p className="text-white font-bold text-lg" style={{ fontFamily: 'var(--font-cormorant), Georgia, serif' }}>Up to 50% Off</p>
           </div>
-          {/* Top right badge */}
           <div className="absolute top-8 right-8 w-20 h-20 rounded-full bg-indigo-500 flex flex-col items-center justify-center text-white font-bold shadow-xl shadow-indigo-500/30">
             <span className="text-xs uppercase tracking-wider">New</span>
             <span className="text-lg leading-none">In</span>
           </div>
         </div>
 
-        {/* Secondary image strip */}
         <div className="w-44 flex-shrink-0 flex flex-col gap-3">
           <div className="flex-1 rounded-2xl overflow-hidden">
             <img src={HERO_IMAGE_2} alt="" className="w-full h-full object-cover" />
@@ -103,13 +92,11 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Mobile image */}
       <div className="lg:hidden absolute inset-0 -z-0">
         <img src={HERO_IMAGE} alt="" className="w-full h-full object-cover object-top opacity-20" />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0f0e1e]/60 via-[#0f0e1e]/80 to-[#0f0e1e]" />
       </div>
 
-      {/* Bottom scroll hint */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40 lg:left-16 lg:translate-x-0">
         <span className="text-white text-[10px] uppercase tracking-[0.2em]">Scroll</span>
         <div className="w-px h-12 bg-gradient-to-b from-white to-transparent" />

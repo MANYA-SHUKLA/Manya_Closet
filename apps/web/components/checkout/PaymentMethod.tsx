@@ -51,7 +51,6 @@ export default function PaymentMethod() {
         paymentMethod,
       }),
     onSuccess: async ({ data }) => {
-      // ── COD: order already saved, redirect immediately ──
       if (paymentMethod === 'cod') {
         const { order } = data.data
         qc.invalidateQueries({ queryKey: ['orders'] })
@@ -61,7 +60,6 @@ export default function PaymentMethod() {
         return
       }
 
-      // ── Razorpay: open payment modal, save order ONLY after payment succeeds ──
       const { razorpayOrderId, key } = data.data
 
       const loaded = await loadRazorpay()
@@ -157,7 +155,6 @@ export default function PaymentMethod() {
         </div>
       )}
 
-      {/* Total & CTA */}
       <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-5 space-y-4">
         <div className="flex justify-between items-center">
           <span className="text-gray-500 text-sm">Amount to pay</span>

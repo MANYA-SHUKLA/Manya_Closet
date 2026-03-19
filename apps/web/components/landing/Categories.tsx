@@ -50,7 +50,6 @@ export default function Categories() {
     <section className="py-24 px-6 lg:px-8 bg-[#F9FAFB]">
       <div className="max-w-7xl mx-auto">
 
-        {/* Header */}
         <div className="flex items-end justify-between mb-12">
           <div>
             <p className="text-indigo-500 text-xs font-semibold uppercase tracking-[0.2em] mb-3">Collections</p>
@@ -67,7 +66,6 @@ export default function Categories() {
           </Link>
         </div>
 
-        {/* Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 lg:gap-4">
           {CATEGORIES.map((cat) => (
             <Link
@@ -75,15 +73,12 @@ export default function Categories() {
               href={`/shop?category=${cat.slug}`}
               className="group relative aspect-[3/4] rounded-2xl overflow-hidden"
             >
-              {/* Image */}
               <img
                 src={cat.image}
                 alt={cat.name}
                 className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
               />
-              {/* Gradient */}
               <div className={`absolute inset-0 bg-gradient-to-t ${cat.color} via-black/20 to-transparent`} />
-              {/* Content */}
               <div className="absolute bottom-0 left-0 right-0 p-4">
                 <p className="text-white font-bold text-base leading-tight"
                   style={{ fontFamily: 'var(--font-cormorant), Georgia, serif' }}>
@@ -91,7 +86,6 @@ export default function Categories() {
                 </p>
                 <p className="text-white/60 text-xs mt-0.5">{cat.count}</p>
               </div>
-              {/* Hover arrow */}
               <div className="absolute top-4 right-4 w-8 h-8 bg-white/0 group-hover:bg-indigo-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />

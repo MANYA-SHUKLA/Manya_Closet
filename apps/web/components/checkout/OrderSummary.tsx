@@ -21,7 +21,6 @@ export default function OrderSummary() {
         <p className="text-gray-400 text-xs mt-0.5">{items.length} {items.length === 1 ? 'item' : 'items'}</p>
       </div>
 
-      {/* Items */}
       <div className="px-6 py-4 space-y-3 max-h-56 overflow-y-auto border-b border-gray-100">
         {items.map((item, i) => (
           <div key={typeof item.product === 'string' ? item.product : item.product._id + i} className="flex items-center gap-3">
@@ -45,13 +44,11 @@ export default function OrderSummary() {
         ))}
       </div>
 
-      {/* Coupon */}
       <div className="px-6 py-4 border-b border-gray-100">
         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Coupon Code</p>
         <CouponInput />
       </div>
 
-      {/* Price breakdown */}
       <div className="px-6 py-5 space-y-3">
         <div className="flex justify-between text-sm text-gray-500">
           <span>Subtotal</span>
