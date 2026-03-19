@@ -308,7 +308,6 @@ const PRODUCTS: Record<string, {
   ],
 }
 
-// ── Main ──────────────────────────────────────────────────────────────
 async function seed() {
   await mongoose.connect(MONGO_URI)
   console.log('Connected to MongoDB')
