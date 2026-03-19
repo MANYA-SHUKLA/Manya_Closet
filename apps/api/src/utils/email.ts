@@ -170,6 +170,7 @@ export const sendOrderConfirmation = async (order: OrderEmailData, userName: str
 }
 
 const STATUS_COPY: Record<string, { emoji: string; headline: string; body: string }> = {
+  confirmed: { emoji: '🎉', headline: 'Order Confirmed!', body: 'Great news — your order has been confirmed and is now being prepared for dispatch.' },
   shipped:   { emoji: '🚚', headline: 'Your order is on its way!', body: 'Your order has been shipped and is heading to you. You can expect it within the estimated delivery window.' },
   delivered: { emoji: '✅', headline: 'Order Delivered!', body: 'Your order has been delivered. We hope you love your new look! Please leave a review to help other shoppers.' },
   cancelled: { emoji: '❌', headline: 'Order Cancelled', body: 'Your order has been cancelled. If you paid online, your refund will be processed within 5-7 business days.' },
@@ -277,6 +278,162 @@ export const sendContactConfirmationToUser = async (name: string, email: string,
       </div>
     `,
   })
+}
+
+export const sendNewOrderAdminNotification = async (order: OrderEmailData, userName: string, userEmail: string) => {
+  const adminEmail = env.ADMIN_EMAIL || env.SMTP_USER
+  if (!adminEmail) return
+  const orderId = String(order._id).slice(-8).toUpperCase()
+  await transporter.sendMail({
+    from: `"Manya's Closet" <${env.SMTP_USER}>`,
+    to: adminEmail,
+    subject: `🛍️ New Order #${orderId} — ₹${order.total.toLocaleString('en-IN')} from ${userName}`,
+    html: `
+      <div style="font-family:sans-serif;max-width:520px;margin:auto;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden">
+        ${BRAND_HEADER}
+        <div style="padding:32px;background:#fff">
+          <h2 style="color:#111827;margin:0 0 8px">New Order Received</h2>
+          <p style="color:#6b7280;margin:0 0 24px">A new order has been placed on Manya's Closet.</p>
+
+          <div style="background:#f9fafb;border-radius:12px;padding:20px;margin-bottom:20px;border:1px solid #f3f4f6">
+            <table style="width:100%;border-collapse:collapse">
+              <tr>
+                <td style="padding:5px 0;font-size:13px;color:#9ca3af;width:110px">Order ID</td>
+                <td style="padding:5px 0;font-size:13px;color:#111827;font-weight:600">#${orderId}</td>
+              </tr>
+              <tr>
+                <td style="padding:5px 0;font-size:13px;color:#9ca3af">Customer</td>
+                <td style="padding:5px 0;font-size:13px;color:#111827;font-weight:600">${userName} &lt;${userEmail}&gt;</td>
+              </tr>
+              <tr>
+                <td style="padding:5px 0;font-size:13px;color:#9ca3af">Items</td>
+                <td style="padding:5px 0;font-size:13px;color:#111827;font-weight:600">${order.items.length} item${order.items.length > 1 ? 's' : ''}</td>
+              </tr>
+              <tr>
+                <td style="padding:5px 0;font-size:13px;color:#9ca3af">Total</td>
+                <td style="padding:5px 0;font-size:13px;color:#6366f1;font-weight:700">₹${order.total.toLocaleString('en-IN')}</td>
+              </tr>
+              <tr>
+                <td style="padding:5px 0;font-size:13px;color:#9ca3af">Payment</td>
+                <td style="padding:5px 0;font-size:13px;color:#111827;font-weight:600;text-transform:capitalize">${order.paymentStatus}</td>
+              </tr>
+            </table>
+          </div>
+
+          <table style="width:100%;border-collapse:collapse;margin-bottom:20px">
+            <thead>
+              <tr>
+                <th style="text-align:left;font-size:11px;color:#9ca3af;padding-bottom:8px;text-transform:uppercase;letter-spacing:1px">Item</th>
+                <th style="text-align:center;font-size:11px;color:#9ca3af;padding-bottom:8px;text-transform:uppercase;letter-spacing:1px">Qty</th>
+                <th style="text-align:right;font-size:11px;color:#9ca3af;padding-bottom:8px;text-transform:uppercase;letter-spacing:1px">Price</th>
+              </tr>
+            </thead>
+            <tbody>${orderItemsTable(order.items)}</tbody>
+          </table>
+
+          <a href="${env.CLIENT_URL}/admin/orders"
+             style="display:block;padding:14px;background:#6366f1;color:#fff;font-weight:600;border-radius:12px;text-decoration:none;text-align:center;font-size:14px">
+            Manage Orders →
+          </a>
+        </div>
+      </div>
+    `,
+  })
+}
+
+export const sendLoginNotification = async (userName: string, userEmail: string, ip: string) => {
+  const adminEmail = env.ADMIN_EMAIL || env.SMTP_USER
+  const loginTime = new Date().toLocaleString('en-IN', {
+    timeZone: 'Asia/Kolkata', day: 'numeric', month: 'long',
+    year: 'numeric', hour: '2-digit', minute: '2-digit',
+  })
+
+  // Email to user
+  await transporter.sendMail({
+    from: `"Manya's Closet" <${env.SMTP_USER}>`,
+    to: userEmail,
+    subject: `🔐 New login to your Manya's Closet account`,
+    html: `
+      <div style="font-family:sans-serif;max-width:520px;margin:auto;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden">
+        ${BRAND_HEADER}
+        <div style="padding:32px;background:#fff">
+          <h2 style="color:#111827;margin:0 0 8px">New login detected, ${userName}!</h2>
+          <p style="color:#6b7280;margin:0 0 24px;line-height:1.6">
+            We noticed a new sign-in to your Manya&apos;s Closet account. If this was you, no action is needed.
+          </p>
+          <div style="background:#f9fafb;border-radius:12px;padding:20px;margin-bottom:24px;border:1px solid #f3f4f6">
+            <table style="width:100%;border-collapse:collapse">
+              <tr>
+                <td style="padding:6px 0;font-size:13px;color:#9ca3af;width:100px">Time</td>
+                <td style="padding:6px 0;font-size:13px;color:#111827;font-weight:600">${loginTime} IST</td>
+              </tr>
+              <tr>
+                <td style="padding:6px 0;font-size:13px;color:#9ca3af">Account</td>
+                <td style="padding:6px 0;font-size:13px;color:#111827;font-weight:600">${userEmail}</td>
+              </tr>
+              <tr>
+                <td style="padding:6px 0;font-size:13px;color:#9ca3af">IP Address</td>
+                <td style="padding:6px 0;font-size:13px;color:#111827;font-weight:600">${ip}</td>
+              </tr>
+            </table>
+          </div>
+          <div style="background:#fef3c7;border-radius:12px;padding:16px;margin-bottom:24px">
+            <p style="margin:0;font-size:13px;color:#92400e">
+              ⚠️ <strong>Not you?</strong> Please reset your password immediately to secure your account.
+            </p>
+          </div>
+          <a href="${env.CLIENT_URL}/forgot-password"
+             style="display:block;padding:14px;background:#111827;color:#fff;font-weight:600;border-radius:12px;text-decoration:none;text-align:center;font-size:14px">
+            Reset Password →
+          </a>
+        </div>
+        <div style="background:#f9fafb;padding:16px;text-align:center">
+          <p style="margin:0;font-size:12px;color:#9ca3af">© 2026 Manya's Closet</p>
+        </div>
+      </div>
+    `,
+  })
+
+  // Email to admin
+  if (adminEmail) {
+    await transporter.sendMail({
+      from: `"Manya's Closet" <${env.SMTP_USER}>`,
+      to: adminEmail,
+      subject: `👤 User Login — ${userName} (${userEmail})`,
+      html: `
+        <div style="font-family:sans-serif;max-width:480px;margin:auto;padding:0;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden">
+          ${BRAND_HEADER}
+          <div style="padding:32px;background:#fff">
+            <h2 style="color:#111827;margin:0 0 20px">User Login Alert</h2>
+            <div style="background:#f9fafb;border-radius:12px;padding:20px;border:1px solid #f3f4f6">
+              <table style="width:100%;border-collapse:collapse">
+                <tr>
+                  <td style="padding:6px 0;font-size:13px;color:#9ca3af;width:110px">Name</td>
+                  <td style="padding:6px 0;font-size:13px;color:#111827;font-weight:600">${userName}</td>
+                </tr>
+                <tr>
+                  <td style="padding:6px 0;font-size:13px;color:#9ca3af">Email</td>
+                  <td style="padding:6px 0;font-size:13px;color:#111827;font-weight:600">${userEmail}</td>
+                </tr>
+                <tr>
+                  <td style="padding:6px 0;font-size:13px;color:#9ca3af">Time</td>
+                  <td style="padding:6px 0;font-size:13px;color:#111827;font-weight:600">${loginTime} IST</td>
+                </tr>
+                <tr>
+                  <td style="padding:6px 0;font-size:13px;color:#9ca3af">IP Address</td>
+                  <td style="padding:6px 0;font-size:13px;color:#111827;font-weight:600">${ip}</td>
+                </tr>
+              </table>
+            </div>
+            <a href="${env.CLIENT_URL}/admin/users"
+               style="display:block;margin-top:24px;padding:14px;background:#6366f1;color:#fff;font-weight:600;border-radius:12px;text-decoration:none;text-align:center;font-size:14px">
+              View Users →
+            </a>
+          </div>
+        </div>
+      `,
+    })
+  }
 }
 
 export const sendPasswordResetEmail = async (email: string, token: string) => {

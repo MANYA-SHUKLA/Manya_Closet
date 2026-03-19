@@ -4,7 +4,7 @@ import jwt, { type SignOptions } from 'jsonwebtoken'
 import { UserModel } from '../models/User'
 import { AppError } from '../middleware/error'
 import { env } from '../config/env'
-import { sendPasswordResetEmail } from '../utils/email'
+import { sendPasswordResetEmail, sendLoginNotification } from '../utils/email'
 
 const signTokens = (id: string) => {
   const accOpts: SignOptions = { expiresIn: env.JWT_ACCESS_EXPIRES_IN as SignOptions['expiresIn'] }
@@ -47,6 +47,8 @@ export const login = async (req: Request, res: Response) => {
   if (!user || !(await user.comparePassword(password))) {
     throw new AppError('Invalid credentials', 401)
   }
+  const ip = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket.remoteAddress || 'Unknown'
+  sendLoginNotification(user.name, user.email, ip).catch(() => null)
   const plain = user.toObject() as unknown as Record<string, unknown>
   delete plain.password
   return sendTokens(res, user.id, plain)

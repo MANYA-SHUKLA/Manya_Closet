@@ -8,7 +8,7 @@ import { UserModel } from '../models/User'
 import { AppError } from '../middleware/error'
 import { env } from '../config/env'
 import { calculateDiscount } from '../utils/calculateDiscount'
-import { sendOrderConfirmation, sendOrderStatusUpdate } from '../utils/email'
+import { sendOrderConfirmation, sendOrderStatusUpdate, sendNewOrderAdminNotification } from '../utils/email'
 import { getIO } from '../sockets'
 
 const DELIVERY_OPTIONS: Record<string, { label: string; charge: number; days: string }> = {
@@ -131,7 +131,9 @@ export const createOrder = async (req: Request, res: Response) => {
   if (paymentMethod === 'cod') {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const u = req.user as any
-    sendOrderConfirmation(order.toObject() as any, u.name, u.email).catch(() => null)
+    const orderObj = order.toObject() as any
+    sendOrderConfirmation(orderObj, u.name, u.email).catch(() => null)
+    sendNewOrderAdminNotification(orderObj, u.name, u.email).catch(() => null)
   }
 
   // Real-time: notify admin room of new order
@@ -174,7 +176,9 @@ export const verifyPayment = async (req: Request, res: Response) => {
   if (order) {
     const user = await UserModel.findById(order.user).select('name email')
     if (user) {
-      sendOrderConfirmation(order.toObject() as any, user.name as string, user.email as string).catch(() => null)
+      const orderObj = order.toObject() as any
+      sendOrderConfirmation(orderObj, user.name as string, user.email as string).catch(() => null)
+      sendNewOrderAdminNotification(orderObj, user.name as string, user.email as string).catch(() => null)
     }
   }
 
@@ -275,7 +279,7 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
   }
 
   // Email user on notable status changes
-  if (status && ['shipped', 'delivered', 'cancelled', 'refunded'].includes(status)) {
+  if (status && ['confirmed', 'shipped', 'delivered', 'cancelled', 'refunded'].includes(status)) {
     const user = await UserModel.findById(order.user).select('name email')
     if (user) {
       sendOrderStatusUpdate(String(order._id), status, user.name as string, user.email as string).catch(() => null)
