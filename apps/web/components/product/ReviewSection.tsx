@@ -92,7 +92,6 @@ export default function ReviewSection({ productId, ratings, reviewCount }: {
     <div className="mt-16 border-t border-gray-100 pt-12">
       <h2 className="text-2xl font-bold text-gray-900 mb-8">Reviews & Ratings</h2>
 
-      {/* Summary */}
       {reviewCount > 0 && (
         <div className="flex flex-col sm:flex-row gap-8 mb-10 p-6 bg-gray-50 rounded-2xl">
           <div className="text-center">
