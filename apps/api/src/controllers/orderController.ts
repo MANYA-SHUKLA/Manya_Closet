@@ -38,7 +38,6 @@ async function decrementStock(items: { product: unknown; size: string; color: st
   )
 }
 
-/** Restore stock (on cancellation/refund) */
 async function restoreStock(items: { product: unknown; size: string; color: string; quantity: number }[]) {
   await Promise.all(
     items.map((item) =>
