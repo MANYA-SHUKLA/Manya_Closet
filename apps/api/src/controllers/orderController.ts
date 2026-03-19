@@ -328,7 +328,6 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
     }
   }
 
-  // Real-time: push status update to user's room + admin room
   const io = getIO()
   if (io) {
     io.to(`user:${order.user}`).emit('order:update', { orderId: order._id, status: order.status, paymentStatus: order.paymentStatus })

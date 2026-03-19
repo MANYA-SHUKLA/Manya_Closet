@@ -83,7 +83,6 @@ export const addReview = async (req: Request, res: Response) => {
 
   const review = await ReviewModel.create({ product: req.params.id, user: req.user!._id, rating, comment })
 
-  // Update product rating
   const allReviews = await ReviewModel.find({ product: req.params.id })
   const avg = allReviews.reduce((s, r) => s + r.rating, 0) / allReviews.length
   await ProductModel.findByIdAndUpdate(req.params.id, { ratings: avg, reviewCount: allReviews.length })
