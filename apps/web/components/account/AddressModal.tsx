@@ -66,7 +66,6 @@ export default function AddressModal({ open, initial, onClose, onSave, saving }:
         </div>
 
         <form onSubmit={handleSubmit} className="px-7 py-6 space-y-4">
-          {/* Label */}
           <div className="flex gap-2">
             {['Home', 'Work', 'Other'].map((l) => (
               <button
