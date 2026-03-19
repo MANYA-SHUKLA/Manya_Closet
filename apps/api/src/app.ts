@@ -6,6 +6,7 @@ import morgan from 'morgan'
 import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import rateLimit from 'express-rate-limit'
+import path from 'path'
 import { env } from './config/env'
 import routes from './routes'
 import webhookRoutes from './routes/webhook'
@@ -41,6 +42,17 @@ app.use(session({
 app.use(passport.initialize())
 
 if (env.NODE_ENV !== 'test') app.use(morgan('dev'))
+
+app.get('/', (_req, res) => res.json({ 
+  success: true, 
+  message: 'Welcome to Manya Closet API',
+  made_with_love_by: 'Manya Shukla',
+  year: 2026,
+  docs: '/swagger',
+  health: '/health'
+}))
+
+app.get('/swagger', (_req, res) => res.sendFile('/swagger.yaml'))
 
 app.use('/api', routes)
 
