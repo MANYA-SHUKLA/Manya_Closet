@@ -20,8 +20,6 @@ app.use(helmet())
 app.use(cors({ origin: env.CLIENT_URL, credentials: true }))
 
 app.use('/api/webhooks', webhookRoutes)
-
-// Rate limit for auth routes (excludes OAuth)
 const authRateLimiter = rateLimit({ 
   windowMs: 15 * 60 * 1000, 
   max: 20, 
