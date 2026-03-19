@@ -68,7 +68,6 @@ export const createOrder = async (req: Request, res: Response) => {
     }
   }
 
-  // Calculate coupon discount (don't commit usedCount yet for Razorpay — committed on verifyPayment)
   let discount = 0
   let appliedCoupon: string | undefined
   if (couponCode) {
@@ -82,7 +81,6 @@ export const createOrder = async (req: Request, res: Response) => {
     if (coupon) {
       discount = calculateDiscount(coupon, subtotal)
       appliedCoupon = coupon.code
-      // For COD commit the coupon use immediately
       if (paymentMethod === 'cod') {
         await CouponModel.updateOne({ _id: coupon._id }, { $inc: { usedCount: 1 } })
       }
