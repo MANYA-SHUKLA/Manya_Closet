@@ -54,6 +54,7 @@ export const useMe = () => {
 
 export const useLogin = () => {
   const setUser = useAuthStore((s) => s.setUser)
+  const setTokens = useAuthStore((s) => s.setTokens)
   const router = useRouter()
   const qc = useQueryClient()
 
@@ -61,8 +62,11 @@ export const useLogin = () => {
     mutationFn: authApi.login,
     onSuccess: async ({ data }) => {
       qc.setQueryData(['me'], data.data.user)
-      await mergeGuestData(qc)   
+      await mergeGuestData(qc)
       setUser(data.data.user)
+      if (data.data.accessToken && data.data.refreshToken) {
+        setTokens(data.data.accessToken, data.data.refreshToken)
+      }
       const redirect = new URLSearchParams(window.location.search).get('redirect') ?? '/'
       router.push(redirect)
     },
@@ -71,6 +75,7 @@ export const useLogin = () => {
 
 export const useRegister = () => {
   const setUser = useAuthStore((s) => s.setUser)
+  const setTokens = useAuthStore((s) => s.setTokens)
   const router = useRouter()
   const qc = useQueryClient()
 
@@ -80,6 +85,9 @@ export const useRegister = () => {
       qc.setQueryData(['me'], data.data.user)
       await mergeGuestData(qc)
       setUser(data.data.user)
+      if (data.data.accessToken && data.data.refreshToken) {
+        setTokens(data.data.accessToken, data.data.refreshToken)
+      }
       router.push('/')
     },
   })

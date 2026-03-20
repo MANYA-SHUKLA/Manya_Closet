@@ -6,6 +6,8 @@ import { AppError } from '../middleware/error'
 import { env } from '../config/env'
 import { sendPasswordResetEmail, sendLoginNotification } from '../utils/email'
 
+const googleCodes = new Map<string, { userId: string; expiresAt: number }>()
+
 const signTokens = (id: string) => {
   const accOpts: SignOptions = { expiresIn: env.JWT_ACCESS_EXPIRES_IN as SignOptions['expiresIn'] }
   const refOpts: SignOptions = { expiresIn: env.JWT_REFRESH_EXPIRES_IN as SignOptions['expiresIn'] }
@@ -28,7 +30,7 @@ const sendTokens = (res: Response, userId: string, user: object, status = 200) =
     .status(status)
     .cookie('accessToken', accessToken, { ...cookieOptions, maxAge: 15 * 60 * 1000 })
     .cookie('refreshToken', refreshToken, { ...cookieOptions, maxAge: 7 * 24 * 60 * 60 * 1000 })
-    .json({ success: true, data: { user } })
+    .json({ success: true, data: { user, accessToken, refreshToken } })
 }
 
 export const register = async (req: Request, res: Response) => {
@@ -63,7 +65,7 @@ export const logout = async (req: Request, res: Response) => {
 }
 
 export const refreshToken = async (req: Request, res: Response) => {
-  const token = req.cookies?.refreshToken
+  const token = req.cookies?.refreshToken || req.body?.refreshToken
   if (!token) throw new AppError('No refresh token', 401)
 
   const decoded = jwt.verify(token, env.JWT_REFRESH_SECRET) as { id: string }
@@ -76,7 +78,7 @@ export const refreshToken = async (req: Request, res: Response) => {
   res
     .cookie('accessToken', accessToken, { ...cookieOptions, maxAge: 15 * 60 * 1000 })
     .cookie('refreshToken', newRefresh, { ...cookieOptions, maxAge: 7 * 24 * 60 * 60 * 1000 })
-    .json({ success: true, message: 'Token refreshed' })
+    .json({ success: true, accessToken, refreshToken: newRefresh })
 }
 
 export const forgotPassword = async (req: Request, res: Response) => {
@@ -128,8 +130,30 @@ export const googleAuthCallback = async (req: Request, res: Response) => {
   const { accessToken, refreshToken } = signTokens(user._id.toString())
   await UserModel.findByIdAndUpdate(user._id, { refreshToken })
 
+  const code = crypto.randomBytes(32).toString('hex')
+  googleCodes.set(code, { userId: user._id.toString(), expiresAt: Date.now() + 60_000 })
+
   res
     .cookie('accessToken', accessToken, { ...cookieOptions, maxAge: 15 * 60 * 1000 })
     .cookie('refreshToken', refreshToken, { ...cookieOptions, maxAge: 7 * 24 * 60 * 60 * 1000 })
-    .redirect(env.CLIENT_URL)
+    .redirect(`${env.CLIENT_URL}/auth/callback?code=${code}`)
+}
+
+export const exchangeGoogleCode = async (req: Request, res: Response) => {
+  const { code } = req.query
+  if (!code || typeof code !== 'string') throw new AppError('Invalid code', 400)
+
+  const entry = googleCodes.get(code)
+  if (!entry || entry.expiresAt < Date.now()) {
+    googleCodes.delete(code)
+    throw new AppError('Code expired or invalid', 400)
+  }
+  googleCodes.delete(code)
+
+  const user = await UserModel.findById(entry.userId)
+  if (!user) throw new AppError('User not found', 404)
+
+  const plain = user.toObject() as unknown as Record<string, unknown>
+  delete plain.password
+  return sendTokens(res, user.id, plain)
 }

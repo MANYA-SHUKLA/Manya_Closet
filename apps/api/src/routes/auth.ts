@@ -8,6 +8,7 @@ import {
   forgotPassword,
   resetPassword,
   googleAuthCallback,
+  exchangeGoogleCode,
 } from '../controllers/authController'
 import { validate } from '../middleware/validate'
 import { authenticate } from '../middleware/auth'
@@ -40,6 +41,7 @@ router.post('/refresh', refreshToken)
 router.post('/forgot-password', validate(forgotSchema), forgotPassword)
 router.post('/reset-password', validate(resetSchema), resetPassword)
 
+router.get('/exchange-code', exchangeGoogleCode)
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'], session: false }))
 router.get(
   '/google/callback',
