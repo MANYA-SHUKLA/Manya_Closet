@@ -1,6 +1,5 @@
 'use client'
 import { authApi } from '@/lib/auth'
-
 export default function GoogleButton({ label = 'Continue with Google' }: { label?: string }) {
   return (
     <button
