@@ -50,14 +50,16 @@ const NAV = [
 
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
   const user = useAuthStore((s) => s.user)
+  const isAuthLoading = useAuthStore((s) => s.isAuthLoading)
   const router = useRouter()
   const pathname = usePathname()
 
   useEffect(() => {
+    if (isAuthLoading) return
     if (user === null) router.push('/login?redirect=' + encodeURIComponent(pathname))
-  }, [user, router, pathname])
+  }, [user, isAuthLoading, router, pathname])
 
-  if (!user) return (
+  if (isAuthLoading || !user) return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="w-10 h-10 border-4 border-amber-400 border-t-transparent rounded-full animate-spin" />
     </div>

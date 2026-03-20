@@ -34,20 +34,22 @@ const NAV = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const user = useAuthStore((s) => s.user)
+  const isAuthLoading = useAuthStore((s) => s.isAuthLoading)
   const router = useRouter()
   const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => {
+    if (isAuthLoading) return
     if (user === null) router.push(`/login?redirect=${pathname}`)
-    else if (user && user.role !== 'admin') router.push('/')
-  }, [user, router, pathname])
+    else if (user.role !== 'admin') router.push('/')
+  }, [user, isAuthLoading, router, pathname])
 
   useEffect(() => {
     setSidebarOpen(false)
   }, [pathname])
 
-  if (!user || user.role !== 'admin') {
+  if (isAuthLoading || !user || user.role !== 'admin') {
     return (
       <div className="fixed inset-0 z-[100] bg-white flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />

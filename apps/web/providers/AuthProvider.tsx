@@ -8,6 +8,7 @@ import api from '@/lib/axios'
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
   const setUser = useAuthStore((s) => s.setUser)
   const logout = useAuthStore((s) => s.logout)
+  const setAuthLoading = useAuthStore((s) => s.setAuthLoading)
   const setCart = useCartStore((s) => s.setCart)
   const clearCart = useCartStore((s) => s.clear)
 
@@ -15,19 +16,22 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     authApi.getMe()
       .then(async ({ data }) => {
         setUser(data.data)
-        
+
         try {
           const cartRes = await api.get('/cart')
           setCart(cartRes.data.data.items, cartRes.data.data.total)
         } catch {
-          
+
         }
       })
       .catch(() => {
         logout()
         clearCart()
       })
-  }, [setUser, logout, setCart, clearCart])
+      .finally(() => {
+        setAuthLoading(false)
+      })
+  }, [setUser, logout, setAuthLoading, setCart, clearCart])
 
   return <>{children}</>
 }
