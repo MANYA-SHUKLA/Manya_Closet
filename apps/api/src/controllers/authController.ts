@@ -18,7 +18,7 @@ const signTokens = (id: string) => {
 const cookieOptions = {
   httpOnly: true,
   secure: env.NODE_ENV === 'production',
-  sameSite: 'strict' as const,
+  sameSite: (env.NODE_ENV === 'production' ? 'none' : 'strict') as 'none' | 'strict',
 }
 
 const sendTokens = (res: Response, userId: string, user: object, status = 200) => {
@@ -57,8 +57,8 @@ export const login = async (req: Request, res: Response) => {
 export const logout = async (req: Request, res: Response) => {
   await UserModel.findByIdAndUpdate(req.user!._id, { refreshToken: null })
   res
-    .clearCookie('accessToken')
-    .clearCookie('refreshToken')
+    .clearCookie('accessToken', cookieOptions)
+    .clearCookie('refreshToken', cookieOptions)
     .json({ success: true, message: 'Logged out' })
 }
 
