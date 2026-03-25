@@ -2,7 +2,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useForgotPassword } from '@/hooks/useAuth'
-
 export default function ForgotPasswordForm() {
   const [email, setEmail] = useState('')
   const { mutate, isPending, isSuccess } = useForgotPassword()
