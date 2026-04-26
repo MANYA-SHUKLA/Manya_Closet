@@ -2,7 +2,6 @@ import passport from 'passport'
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20'
 import { UserModel } from '../models/User'
 import { env } from './env'
-
 if (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET && env.GOOGLE_CALLBACK_URL) {
   passport.use(
     new GoogleStrategy(
