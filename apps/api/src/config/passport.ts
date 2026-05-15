@@ -14,7 +14,6 @@ if (env.GOOGLE_CLIENT_ID && env.GOOGLE_CLIENT_SECRET && env.GOOGLE_CALLBACK_URL)
         try {
           const email = profile.emails?.[0].value
           if (!email) return done(new Error('No email from Google'))
-
           let user = await UserModel.findOne({ $or: [{ googleId: profile.id }, { email }] })
 
           if (!user) {
